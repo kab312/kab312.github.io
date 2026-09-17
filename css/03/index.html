@@ -357,6 +357,99 @@ html,body{background:radial-gradient(circle at 7% 2%,rgba(0,153,255,.07),transpa
  .workspace-left{grid-template-rows:240px 380px}.workspace-right{grid-template-rows:auto 440px}.workspace-step-title{font-size:19px}.theory-modal{padding:10px}.theory-dialog-head{padding:14px}.theory-dialog-body{padding:14px}.theory-dialog-head h2{font-size:22px}.footer-center.nav-group{width:100%;justify-content:center}.footer .nav-button{padding-left:10px;padding-right:10px}
 }
 
+
+/* ===== Responsive hardening ===== */
+.start-card,
+.report-card,
+.sample-card{
+  max-width:100%;
+  box-sizing:border-box;
+}
+
+@media(max-width:600px){
+  .start-screen,
+  .report-modal,
+  .sample-modal{
+    padding:12px;
+  }
+
+  .topbar{
+    gap:8px;
+  }
+
+  .brand{
+    min-width:0!important;
+    flex:0 1 auto;
+  }
+
+  .brand-copy{
+    min-width:0;
+  }
+
+  .brand-copy b{
+    white-space:nowrap;
+  }
+
+  .top-spacer{
+    min-width:0;
+  }
+
+  .footer{
+    padding-left:8px;
+    padding-right:8px;
+  }
+
+  .footer-center.nav-group{
+    min-width:0;
+    gap:6px;
+  }
+
+  .footer .nav-button{
+    min-width:0;
+    flex:1 1 0;
+    max-width:140px;
+  }
+
+  .theory-nav{
+    min-width:0;
+    padding-left:30px!important;
+  }
+
+  .report-card{
+    padding:16px;
+    border-radius:18px;
+  }
+
+  .sample-card{
+    border-radius:18px;
+  }
+}
+
+@media(max-width:380px){
+  .brand-copy{
+    display:none;
+  }
+
+  .topbar{
+    gap:6px;
+  }
+
+  .icon-btn{
+    padding-left:9px;
+    padding-right:9px;
+  }
+
+  .footer .nav-button{
+    font-size:13px;
+    padding-left:7px!important;
+    padding-right:7px!important;
+  }
+
+  .theory-nav{
+    padding-left:28px!important;
+  }
+}
+
 </style>
 </head>
 <body>
