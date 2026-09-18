@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>CSS с нуля · ДУП.04</title>
+<style>
+:root{
+  --bg:#0d1020;--bg2:#11162a;--panel:#151b31;--panel2:#1a213a;--panel3:#0f1427;
+  --line:#2a3558;--line2:#3b4a77;--text:#f5f7ff;--muted:#aeb8d3;--quiet:#7b87a8;
+  --blue:#4e8cff;--blue2:#76b5ff;--violet:#8b6dff;--green:#45d498;--red:#ff6b7a;--amber:#ffbe55;
+  --shadow:0 18px 60px rgba(0,0,0,.28);--radius:20px;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:radial-gradient(circle at 15% 0%,#192650 0,transparent 35%),radial-gradient(circle at 95% 15%,#2a1f57 0,transparent 28%),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.app{height:100vh;display:grid;grid-template-rows:auto auto 1fr auto;overflow:hidden}
+.topbar{min-height:58px;display:flex;align-items:center;gap:14px;padding:9px 18px;border-bottom:1px solid rgba(255,255,255,.07);background:rgba(11,15,30,.88);backdrop-filter:blur(16px);z-index:5}
+.brand{display:flex;align-items:center;gap:10px;min-width:230px}.brand-mark{width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--violet));display:grid;place-items:center;font-weight:900;box-shadow:0 8px 30px rgba(82,116,255,.35)}
+.brand-copy b{display:block;font-size:15px}.brand-copy span{display:block;color:var(--quiet);font-size:12px;margin-top:1px}
+.top-spacer{flex:1}.chip{border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:999px;padding:7px 11px;font-size:13px;white-space:nowrap}.chip.core{border-color:rgba(78,140,255,.45);color:#bdd6ff;background:rgba(78,140,255,.12)}.chip.home{border-color:rgba(139,109,255,.45);color:#d7caff;background:rgba(139,109,255,.12)}
+.icon-btn{height:38px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:12px;padding:0 12px}.icon-btn:hover{border-color:var(--line2);background:var(--panel2)}
+.progress-row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:8px 18px;background:rgba(13,17,34,.92);border-bottom:1px solid rgba(255,255,255,.05)}
+.progress-label{font-size:13px;color:var(--muted);min-width:120px}.progress-track{height:7px;background:#212a47;border-radius:999px;overflow:hidden}.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--violet));border-radius:999px;transition:width .25s ease}.progress-count{font-size:13px;color:var(--quiet);min-width:72px;text-align:right}
+.main{min-height:0;display:grid;grid-template-columns:minmax(380px,44%) minmax(0,56%);gap:12px;padding:12px 14px}.app.theory-collapsed .main{grid-template-columns:1fr}.app.theory-collapsed .theory-panel{display:none}.app.theory-collapsed .practice-panel{display:grid;grid-template-rows:auto 1fr}.app.theory-collapsed .practice-work{grid-template-columns:minmax(0,1fr) minmax(360px,1fr);grid-template-rows:1fr}.app.theory-collapsed .editor-card,.app.theory-collapsed .preview-card{min-height:0}
+.panel{min-height:0;border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(180deg,rgba(24,31,55,.98),rgba(17,23,42,.98));box-shadow:var(--shadow);overflow:hidden}
+.theory-panel{display:grid;grid-template-rows:auto 1fr}.panel-head{display:flex;align-items:flex-start;gap:12px;padding:15px 16px 12px;border-bottom:1px solid var(--line)}.step-kicker{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--blue2);margin-bottom:4px}.step-title{margin:0;font-size:23px;line-height:1.12;letter-spacing:-.02em}.head-actions{margin-left:auto;display:flex;gap:7px}.theory-scroll{overflow:auto;padding:16px;scrollbar-width:thin;scrollbar-color:#3b486e transparent}.theory-copy{font-size:16px;line-height:1.55;color:#d7def2}.theory-copy p{margin:0 0 12px}.theory-copy strong{color:#fff}.theory-copy code,.task-copy code,.feedback code,.mini-code{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;background:#0c1225;border:1px solid #293557;border-radius:7px;padding:1px 5px;color:#cbd9ff}.code-example{background:#0a1020;border:1px solid #273456;border-radius:14px;padding:12px 14px;margin:12px 0;color:#dce7ff;overflow:auto;font-family:"SFMono-Regular",Consolas,monospace;white-space:pre-wrap;line-height:1.45;font-size:14px}.callout{border-left:3px solid var(--blue);background:rgba(78,140,255,.09);border-radius:0 12px 12px 0;padding:10px 12px;margin:12px 0;color:#dce8ff}.visual-card{margin-top:15px;border:1px solid var(--line);border-radius:16px;background:#0a0f20;overflow:hidden;position:relative}.visual-card img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;cursor:zoom-in}.visual-card img:focus-visible{outline:3px solid var(--blue);outline-offset:-3px}.visual-card button{position:absolute;right:9px;bottom:9px;border:1px solid rgba(255,255,255,.2);background:rgba(10,15,32,.78);color:white;border-radius:10px;padding:7px 9px;backdrop-filter:blur(8px)}
+.practice-panel{display:grid;grid-template-rows:auto 1fr;min-height:0}.task-card{padding:13px 15px;border-bottom:1px solid var(--line);background:rgba(12,17,33,.52)}.task-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}.task-tag{font-size:12px;font-weight:800;color:#bcd4ff;background:rgba(78,140,255,.12);border:1px solid rgba(78,140,255,.34);padding:5px 8px;border-radius:999px}.task-copy{color:#e4e9f7;font-size:15px;line-height:1.45}.task-copy p{margin:0 0 8px}.task-copy p:last-child{margin-bottom:0}.practice-work{min-height:0;display:grid;grid-template-rows:minmax(230px,48%) minmax(220px,52%)}
+.editor-card,.preview-card{min-height:0;display:grid;grid-template-rows:auto 1fr;border-bottom:1px solid var(--line)}.preview-card{border-bottom:0}.subhead{height:40px;display:flex;align-items:center;gap:9px;padding:0 12px;background:#11172a;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}.subhead b{color:#f5f7ff}.subhead .right{margin-left:auto;display:flex;gap:7px;align-items:center}.dot{width:8px;height:8px;border-radius:50%}.dot.r{background:#ff6a70}.dot.y{background:#ffc85a}.dot.g{background:#57d783}
+.editor-wrap{position:relative;min-height:0;background:#080d1a;overflow:hidden;--editor-pad-y:14px;--editor-gutter:48px;--editor-font:14px;--editor-leading:1.52}.editor-highlight,.editor-input,.editor-lines{position:absolute;margin:0;border:0;white-space:pre;font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:var(--editor-font);line-height:var(--editor-leading);tab-size:2}.editor-highlight,.editor-input{inset:0;padding:var(--editor-pad-y) 16px var(--editor-pad-y) calc(var(--editor-gutter) + 12px);overflow:auto}.editor-highlight{pointer-events:none;color:#dbe5ff;z-index:1}.editor-input{resize:none;outline:none;background:transparent;color:transparent;-webkit-text-fill-color:transparent;caret-color:#fff;z-index:3}.editor-input::selection{background:rgba(79,142,255,.34)}.editor-lines{left:0;top:0;bottom:0;width:var(--editor-gutter);padding:var(--editor-pad-y) 10px var(--editor-pad-y) 0;overflow:hidden;text-align:right;color:#657594;background:#0d162c;border-right:1px solid rgba(255,255,255,.08);pointer-events:none;user-select:none;z-index:4}.editor-active-line{position:absolute;left:var(--editor-gutter);right:0;height:calc(var(--editor-font) * var(--editor-leading));background:rgba(111,214,255,.055);border-top:1px solid rgba(111,214,255,.035);border-bottom:1px solid rgba(111,214,255,.035);pointer-events:none;z-index:0;transition:top .05s linear}.editor-position{font-family:"SFMono-Regular",Consolas,monospace;font-size:11px;color:#7087a0;background:#eaf0f7;border:1px solid #d5e0ec;border-radius:7px;padding:4px 7px;white-space:nowrap}.editor-help{font-size:11px;color:#8295ab;white-space:nowrap}.tok-tag{color:#ff79c6}.tok-name{color:#8be9fd}.tok-attr{color:#50fa7b}.tok-str{color:#f1fa8c}.tok-comment{color:#6272a4;font-style:italic}.editor-fallback{color:#e3e9fa!important;-webkit-text-fill-color:#e3e9fa!important}.editor-wrap:focus-within{box-shadow:inset 0 0 0 2px rgba(111,214,255,.18)}.preview-body{min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 220px;background:#dfe5f0}.browser-wrap{min-height:0;padding:9px;display:grid;grid-template-rows:auto 1fr}.browser-bar{height:34px;border:1px solid #bcc6d9;border-bottom:0;border-radius:12px 12px 0 0;background:#d0d6e2;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:10px;padding:0 10px}.browser-dots{font-size:11px;letter-spacing:2px;color:#65718a}.address{height:20px;border-radius:999px;background:#e7ebf2;color:#8993a8;font-size:11px;padding:3px 9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.preview-frame{width:100%;height:100%;border:1px solid #bcc6d9;background:#fff;border-radius:0 0 12px 12px}.data-panel{border-left:1px solid #bdc7d7;background:#f5f7fb;color:#1a2338;padding:10px;overflow:auto}.data-title{font-size:13px;font-weight:800;margin-bottom:8px}.data-empty{font-size:12px;color:#7b869d;line-height:1.4}.data-line{font-family:"SFMono-Regular",Consolas,monospace;font-size:12px;background:white;border:1px solid #d6deeb;border-radius:8px;padding:7px 8px;margin-bottom:6px;overflow-wrap:anywhere}.data-line b{color:#654cff}.data-actions{margin-bottom:9px}.small-btn{border:1px solid #bcc8dc;background:#fff;color:#273450;border-radius:9px;padding:6px 8px;font-size:12px}.small-btn:hover{background:#eef3fb}
+.footer{min-height:64px;display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;padding:9px 16px;border-top:1px solid rgba(255,255,255,.07);background:rgba(11,15,30,.94)}.footer-left{min-width:0;display:flex;align-items:center;gap:8px}.footer-center{display:flex;gap:8px;justify-content:center}.footer-right{display:flex;justify-content:flex-end;gap:8px}.btn{min-height:40px;border-radius:11px;border:1px solid var(--line);padding:8px 13px;background:var(--panel);color:var(--text);font-weight:700}.btn:hover{border-color:var(--line2);background:var(--panel2)}.btn.primary{border-color:#4e8cff;background:linear-gradient(135deg,#3276ff,#6d66ff);box-shadow:0 8px 24px rgba(62,108,255,.22)}.btn.success{border-color:#2fac7d;background:rgba(69,212,152,.14);color:#bfffe2}.btn:disabled{opacity:.34;cursor:not-allowed}.feedback{min-width:0;max-width:520px;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.feedback.good{color:#9ff0cd}.feedback.bad{color:#ffadb5}.hint-box{position:fixed;left:50%;bottom:78px;transform:translateX(-50%);z-index:25;width:min(660px,calc(100vw - 30px));background:#121a31;border:1px solid #405180;border-radius:16px;box-shadow:0 20px 80px rgba(0,0,0,.46);padding:14px 16px;color:#e7ecfb;display:none}.hint-box.show{display:block}.hint-box b{display:block;margin-bottom:5px}.hint-box p{margin:0;color:#c9d2e8;line-height:1.45}.hint-close{position:absolute;right:10px;top:8px;border:0;background:transparent;color:#96a3c2;font-size:20px}
+.drawer{position:fixed;inset:0;z-index:40;display:none}.drawer.show{display:block}.drawer-backdrop{position:absolute;inset:0;background:rgba(4,7,16,.66);backdrop-filter:blur(5px)}.drawer-panel{position:absolute;left:0;top:0;bottom:0;width:min(430px,92vw);background:#10162a;border-right:1px solid #344266;box-shadow:30px 0 80px rgba(0,0,0,.35);display:grid;grid-template-rows:auto 1fr}.drawer-head{display:flex;align-items:center;gap:10px;padding:15px;border-bottom:1px solid var(--line)}.drawer-head h2{font-size:18px;margin:0}.drawer-list{overflow:auto;padding:10px}.section-label{font-size:11px;font-weight:900;letter-spacing:.08em;color:#7180a4;text-transform:uppercase;padding:12px 8px 6px}.step-link{width:100%;display:grid;grid-template-columns:28px 1fr auto;gap:9px;align-items:center;text-align:left;border:1px solid transparent;background:transparent;color:#d9e0f3;border-radius:11px;padding:8px;margin:2px 0}.step-link:hover{background:#171f38;border-color:#283659}.step-link.active{background:rgba(78,140,255,.12);border-color:rgba(78,140,255,.45)}.step-num{width:27px;height:27px;border-radius:9px;background:#202943;display:grid;place-items:center;font-size:12px;color:#aab6d3}.step-link.done .step-num{background:rgba(69,212,152,.14);color:#80efbd}.step-name{font-size:13px;line-height:1.25}.step-state{font-size:12px;color:#6f7b9e}
+.modal{position:fixed;inset:0;z-index:60;background:rgba(3,5,12,.9);display:none;place-items:center;padding:20px}.modal.show{display:grid}.modal img{max-width:95vw;max-height:92vh;border-radius:14px;box-shadow:0 30px 100px #000}.modal button{position:absolute;right:18px;top:14px;border:1px solid #465373;background:#141b30;color:#fff;border-radius:12px;padding:9px 12px}
+.sample-modal{position:fixed;inset:0;z-index:65;display:none;place-items:center;padding:20px;background:rgba(5,13,31,.76);backdrop-filter:blur(4px)}.sample-modal.show{display:grid}.sample-card{width:min(1180px,96vw);max-height:92vh;overflow:hidden;display:grid;grid-template-rows:auto 1fr;border:1px solid #d7e2ef;border-radius:22px;background:#fff;box-shadow:0 28px 90px rgba(10,24,54,.28);color:#173754}.sample-head{display:flex;align-items:center;gap:12px;padding:15px 18px;border-bottom:1px solid #dbe4f0}.sample-head h2{margin:0;font-size:22px;color:#0b3558}.sample-close{margin-left:auto;border:1px solid #cbd7e5;background:#fff;color:#0b3558;border-radius:10px;padding:7px 10px;font-weight:800}.sample-body{min-height:0;display:grid;grid-template-columns:minmax(280px,340px) minmax(0,1fr);gap:16px;padding:16px}.sample-info{min-height:0;overflow:auto;padding:4px 2px}.sample-info h3{margin:0 0 8px;color:#0b3558;font-size:18px}.sample-info p{margin:0 0 12px;color:#476788;line-height:1.5;font-size:14px}.sample-note{padding:11px 12px;border-left:4px solid #006bff;border-radius:0 12px 12px 0;background:#eef5ff;color:#35536e;font-size:13px;line-height:1.45;margin-bottom:14px}.sample-tree{border:1px solid #dbe4f0;border-radius:14px;background:#f8fafc;padding:12px}.sample-tree-title{font-size:12px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#768aa3;margin-bottom:9px}.sample-tree-row{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:9px;color:#173754;font:13px/1.3 "SFMono-Regular",Consolas,monospace}.sample-tree-row+.sample-tree-row{margin-top:3px}.sample-tree-row.locked{background:#eef2f7}.sample-tree-row.folder{background:#eef5ff;color:#0b5fb7}.sample-tree-icon{width:20px;text-align:center;font-family:Arial,sans-serif}.sample-image-wrap{min-height:0;display:grid;place-items:center;border:1px solid #dbe4f0;border-radius:16px;background:#eef2f7;padding:10px;overflow:auto}.sample-image-wrap img{display:block;max-width:100%;max-height:calc(92vh - 100px);border-radius:12px;box-shadow:0 12px 34px rgba(34,55,86,.15)}@media(max-width:820px){.sample-card{overflow:auto}.sample-body{grid-template-columns:1fr}.sample-image-wrap img{max-height:none}.sample-info{overflow:visible}}
+.cover{grid-column:1/-1;display:grid;grid-template-columns:1.08fr .92fr;gap:20px;align-items:stretch;min-height:0}.cover-copy,.cover-demo{border:1px solid var(--line);border-radius:24px;background:linear-gradient(160deg,#171f38,#11162a);box-shadow:var(--shadow);padding:28px;overflow:auto}.cover-eyebrow{color:#89b6ff;font-size:13px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.cover h1{font-size:clamp(38px,4vw,64px);line-height:.98;margin:14px 0 14px;letter-spacing:-.045em}.cover p{font-size:18px;line-height:1.55;color:#c9d2e8;max-width:730px}.cover-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}.cover-stat{border:1px solid #2e3a60;border-radius:14px;background:#10162b;padding:12px}.cover-stat b{display:block;font-size:20px}.cover-stat span{font-size:12px;color:#8f9bbc}.mock-form{height:100%;min-height:430px;background:linear-gradient(145deg,#eaf2ff,#f4efff);color:#18223a;border-radius:20px;padding:18px;display:flex;flex-direction:column}.mock-window{background:#fff;border:1px solid #d3dceb;border-radius:17px;box-shadow:0 18px 50px rgba(55,76,118,.16);overflow:hidden;margin:auto;width:100%;max-width:570px}.mock-window-top{height:38px;background:#425b86;display:flex;align-items:center;padding:0 12px;color:#dbe6f6;font-size:11px}.mock-window-body{padding:20px}.mock-window h3{margin:0 0 4px;font-size:24px}.mock-window p{margin:0 0 14px;color:#6d7992;font-size:13px}.mf-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mf label{display:block;font-size:12px;font-weight:700;margin-bottom:4px}.fake-input{height:36px;border:1px solid #b7c6de;border-radius:8px;background:#fff}.fake-button{margin-top:14px;background:linear-gradient(135deg,#397ef8,#7659e8);height:42px;border-radius:9px;color:#fff;display:grid;place-items:center;font-weight:800}.flow-line{display:flex;align-items:center;gap:8px;color:#a5b0c9;font-family:monospace;margin-top:18px;flex-wrap:wrap}.flow-node{border:1px solid #344265;background:#11182c;border-radius:10px;padding:7px 9px;color:#dae3f5}.flow-arrow{color:#658dff}
+.overview-wrap{grid-column:1/-1;display:grid;grid-template-columns:1fr .9fr;gap:12px;min-height:0}.overview-card{border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,#171f38,#11172b);padding:22px;overflow:auto}.overview-card h1{font-size:34px;margin:0 0 9px}.overview-card p{color:#cbd4e8;font-size:17px;line-height:1.5}.overview-form{background:#f6f8fc;color:#202a40;border-radius:16px;padding:18px;border:1px solid #ccd5e4}.overview-form label{font-size:12px;font-weight:700;display:block;margin:7px 0 4px}.overview-form input,.overview-form select,.overview-form textarea{width:100%;border:1px solid #b7c2d5;border-radius:8px;padding:8px;background:white}.overview-form fieldset{border:1px solid #c4cede;border-radius:10px;margin:10px 0;padding:8px 10px}.overview-form legend{font-weight:700}.overview-form button{border:0;border-radius:9px;background:#3479ee;color:white;padding:10px 16px;font-weight:800;margin-top:12px;width:100%}.overview-form-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}.overview-form-head h2{margin:2px 0 0;font-size:22px;color:#0b3558}.overview-mini{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#006bff}.overview-status{font-size:11px;font-weight:700;color:#476788;background:#eef3f8;border:1px solid #dbe5ef;border-radius:999px;padding:5px 8px;white-space:nowrap}.overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}.overview-field{margin:0!important;display:flex!important;flex-direction:column;gap:5px}.overview-field>span{font-size:12px;font-weight:800;color:#0b3558}.overview-field input,.overview-field select,.overview-field textarea{box-sizing:border-box;min-height:38px;color:#0b3558}.overview-span{grid-column:1/-1}.overview-choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.overview-choice-grid fieldset{margin:0;padding:10px 12px;background:#fff;border-color:#d6e0ec}.overview-choice-grid legend{font-size:12px;color:#0b3558;padding:0 4px}.overview-option{display:flex!important;align-items:center;gap:7px;margin:2px 0!important;font-size:13px!important}.overview-option input,.overview-rules input{width:auto!important;margin:0}.overview-comment{margin-top:10px!important}.overview-rules{display:flex!important;align-items:center;gap:8px;margin:10px 0 0!important;padding:9px 10px;border-radius:9px;background:#f2f7ff;color:#0b3558}.overview-form textarea{resize:none}.data-sample{font-family:monospace;background:#0b1121;border:1px solid #273657;border-radius:14px;padding:14px;color:#dbe7ff;line-height:1.7}.big-action{margin-top:18px}.big-action .btn{min-height:46px;padding:10px 18px;font-size:15px}
+.ide-screen{grid-column:1/-1;border:1px solid var(--line);border-radius:22px;background:linear-gradient(160deg,#171f39,#10162a);box-shadow:var(--shadow);padding:24px;overflow:auto}.ide-screen h1{font-size:36px;margin:0 0 8px}.ide-screen .lead{font-size:18px;line-height:1.5;color:#cbd5e9;max-width:980px}.ide-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin:18px 0}.ide-brief{border:1px solid #2d3a5d;background:#10172c;border-radius:14px;padding:15px}.ide-brief h3{margin:0 0 7px;color:#dce8ff}.ide-brief p{margin:0;color:#b9c4dc;line-height:1.5}.download-card{display:flex;align-items:center;gap:14px;border:1px solid rgba(69,212,152,.35);background:rgba(69,212,152,.08);border-radius:16px;padding:14px;margin-top:16px}.download-card .btn{margin-left:auto}.selfcheck{margin-top:16px;border-top:1px solid #283659;padding-top:13px;color:#aeb9d2}.selfcheck summary{cursor:pointer;color:#d9e4f8;font-weight:800}.checks{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:10px}.check{background:#11192e;border:1px solid #283758;border-radius:10px;padding:9px;font-size:13px;color:#b8c4dc}
+.special-wrap{min-height:0;overflow:auto;padding:16px}.predict-card{display:grid;grid-template-columns:1fr 1fr;gap:12px}.predict-side{border:1px solid var(--line);border-radius:14px;background:#11172b;padding:13px}.predict-side textarea{width:100%;min-height:190px;background:#090f1e;color:#e5edff;border:1px solid #344466;border-radius:10px;padding:11px;font-family:monospace;line-height:1.5;resize:vertical}.result-list{margin-top:10px}.result-row{background:#0b1122;border:1px solid #2a385b;border-radius:9px;padding:8px;margin-bottom:6px;font-family:monospace;font-size:13px}.mission-done{padding:20px;border:1px solid rgba(69,212,152,.3);border-radius:16px;background:rgba(69,212,152,.07);text-align:center}.mission-done h2{margin-top:0}.mission-done p{color:#bdc8dc;line-height:1.55}
+@media(max-width:980px){
+  .app{height:auto;min-height:100vh;overflow:visible;grid-template-rows:auto auto auto auto}.main{grid-template-columns:1fr;padding:9px}.panel{min-height:620px}.theory-panel{min-height:560px}.practice-panel{min-height:850px}.practice-work{grid-template-rows:390px 430px}.footer{position:sticky;bottom:0;z-index:20;grid-template-columns:1fr auto;background:rgba(11,15,30,.97)}.footer-left{display:none}.footer-center{justify-content:flex-start}.footer-right{grid-column:2}.cover,.overview-wrap{grid-template-columns:1fr}.cover-demo{min-height:520px}.app.theory-collapsed .practice-work{grid-template-columns:1fr;grid-template-rows:410px 440px}.ide-grid{grid-template-columns:1fr}.checks{grid-template-columns:1fr}.predict-card{grid-template-columns:1fr}.preview-body{grid-template-columns:1fr}.data-panel{border-left:0;border-top:1px solid #bdc7d7;max-height:170px}.brand-copy span{display:none}.chip{display:none}}
+@media(max-width:600px){.overview-grid,.overview-choice-grid{grid-template-columns:1fr}.overview-span{grid-column:auto}.overview-form-head{flex-direction:column}.topbar{padding:8px 10px}.brand{min-width:auto}.brand-copy b{font-size:13px}.progress-row{padding:7px 10px}.progress-label{display:none}.main{padding:7px}.panel-head{padding:12px}.step-title{font-size:20px}.theory-scroll{padding:13px}.theory-copy{font-size:15px}.footer{padding:8px}.btn{padding:8px 9px;font-size:13px}.cover-copy,.cover-demo{padding:18px}.cover-steps{grid-template-columns:1fr}.ide-screen{padding:17px}.ide-screen h1{font-size:29px}.mf-grid{grid-template-columns:1fr}}
+
+/* ===== Light course shell · aligned with previous HTML interactives ===== */
+:root{
+  --bg:#f7f9fc;--bg2:#f4f7fb;--panel:#ffffff;--panel2:#f4f7fb;--panel3:#eef3f8;
+  --line:#dbe4f0;--line2:#b9c9dd;--text:#0b3558;--muted:#476788;--quiet:#7890aa;
+  --blue:#006bff;--blue2:#2f83ff;--violet:#7657e8;--green:#198754;--red:#c33d4b;--amber:#a46a00;
+  --shadow:rgba(71,103,136,.04) 0 4px 5px,rgba(71,103,136,.03) 0 8px 15px,rgba(71,103,136,.08) 0 30px 50px;
+  --radius:20px;
+}
+html,body{background:radial-gradient(circle at 7% 2%,rgba(0,153,255,.07),transparent 22rem),radial-gradient(circle at 97% 3%,rgba(229,92,255,.06),transparent 24rem),#f7f9fc;color:var(--text)}
+.app{background:transparent}.app.app-hidden{display:none}
+.topbar{border-bottom:1px solid var(--line);background:rgba(255,255,255,.92);box-shadow:0 4px 18px rgba(71,103,136,.04)}
+.brand{min-width:255px}.brand-mark{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,#006bff,#7657e8);color:#fff;box-shadow:0 10px 24px rgba(0,107,255,.20)}
+.brand-copy b{font-size:16px;color:var(--text)}.brand-copy span{color:var(--muted)}
+.icon-btn{height:42px;border:1px solid var(--line);background:#fff;color:var(--text);border-radius:12px;font-weight:800;transition:.18s ease}
+.icon-btn:hover{border-color:#afc3dd;background:#f4f7fb;transform:translateY(-1px)}
+.student-chip{max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:7px 10px;border-radius:999px;background:#eef2f7;color:#476788;font-size:12px;font-weight:750;border:1px solid #e0e7f0}
+.chip{border-color:var(--line);background:#f4f7fb;color:#476788}.chip.core{border-color:#c9d8ff;color:#004eba;background:#eef3ff}.chip.home{border-color:#ddd2ff;color:#6846c9;background:#f5f1ff}
+.progress-row{background:rgba(255,255,255,.92);border-bottom:1px solid var(--line)}.progress-label{color:var(--muted)}.progress-track{background:#e7edf5}.progress-fill{background:linear-gradient(90deg,#006bff,#7657e8)}.progress-count{color:var(--quiet)}
+.panel,.cover-copy,.cover-demo,.overview-card,.ide-screen{border-color:var(--line);background:#fff;box-shadow:var(--shadow)}
+.panel-head{border-bottom-color:var(--line)}.step-kicker,.cover-eyebrow{color:#006bff}.step-title,.cover h1,.overview-card h1,.ide-screen h1{color:var(--text)}
+.theory-copy{color:#294b6b}.theory-copy strong{color:#0b3558}.theory-copy code,.task-copy code,.feedback code,.mini-code{background:#edf2f7;border-color:#dce5ef;color:#184f89}
+.code-example{background:#101a33;border-color:#c8d3e5;color:#e9efff}
+.callout{border-left-color:#006bff;background:#eef5ff;color:#244c73}
+.visual-card{border-color:var(--line);background:#fff;box-shadow:0 12px 32px rgba(71,103,136,.08)}.visual-card button{border-color:#d4e0ed;background:rgba(255,255,255,.94);color:#0b3558}
+.task-card{border-bottom-color:var(--line);background:#fbfcfe}.task-tag{color:#004eba;background:#eef3ff;border-color:#c9d8ff}.task-copy{color:#294b6b}
+.subhead{background:#f4f7fb;border-bottom-color:var(--line);color:#607996}.subhead b{color:#0b3558}
+.editor-card,.preview-card{border-bottom-color:var(--line)}
+/* Keep the code editor dark, as in the first two interactives. */
+.editor-wrap{background:#101a33}.editor-highlight{color:#e9efff}.editor-input{caret-color:#fff}.tok-tag{color:#6fd6ff}.tok-name{color:#8aa4ff}.tok-attr{color:#c4a7ff}.tok-str{color:#ffd479}.tok-comment{color:#7f91ad}.editor-fallback{color:#e9efff!important;-webkit-text-fill-color:#e9efff!important}
+.preview-body{background:#eef2f7}.data-panel{background:#f8fafc;color:#173754}.data-title{color:#0b3558}.data-empty{color:#6e829a}.data-line{border-color:#d8e2ee;background:#fff;color:#24465f}.data-line b{color:#006bff}.small-btn{border-color:#d4e0ed;background:#fff;color:#0b3558}.small-btn:hover{background:#eef3f8}
+.footer{border-top:1px solid var(--line);background:rgba(255,255,255,.96);box-shadow:0 -6px 22px rgba(71,103,136,.05)}.btn{border-color:var(--line);background:#fff;color:var(--text);border-radius:12px}.btn:hover{border-color:#afc3dd;background:#f5f8fb}.btn.primary{border-color:#006bff;background:#006bff;color:#fff;box-shadow:0 12px 26px rgba(0,107,255,.18)}.btn.success{border-color:#9ed7bd;background:#e9f7ef;color:#146c43}.feedback{color:var(--muted)}.feedback.good{color:#198754}.feedback.bad{color:#c33d4b}
+.hint-box{background:#fff;border-color:#cad8e8;box-shadow:0 22px 70px rgba(26,45,82,.18);color:#0b3558}.hint-box p{color:#476788}.hint-close{color:#7087a0}
+.drawer-backdrop{background:rgba(9,20,45,.34);backdrop-filter:blur(2px)}.drawer-panel{left:auto;right:0;background:#fff;border-right:0;border-left:1px solid var(--line);box-shadow:-24px 0 70px rgba(10,24,54,.18);width:min(420px,92vw);grid-template-rows:auto 1fr auto}.drawer-head{border-bottom-color:var(--line);padding:18px}.drawer-head h2{color:#0b3558;font-size:19px}.drawer-sub{display:block;margin-top:3px;color:#60708f;font-size:12px}.drawer-list{padding:10px 18px 18px}.section-label{color:#768aa3}.step-link{color:#10214a}.step-link:hover{background:#f4f7fb;border-color:#e0e8f1}.step-link.active{background:#eef2ff;border-color:#c8d3ff}.step-num{background:#eef2f7;color:#62718d}.step-link.done .step-num{background:#e8f7ef;color:#198754}.step-state{color:#7c8ea5}.drawer-reset{border-top:1px solid var(--line);padding:14px 18px 16px;background:#fff}.drawer-reset .btn{width:100%;min-height:42px}.drawer-reset span{display:block;margin-top:7px;color:#7c8ea5;font-size:11.5px;text-align:center}.danger-outline{background:#fff7f7!important;border-color:#efb6b6!important;color:#b42318!important}.danger-outline:hover{background:#fff0f0!important}
+.modal{background:rgba(5,13,31,.88)}
+.cover-copy,.cover-demo{background:#fff}.cover p{color:#476788}.cover-stat{border-color:#dbe4f0;background:#f7f9fc}.cover-stat span{color:#60708f}.flow-line{color:#60708f}.flow-node{border-color:#dbe4f0;background:#f4f7fb;color:#0b3558}.flow-arrow{color:#006bff}.fake-button{background:#006bff}.mock-window-top{background:#0b3558}
+.overview-card{background:#fff}.overview-card p{color:#476788}.data-sample{background:#101a33;border-color:#c8d3e5;color:#e9efff}
+.ide-screen{background:#fff}.ide-screen .lead{color:#476788}.ide-brief{border-color:#dbe4f0;background:#f8fafc}.ide-brief h3{color:#0b3558}.ide-brief p{color:#476788}.download-card{border-color:#b9dfca;background:#edf8f2}.download-card div div{color:#58756a!important}.selfcheck{border-top-color:#dbe4f0;color:#476788}.selfcheck summary{color:#0b3558}.check{background:#f8fafc;border-color:#dbe4f0;color:#35536e}
+.special-wrap{background:#fff}.predict-side{border-color:#dbe4f0;background:#f8fafc}.predict-side textarea{background:#101a33;color:#e9efff;border-color:#c8d3e5}.result-row{background:#fff;border-color:#dbe4f0;color:#294b6b}.mission-done{border-color:#b9dfca;background:#edf8f2}.mission-done p{color:#476788}
+
+
+/* ===== mini assignment: task + checklist side by side ===== */
+.app.mini-focus .main{grid-template-columns:1fr}
+.app.mini-focus .practice-work{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  grid-template-rows:1fr;
+}
+.app.mini-focus .editor-card{border-bottom:0;border-right:1px solid var(--line)}
+.app.mini-focus .preview-card{border-bottom:0}
+.app.mini-focus .task-card{
+  display:grid;
+  grid-template-columns:minmax(0,1.08fr) minmax(300px,.92fr);
+  grid-template-areas:
+    "top top"
+    "copy diagnostic"
+    "feedback diagnostic";
+  column-gap:14px;
+  row-gap:8px;
+  padding:12px 14px;
+  align-items:start;
+}
+.app.mini-focus .task-top{grid-area:top;margin-bottom:0}
+.app.mini-focus .task-copy{grid-area:copy;font-size:14px;line-height:1.38;max-height:184px;overflow:auto;padding-right:4px;scrollbar-width:thin}
+.app.mini-focus .task-copy p{margin:0 0 6px}
+.app.mini-focus .mini-task-list{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;counter-reset:miniitem}
+.app.mini-focus .mini-task-item{position:relative;margin:0!important;padding:7px 8px 7px 30px;border:1px solid #e2e9f1;border-radius:10px;background:#f8fafc;font-size:12.8px;line-height:1.32}
+.app.mini-focus .mini-task-item::before{counter-increment:miniitem;content:counter(miniitem);position:absolute;left:8px;top:7px;width:16px;height:16px;border-radius:5px;display:grid;place-items:center;background:#eaf2ff;color:#006bff;font-size:10px;font-weight:900}
+.app.mini-focus .feedback-row{grid-area:feedback;margin-top:0;padding-top:9px}
+.app.mini-focus .feedback-action{display:flex;gap:8px;flex-wrap:wrap}
+.app.mini-focus .inline-feedback{min-height:38px;font-size:12.5px}
+.app.mini-focus .ide-diagnostic{
+  grid-area:diagnostic;
+  align-self:start;
+  margin-top:0;
+  max-height:184px;
+  overflow:auto;
+  padding-right:3px;
+  scrollbar-width:thin;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:6px;
+  align-content:start;
+}
+.app.mini-focus .ide-check-row{padding:8px 9px;font-size:12.5px;line-height:1.28}
+@media(max-width:1120px){
+  .app.mini-focus .task-card{grid-template-columns:minmax(0,1fr) minmax(280px,.9fr)}
+  .app.mini-focus .ide-diagnostic{grid-template-columns:1fr}
+}
+@media(max-width:860px){
+  .app.mini-focus .practice-work{grid-template-columns:1fr;grid-template-rows:minmax(230px,48%) minmax(220px,52%)}
+  .app.mini-focus .editor-card{border-right:0;border-bottom:1px solid var(--line)}
+  .app.mini-focus .task-card{
+    grid-template-columns:1fr;
+    grid-template-areas:"top" "copy" "feedback" "diagnostic";
+  }
+  .app.mini-focus .ide-diagnostic{grid-template-columns:1fr 1fr}
+  .app.mini-focus .mini-task-list{grid-template-columns:1fr}
+}
+
+/* ===== Student start screen ===== */
+.start-screen{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:22px;background:radial-gradient(circle at 10% 8%,rgba(0,153,255,.10),transparent 23rem),radial-gradient(circle at 92% 5%,rgba(229,92,255,.08),transparent 24rem),#f7f9fc}.start-screen.hidden{display:none}.start-card{width:min(760px,96vw);display:grid;grid-template-columns:auto 1fr;gap:20px;padding:28px;border:1px solid #dbe4f0;border-radius:26px;background:#fff;box-shadow:var(--shadow)}.start-brand{width:64px;height:64px;border-radius:18px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#006bff,#7657e8);font-size:23px;font-weight:900}.start-copy h1{font-size:40px;line-height:1.06;margin:6px 0 9px;color:#0b3558}.start-copy p{margin:0;color:#476788;line-height:1.5}.start-kicker{color:#006bff;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.student-form{grid-column:1/-1;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;margin-top:6px}.student-form label span{display:block;margin-bottom:6px;color:#0b3558;font-size:12px;font-weight:800}.student-form input{width:100%;height:44px;border:1px solid #ccd9e8;border-radius:10px;background:#fff;color:#0b3558;padding:0 11px;outline:none}.student-form input:focus{border-color:#006bff;box-shadow:0 0 0 3px rgba(0,107,255,.12)}.start-button{height:44px;border:0;border-radius:10px;background:#006bff;color:#fff;padding:0 20px;font-weight:800}.start-error{grid-column:1/-1;margin:0;color:#c33d4b;font-size:13px}.start-note{grid-column:1/-1;margin:0;padding-top:2px;color:#60708f;font-size:12px;line-height:1.45}
+
+/* ===== IDE automated semantic check ===== */
+.ide-checker{margin-top:20px;padding:18px;border:1px solid #dbe4f0;border-radius:18px;background:#f8fafc}.ide-checker h2{margin:0 0 6px;color:#0b3558;font-size:22px}.ide-checker>p{margin:0 0 12px;color:#476788;line-height:1.5}.ide-code{width:100%;min-height:210px;resize:vertical;padding:13px 14px;border:1px solid #c8d3e5;border-radius:12px;background:#101a33;color:#e9efff;font:13px/1.5 "SFMono-Regular",Consolas,monospace;outline:none}.ide-code:focus{box-shadow:0 0 0 3px rgba(0,107,255,.12);border-color:#7caeff}.ide-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:10px}.ide-score-pill{margin-left:auto;padding:7px 10px;border-radius:999px;background:#eef2f7;color:#476788;font-size:13px;font-weight:800}.ide-diagnostic{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:13px}.ide-check-row{display:flex;gap:8px;align-items:flex-start;padding:9px 10px;border:1px solid #dbe4f0;border-radius:10px;background:#fff;color:#35536e;font-size:13px;line-height:1.35}.ide-check-row.ok{border-color:#b9dfca;background:#edf8f2;color:#176f48}.ide-check-row.bad{border-color:#efc3c8;background:#fff2f3;color:#9b2f3b}.ide-check-icon{font-weight:900;flex:0 0 auto}
+
+/* ===== Report ===== */
+.report-modal{position:fixed;inset:0;z-index:90;display:none;place-items:center;padding:22px;background:rgba(9,20,45,.38);backdrop-filter:blur(5px)}.report-modal.show{display:grid}.report-card{width:min(920px,96vw);max-height:92vh;overflow:auto;border:1px solid #dbe4f0;border-radius:24px;background:#fff;box-shadow:0 28px 90px rgba(10,24,54,.22);padding:22px}.report-head{display:flex;align-items:flex-start;gap:14px;padding-bottom:14px;border-bottom:1px solid #dbe4f0}.report-head h2{margin:0;color:#0b3558;font-size:26px}.report-head p{margin:4px 0 0;color:#60708f}.report-head .right{margin-left:auto;display:flex;gap:8px}.report-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:16px 0}.report-stat{padding:13px;border:1px solid #dbe4f0;border-radius:14px;background:#f8fafc}.report-stat b{display:block;color:#0b3558;font-size:22px}.report-stat span{display:block;color:#60708f;font-size:11px;margin-top:3px}.grade-card{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;padding:16px;border:1px solid #c9d8ff;border-radius:16px;background:#eef3ff}.grade-number{width:72px;height:72px;border-radius:20px;display:grid;place-items:center;background:#006bff;color:#fff;font-size:38px;font-weight:900}.grade-copy b{color:#0b3558;font-size:18px}.grade-copy p{margin:5px 0 0;color:#476788;line-height:1.45}.report-section{margin-top:16px}.report-section h3{margin:0 0 8px;color:#0b3558;font-size:17px}.report-list{display:grid;gap:6px}.report-row{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:8px;align-items:center;padding:8px 10px;border-radius:10px;background:#f8fafc;border:1px solid #e2e9f1;color:#35536e;font-size:12.5px}.report-row .score{font-weight:900;color:#0b3558}.report-note{padding:10px 12px;border-left:4px solid #006bff;border-radius:0 10px 10px 0;background:#eef5ff;color:#35536e;font-size:12.5px;line-height:1.45}.print-report{display:none}
+@media print{body{background:#fff!important}.app,.start-screen,.report-modal,.hint-box,.drawer,.modal{display:none!important}.print-report{display:block!important;color:#0b3558;font-family:Inter,Arial,sans-serif;padding:12mm}.print-report h1{font-size:22pt;margin:0 0 3mm}.print-report h2{font-size:14pt;margin:5mm 0 2mm}.print-report p{margin:1.5mm 0;font-size:10.5pt}.print-report table{width:100%;border-collapse:collapse;font-size:9.5pt}.print-report th,.print-report td{border:1px solid #cbd7e5;padding:2.2mm;text-align:left}.print-report .print-grade{font-size:20pt;font-weight:900;color:#006bff}.print-report .muted{color:#60708f}}
+
+@media(max-width:1100px){.editor-help{display:none}}
+@media(max-width:980px){.footer{background:rgba(255,255,255,.97)}.student-form{grid-template-columns:1fr 1fr}.student-form .start-button{grid-column:1/-1}.report-grid{grid-template-columns:repeat(2,1fr)}.ide-diagnostic{grid-template-columns:1fr}}
+@media(max-width:600px){.student-chip{display:none}.start-card{grid-template-columns:1fr;padding:20px}.start-brand{width:54px;height:54px}.start-copy h1{font-size:32px}.student-form{grid-template-columns:1fr}.report-grid{grid-template-columns:1fr 1fr}.report-head{flex-wrap:wrap}.report-head .right{margin-left:0;width:100%}.drawer-panel{width:min(410px,96vw)}}
+
+
+/* ===== v4: task controls aligned with the first two interactives ===== */
+.legacy-footer-actions{display:none!important}
+.footer{min-height:72px;display:flex!important;justify-content:center!important;align-items:center;padding:10px 18px;background:rgba(255,255,255,.97);border-top:1px solid #dbe4f0;box-shadow:0 -5px 20px rgba(71,103,136,.05)}
+.footer-center.nav-group{display:flex;gap:10px;justify-content:center;align-items:center}
+.nav-button{min-width:132px;min-height:46px;border-radius:12px;padding:9px 18px;font-size:14px;font-weight:800;transition:.18s ease;cursor:pointer}
+.nav-button.secondary{border:1px solid #d4e0ed;background:#fff;color:#0b3558}
+.nav-button.secondary:hover:not(:disabled){background:#f4f7fb;border-color:#afc3dd;transform:translateY(-1px)}
+.nav-button.primary{border:1px solid #006bff;background:#006bff;color:#fff;box-shadow:0 10px 22px rgba(0,107,255,.16)}
+.nav-button.primary:hover:not(:disabled){background:#005fe5;transform:translateY(-1px)}
+.nav-button:disabled{opacity:.38;cursor:not-allowed;transform:none!important;box-shadow:none}
+.task-card{padding:16px 18px 14px;background:#fff;border-bottom:1px solid #dbe4f0}
+.task-top{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:8px}
+.task-status{margin-left:auto;display:inline-flex;align-items:center;min-height:28px;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:850;border:1px solid #dbe4f0;background:#f4f7fb;color:#6e829a}
+.task-status.self{border-color:#b9dfca;background:#eaf7f0;color:#187248}
+.task-status.solution{border-color:#efd9a4;background:#fff7e4;color:#8a5a00}
+.task-status.pending{border-color:#dbe4f0;background:#f4f7fb;color:#6e829a}
+.feedback-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid #e5ecf4}
+.feedback-action{flex:0 0 auto}
+.small-button{min-height:40px;border:1px solid #cdd9e8;border-radius:10px;background:#fff;color:#0b3558;padding:8px 13px;font-weight:800;cursor:pointer;transition:.16s ease}
+.small-button:hover{background:#f4f7fb;border-color:#afc3dd}
+.check-button{background:#006bff;border-color:#006bff;color:#fff;box-shadow:0 8px 18px rgba(0,107,255,.14)}
+.check-button:hover{background:#005fe5;border-color:#005fe5}
+.inline-feedback{flex:1;min-width:220px;max-width:none;white-space:normal;overflow:visible;text-overflow:clip;padding:9px 11px;border-radius:10px;border:1px solid transparent;font-size:13px;font-weight:650;line-height:1.35;min-height:40px;display:flex;align-items:center}
+.inline-feedback[aria-hidden="true"]{visibility:hidden}
+.inline-feedback.good{visibility:visible!important;color:#176f48;background:#edf8f2;border-color:#b9dfca}
+.inline-feedback.bad{visibility:visible!important;color:#9b2f3b;background:#fff2f3;border-color:#efc3c8}
+.help-row{display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-top:9px}
+.help-row .small-button{flex:0 0 auto}
+.help-box{display:none;flex:1;min-width:240px;border:1px solid #d4e0ed;border-radius:10px;background:#f6f9fc;padding:9px 11px;color:#476788;font-size:13px;line-height:1.4}
+.help-box.show{display:flex;gap:8px;align-items:flex-start}
+.help-box strong{color:#0b3558;white-space:nowrap}.help-box span{min-width:0}
+.small-button.solution-ready{border-color:#d92d20;background:#d92d20;color:#fff}.small-button.solution-ready:hover{border-color:#b42318;background:#b42318;color:#fff}.small-button.solution-used{border-color:#e2c87a;background:#fff3cf;color:#805600}
+.step-link.solved-self .step-num{background:#e8f7ef;color:#198754}.step-link.solved-self .step-state{color:#198754;font-weight:800}
+.step-link.solved-solution .step-num{background:#fff2cf;color:#9a6500}.step-link.solved-solution .step-state{color:#9a6500;font-weight:800}
+.step-link.done .step-num{font-weight:800}
+.browser-wrap{background:#fff}.preview-frame{background:#fff}
+.predict-side p,.predict-empty{color:#607996!important}
+@media(max-width:760px){.feedback-row,.help-row{align-items:stretch}.feedback-action,.feedback-action .small-button,.help-row>.small-button{width:100%}.inline-feedback,.help-box{min-width:100%}.nav-button{min-width:118px}}
+
+
+
+/* ===== CSS lesson additions ===== */
+.preview-body{grid-template-columns:1fr!important}
+.file-tabs{display:flex;align-items:center;gap:6px}
+.file-tab{height:30px;border:1px solid #d4e0ed;background:#f4f7fb;color:#476788;border-radius:8px;padding:0 10px;font-size:12px;font-weight:800;cursor:pointer}
+.file-tab.active{background:#0b3558;border-color:#0b3558;color:#fff}
+.file-tab.changed::after{content:' •';color:#006bff}.file-tab.locked::after{content:'  🔒';font-size:10px;opacity:.72}.editor-input.readonly{cursor:default;background:rgba(16,26,51,.035)}
+.editor-file-label{font-family:"SFMono-Regular",Consolas,monospace;font-size:11px;color:#60708f}
+.tok-selector{color:#ff79c6}.tok-prop{color:#8be9fd}.tok-value{color:#f1fa8c}.tok-brace{color:#bd93f9}.tok-comment{color:#6272a4;font-style:italic}
+.preview-note{padding:7px 10px;border-top:1px solid #dbe4f0;background:#f7f9fc;color:#60708f;font-size:11px;line-height:1.35}
+.cover-demo.image-demo{padding:0;display:grid;place-items:center;background:#eef4fb;overflow:hidden}
+.cover-demo.image-demo img{width:100%;height:100%;object-fit:contain;display:block}
+.overview-route{display:grid;gap:10px;margin-top:14px}.overview-route .route-row{display:grid;grid-template-columns:36px 1fr;gap:10px;align-items:start;padding:11px 12px;border:1px solid #dbe4f0;border-radius:13px;background:#f8fafc}.route-num{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:#eaf2ff;color:#006bff;font-weight:900}.route-row b{display:block;color:#0b3558;font-size:14px}.route-row span{display:block;color:#60708f;font-size:12px;margin-top:2px;line-height:1.35}
+.score-explainer{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}.score-box{padding:13px;border:1px solid #dbe4f0;border-radius:14px;background:#f8fafc}.score-box b{display:block;color:#0b3558;font-size:20px}.score-box span{display:block;color:#60708f;font-size:12px;line-height:1.35;margin-top:3px}
+.summary-screen{grid-column:1/-1;min-height:0;border:1px solid var(--line);border-radius:24px;background:#fff;box-shadow:var(--shadow);padding:20px;overflow:auto}.summary-screen img{display:block;width:min(1180px,100%);margin:0 auto;border-radius:18px;border:1px solid #dbe4f0}.summary-screen .summary-copy{max-width:900px;margin:15px auto 0;color:#476788;line-height:1.55;text-align:center}.summary-screen .summary-copy h2{color:#0b3558;margin:0 0 7px;font-size:28px}
+.mini-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;border:1px solid #b7d2ff;background:#eef5ff;color:#0056c7;font-size:12px;font-weight:900}
+.task-tag.mini{border-color:#b7d2ff;background:#eef5ff;color:#0056c7}.task-tag.extra{border-color:#dacbff;background:#f4f0ff;color:#6744cb}
+.report-stat b.small{font-size:18px}.report-note strong{color:#0b3558}
+@media(max-width:980px){.score-explainer{grid-template-columns:1fr}.cover-demo.image-demo{min-height:340px}.file-tabs{max-width:58vw;overflow:auto}}
+
+
+/* ===== Arctic Trips · проектная практика ===== */
+.project-workshop{grid-column:1/-1;min-height:0;display:grid;grid-template-columns:minmax(410px,46%) minmax(0,54%);gap:12px}
+.project-guide,.project-preview{min-height:0;border:1px solid #dbe4f0;border-radius:20px;background:#fff;box-shadow:0 16px 44px rgba(71,103,136,.10);overflow:hidden}
+.project-guide{display:grid;grid-template-rows:auto 1fr}.project-guide-head{padding:14px 16px 12px;border-bottom:1px solid #dbe4f0;background:#fbfcfe}.project-guide-head .project-kicker{display:flex;align-items:center;gap:8px;color:#006bff;font-size:12px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}.project-guide-head h2{margin:6px 0 0;color:#0b3558;font-size:23px;line-height:1.12}.project-file{display:inline-flex;margin-top:9px;padding:5px 8px;border-radius:8px;border:1px solid #c9d8ff;background:#eef3ff;color:#004eba;font-family:"SFMono-Regular",Consolas,monospace;font-size:12px}
+.project-guide-scroll{overflow:auto;padding:17px 18px;scrollbar-width:thin;scrollbar-color:#c1cfdf transparent}.project-guide-scroll p{margin:0 0 12px;color:#294b6b;font-size:15px;line-height:1.5}.project-guide-scroll strong{color:#0b3558}.project-guide-scroll code:not(.project-line-code){font-family:"SFMono-Regular",Consolas,monospace;background:#edf2f7;border:1px solid #dce5ef;border-radius:7px;padding:1px 5px;color:#184f89}
+.project-reason,.project-observe{padding:11px 12px;border-radius:12px;margin:12px 0}.project-reason{border-left:3px solid #006bff;background:#eef5ff}.project-observe{border-left:3px solid #25a36f;background:#edf8f2}.project-reason b,.project-observe b{display:block;margin-bottom:4px;color:#0b3558;font-size:13px}.project-reason span,.project-observe span{color:#35536e;font-size:14px;line-height:1.45}
+.project-task-title{display:flex;align-items:center;gap:8px;margin:14px 0 7px;color:#0b3558;font-size:13px;font-weight:900}.project-task-title::before{content:'1';width:23px;height:23px;border-radius:7px;display:grid;place-items:center;background:#eef3ff;color:#006bff;font-size:11px}.project-code-label{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:13px 0 7px}.project-code-label b{color:#0b3558;font-size:13px}.project-code-label span{color:#7a8da5;font-size:11px}
+.project-code-wrap{margin:0 0 12px;border:1px solid #263555;border-radius:14px;background:#0b1224;overflow:hidden;box-shadow:0 8px 22px rgba(22,42,82,.10)}.project-code-head{min-height:38px;display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid #263555;background:#111c35;color:#aebbd1;font-size:11px}.project-code-head b{color:#f4f7ff}.project-code-head .spacer{flex:1}.project-code-note{color:#8798b5}.project-code-lines{max-height:270px;overflow:auto;font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.62;background:#0b1224}.project-code-line{display:grid;grid-template-columns:52px minmax(0,1fr);min-height:23px}.project-code-line:hover{background:rgba(111,214,255,.055)}.project-line-no{padding:1px 11px 1px 5px;text-align:right;color:#71819f;background:#0d162c;border-right:1px solid rgba(255,255,255,.08);user-select:none}.project-guide-scroll .project-line-code{display:block!important;margin:0!important;padding:1px 14px!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;color:#e7edfb!important;white-space:pre!important;min-width:max-content!important;font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace!important;font-size:14px!important;line-height:1.62!important}.project-line-code .tok-tag{color:#ff79c6}.project-line-code .tok-name{color:#8be9fd}.project-line-code .tok-attr{color:#50fa7b}.project-line-code .tok-str{color:#f1fa8c}.project-line-code .tok-comment{color:#8290ad;font-style:italic}.project-line-code .tok-selector{color:#ff79c6}.project-line-code .tok-prop{color:#8be9fd}.project-line-code .tok-value{color:#f1fa8c}.project-line-code .tok-brace{color:#bd93f9}
+.project-context{margin:14px 0 16px;padding:13px;border:1px solid #dbe4f0;border-radius:14px;background:#f8fafc}.project-context-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}.project-context-head b{color:#0b3558;font-size:13px}.project-context-badge{margin-left:auto;padding:4px 7px;border-radius:999px;background:#e9f2ff;color:#005ac7;font-size:10px;font-weight:900}.project-context-note{margin:8px 0 0!important;padding:9px 10px;border-left:3px solid #006bff;border-radius:0 9px 9px 0;background:#eef5ff;color:#35536e!important;font-size:13px!important;line-height:1.42!important}.project-context-note strong{color:#0b3558!important}.project-context .project-code-wrap{margin-bottom:0}.project-task-plain{margin:12px 0 8px;padding-top:2px}.project-task-plain h3{margin:0 0 7px;color:#0b3558;font-size:14px}.project-task-plain p{margin:0 0 8px!important}.project-selector-link{display:flex;align-items:flex-start;gap:9px;margin-top:8px;padding:9px 10px;border:1px solid #d4e0ed;border-radius:10px;background:#fff;color:#35536e;font-size:13px;line-height:1.4}.project-selector-link .arrow{color:#006bff;font-weight:900}.project-selector-link code{white-space:nowrap}
+.project-hints{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0 2px}.project-hint-btn{min-height:36px;border:1px solid #d4e0ed;border-radius:10px;background:#fff;color:#0b3558;padding:7px 11px;font-size:12px;font-weight:800}.project-hint-btn:hover{background:#f4f7fb;border-color:#afc3dd}.project-solution-btn{border-color:#efd9a4;background:#fff7e4;color:#8a5a00}.project-hint-content{margin-top:9px;padding:10px 11px;border:1px solid #dbe4f0;border-radius:11px;background:#f8fafc;color:#35536e;font-size:13px;line-height:1.45}.project-hint-content code{font-family:"SFMono-Regular",Consolas,monospace;background:#edf2f7;border:1px solid #dce5ef;border-radius:6px;padding:1px 4px;color:#184f89}.project-hint-label{display:block;margin-bottom:3px;color:#0b3558;font-weight:900}
+.project-preview{display:grid;grid-template-rows:auto 1fr;position:relative}.project-preview-head{min-height:52px;display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid #dbe4f0;background:#f4f7fb}.project-preview-head b{color:#0b3558;font-size:13px}.project-preview-head .spacer{flex:1}.preview-toggle{display:flex;gap:4px;padding:3px;border-radius:10px;background:#eaf0f7;border:1px solid #d4e0ed}.preview-toggle button{border:0;background:transparent;color:#60708f;border-radius:7px;padding:6px 9px;font-size:11px;font-weight:800}.preview-toggle button.active{background:#0b3558;color:#fff;box-shadow:0 3px 10px rgba(11,53,88,.13)}.project-browser{min-height:0;padding:9px;background:#eef2f7;display:grid;grid-template-rows:auto 1fr}.project-browser-bar{height:34px;border:1px solid #bcc6d9;border-bottom:0;border-radius:12px 12px 0 0;background:#dfe5ed;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:10px;padding:0 10px}.project-browser-dots{font-size:11px;letter-spacing:2px;color:#65718a}.project-address{height:20px;border-radius:999px;background:#f5f7fb;color:#6f7b91;font-size:11px;padding:3px 9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.project-frame{width:100%;height:100%;min-height:0;border:1px solid #bcc6d9;background:#fff;border-radius:0 0 12px 12px}
+.project-intro,.project-finish{grid-column:1/-1;min-height:0;border:1px solid #dbe4f0;border-radius:24px;background:#fff;box-shadow:0 16px 44px rgba(71,103,136,.10);overflow:auto;padding:22px}.project-intro-inner{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.project-intro h1,.project-finish h1{margin:0 0 8px;color:#0b3558;font-size:32px}.project-intro p,.project-finish p{color:#476788;line-height:1.55}.project-intro-card{padding:16px;border:1px solid #dbe4f0;border-radius:16px;background:#f8fafc}.project-intro-card h3{margin:0 0 8px;color:#0b3558;font-size:17px}.project-checklist{display:grid;gap:8px;margin:13px 0}.project-check{display:flex;gap:9px;align-items:flex-start;padding:9px 10px;border:1px solid #e2e9f1;border-radius:10px;background:#f8fafc;color:#35536e;font-size:14px;line-height:1.4}.project-check i{font-style:normal;color:#198754;font-weight:900}.project-downloads{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.project-download{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 12px;border-radius:10px;border:1px solid #d4e0ed;background:#fff;color:#0b3558;text-decoration:none;font-size:13px;font-weight:800}.project-download.primary{background:#006bff;border-color:#006bff;color:#fff;box-shadow:0 8px 20px rgba(0,107,255,.22)}.project-download:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(71,103,136,.10)}.project-muted{font-size:12px;color:#6f8199!important}.project-final-preview{margin-top:16px;height:min(420px,48vh);border:1px solid #dbe4f0;border-radius:16px;overflow:hidden;background:#fff}.project-final-preview iframe{width:100%;height:100%;border:0;background:#fff}.project-skip{margin-top:4px;border:0;background:transparent;color:#60708f;text-decoration:underline;padding:6px 0;font-size:13px}
+@media(max-width:980px){.project-workshop{grid-template-columns:1fr}.project-guide{min-height:520px}.project-preview{min-height:480px}.project-intro-inner{grid-template-columns:1fr}.project-code-lines{max-height:230px}}
+
+
+/* ===== v21: clearer final assignment brief ===== */
+.app.mini-focus .task-copy{max-height:224px}
+.mini-assignment{display:grid;gap:9px}
+.mini-assignment-kicker{font-size:10.5px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#006bff}
+.mini-assignment h2{margin:0;color:#0b3558;font-size:24px;line-height:1.05;letter-spacing:-.02em}
+.mini-assignment-intro{margin:0!important;color:#476788;font-size:13.2px;line-height:1.42}
+.mini-requirements{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.mini-requirement{border:1px solid #d9e3ef;border-radius:11px;background:#f8fafc;padding:8px 10px;min-width:0}
+.mini-requirement:last-child:nth-child(odd){grid-column:1/-1}
+.mini-requirement h3{margin:0 0 4px;color:#0b3558;font-size:13.2px;line-height:1.2}
+.mini-requirement p{margin:0!important;color:#476788;font-size:12.15px!important;line-height:1.35!important}
+.mini-requirement code{font-size:11.4px}
+.mini-score-note{border-left:3px solid #006bff;background:#eef5ff;border-radius:0 9px 9px 0;padding:6px 9px;color:#35536e;font-size:11.6px;line-height:1.35}
+.mini-guide{grid-area:diagnostic;align-self:start;border:1px solid #d9e3ef;border-radius:12px;background:#f8fafc;padding:11px 12px;color:#476788}
+.mini-guide h3{margin:0 0 7px;color:#0b3558;font-size:14px}
+.mini-guide p{margin:0 0 7px;font-size:12.2px;line-height:1.38}
+.mini-guide p:last-child{margin-bottom:0}
+.mini-guide strong{color:#0b3558}
+.sample-body.sample-result-only{grid-template-columns:1fr}
+.sample-result-note{margin:0 0 10px;color:#476788;font-size:13px;line-height:1.4}
+.sample-body.sample-result-only .sample-image-wrap{min-height:420px}
+.sample-body.sample-result-only .sample-image-wrap img{max-height:calc(92vh - 150px)}
+@media(max-width:860px){
+  .mini-requirements{grid-template-columns:1fr}
+  .mini-requirement:last-child:nth-child(odd){grid-column:auto}
+  .app.mini-focus .task-copy{max-height:260px}
+  .mini-guide{grid-area:diagnostic}
+}
+
+/* ===== итоговое задание в IDE ===== */
+.mini-ide-screen{grid-column:1/-1;min-height:0;overflow:auto;padding:18px;border:1px solid var(--line);border-radius:22px;background:#fff;box-shadow:var(--shadow)}
+.mini-ide-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:8px}
+.mini-ide-kicker{font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#006bff;margin-bottom:4px}
+.mini-ide-head h1{margin:0;color:#0b3558;font-size:34px;line-height:1.05}
+.mini-ide-intro{margin:0;color:#476788;font-size:15px;line-height:1.5;max-width:1180px}
+.mini-ide-score{flex:0 0 auto;padding:7px 11px;border-radius:999px;background:#eef2f7;color:#476788;font-size:12px;font-weight:900;border:1px solid #dbe4f0}
+.mini-ide-score.done{background:#edf8f2;border-color:#b9dfca;color:#176f48}
+.mini-ide-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:14px 0 10px}
+.mini-ide-brief{border:1px solid #dbe4f0;border-radius:14px;background:#f8fafc;padding:11px 13px;min-width:0}
+.mini-ide-brief:last-child:nth-child(odd){grid-column:1/-1}
+.mini-ide-brief h3{margin:0 0 5px;color:#0b3558;font-size:14px}
+.mini-ide-brief p{margin:0;color:#476788;font-size:12.8px;line-height:1.42}
+.mini-ide-brief code,.mini-ide-intro code,.mini-ide-note code{font-family:"SFMono-Regular",Consolas,monospace;background:#edf2f7;border:1px solid #dce5ef;border-radius:6px;padding:1px 5px;color:#184f89}
+.mini-ide-note{border-left:4px solid #006bff;border-radius:0 10px 10px 0;background:#eef5ff;padding:8px 11px;color:#35536e;font-size:12.4px;line-height:1.42}
+.mini-ide-download{display:flex;align-items:center;gap:12px;border:1px solid #b9dfca;background:#edf8f2;border-radius:14px;padding:11px 12px;margin-top:10px}
+.mini-ide-download-copy{min-width:0}.mini-ide-download-copy b{display:block;color:#0b3558;font-size:14px}.mini-ide-download-copy span{display:block;margin-top:2px;color:#58756a;font-size:12px;line-height:1.35}
+.mini-ide-download-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.mini-ide-download-actions .btn{text-decoration:none;display:inline-flex;align-items:center}
+.mini-ide-checker{margin-top:14px;padding:14px;border:1px solid #dbe4f0;border-radius:16px;background:#f8fafc}
+.mini-ide-checker h2{margin:0 0 4px;color:#0b3558;font-size:21px}.mini-ide-checker>p{margin:0 0 9px;color:#476788;font-size:13px;line-height:1.42}
+.mini-ide-code{width:100%;box-sizing:border-box;min-height:180px;max-height:280px;resize:vertical;padding:12px 13px;border:1px solid #c8d3e5;border-radius:11px;background:#101a33;color:#e9efff;font:13px/1.5 "SFMono-Regular",Consolas,monospace;outline:none}
+.mini-ide-code:focus{box-shadow:0 0 0 3px rgba(0,107,255,.12);border-color:#7caeff}
+.mini-ide-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:9px}.mini-ide-actions .mini-ide-score{margin-left:auto}
+.mini-ide-feedback{display:none;margin-top:9px;padding:8px 10px;border-radius:10px;font-size:12.5px;font-weight:700}.mini-ide-feedback.show{display:block}.mini-ide-feedback.good{background:#edf8f2;border:1px solid #b9dfca;color:#176f48}.mini-ide-feedback.bad{background:#fff2f3;border:1px solid #efc3c8;color:#9b2f3b}
+.mini-ide-diagnostic{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
+@media(max-width:900px){.mini-ide-grid,.mini-ide-diagnostic{grid-template-columns:1fr}.mini-ide-brief:last-child:nth-child(odd){grid-column:auto}.mini-ide-download{align-items:flex-start;flex-direction:column}.mini-ide-download-actions{margin-left:0;justify-content:flex-start}.mini-ide-head{flex-direction:column}.mini-ide-score{align-self:flex-start}}
+</style>
+</head>
+<body>
+
+<section class="start-screen" id="startScreen" aria-labelledby="startTitle">
+  <div class="start-card">
+    <div class="start-brand" aria-hidden="true">CSS</div>
+    <div class="start-copy">
+      <h1 id="startTitle">Основы CSS: каскад, наследование и специфичность</h1>
+    </div>
+    <form class="student-form" id="studentForm" novalidate>
+      <label><span>Личный код</span><input id="studentCode" type="text" maxlength="80" autocomplete="off" required></label>
+      <button class="start-button" type="submit">Начать</button>
+      <p class="start-error" id="startError" aria-live="polite"></p>
+      <p class="start-note">Основная часть — 80 баллов: 16 оцениваемых шагов. Самостоятельный шаг стоит 80 / 16 = 5 баллов, после «Показать решение» — половину, 2,5 балла. Ошибочные попытки и подсказки баллы не снижают. Итоговое мини-задание — ещё 20 баллов; без него итоговая оценка не может быть выше 4.</p>
+    </form>
+  </div>
+</section>
+<div class="app app-hidden" id="app">
+  <header class="topbar">
+    <div class="brand"><div class="brand-mark">CSS</div><div class="brand-copy"><b>CSS с нуля</b></div></div>
+    <div class="top-spacer"></div>
+    <span class="student-chip" id="studentChip"></span>
+    <span class="chip core" id="modeChip">CORE</span>
+    <button class="icon-btn" id="allStepsBtn">Все шаги</button>
+    <button class="icon-btn" id="reportBtn">Отчёт</button>
+    <button class="icon-btn" id="toggleTheoryBtn">Скрыть теорию</button>
+  </header>
+  <div class="progress-row"><div class="progress-label" id="progressLabel">Основная часть</div><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div><div class="progress-count" id="progressCount"></div></div>
+  <main class="main" id="main"></main>
+  <footer class="footer"><div class="footer-center nav-group"><button class="nav-button secondary" id="prevBtn">← Назад</button><button class="nav-button primary" id="nextBtn">Далее →</button></div></footer>
+</div>
+<div class="hint-box" id="hintBox"><button class="hint-close" id="hintClose">×</button><b id="hintTitle"></b><p id="hintText"></p></div>
+<div class="drawer" id="drawer"><div class="drawer-backdrop" id="drawerBackdrop"></div><div class="drawer-panel"><div class="drawer-head"><div><h2>Маршрут пары</h2><span class="drawer-sub">16 оцениваемых шагов · итоговое мини-задание</span></div><div class="top-spacer"></div><button class="icon-btn" id="drawerClose" aria-label="Закрыть">×</button></div><div class="drawer-list" id="drawerList"></div><div class="drawer-reset"><button class="btn danger-outline" id="fullResetBtn" type="button">Сбросить весь прогресс</button><span>Начать интерактив заново с чистого состояния</span></div></div></div>
+<div class="modal" id="imageModal"><button id="imageClose">Закрыть</button><img id="imageModalImg" alt="Увеличенная визуализация"></div>
+<div class="sample-modal" id="sampleModal" role="dialog" aria-modal="true" aria-label="Эталон результата итогового мини-задания"><div class="sample-card"><div class="sample-head"><h2>Эталон результата</h2><button class="sample-close" id="sampleClose" type="button">Закрыть</button></div><div class="sample-body sample-result-only"><div><p class="sample-result-note">Так должен выглядеть блок тарифов после выполнения задания. <strong>index.html уже подготовлен и заблокирован</strong> — добейтесь этого результата, редактируя только <strong>styles.css</strong>.</p><div class="sample-image-wrap"><img id="sampleModalImg" alt="Эталон результата итогового мини-задания"></div></div></div></div></div>
+<div class="report-modal" id="reportModal" role="dialog" aria-modal="true" aria-label="Отчёт по интерактиву CSS">
+  <div class="report-card"><div class="report-head"><div><h2>Отчёт: Основы CSS</h2><p id="reportSubtitle">Каскад, наследование и специфичность</p></div><div class="right"><button class="icon-btn" id="printReportBtn">Печать / PDF</button><button class="icon-btn" id="reportClose">×</button></div></div><div id="reportBody"></div></div>
+</div>
+<section class="print-report" id="printReport" aria-hidden="true"></section>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const STORAGE='dup04_css_cascade_v7';
+const CORE_COUNT=16;
+const visual=n=>`assets/visuals/v${String(n).padStart(2,'0')}.webp`;
+const esc=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const P=(...ps)=>ps.map(x=>`<p>${x}</p>`).join('');
+function htmlDoc(body,linked=true){return `<!DOCTYPE html>\n<html lang="ru">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>CSS-практика</title>${linked?'\n  <link rel="stylesheet" href="styles.css">':''}\n</head>\n<body>\n${body}\n</body>\n</html>`}
+const H={
+  one:htmlDoc(`  <p class="lead">Важный абзац</p>`),
+  note:htmlDoc(`  <p class="note">Важная заметка</p>`),
+  lead:htmlDoc(`  <p>Главный абзац</p>`),
+  leadsol:htmlDoc(`  <p class="lead">Главный абзац</p>`),
+  message:htmlDoc(`  <p class="message">Сообщение отправлено</p>`),
+  inherit:htmlDoc(`  <div class="card">
+    <h2>Маршрут</h2>
+    <p>Описание поездки</p>
+  </div>`),
+  own:htmlDoc(`  <div class="card">
+    <p>Текст в карточке</p>
+  </div>`),
+  explicit:htmlDoc(`  <div class="card">
+    <h2>Привет!</h2>
+    <p class="text">Это абзац внутри карточки.</p>
+  </div>`),
+  align:htmlDoc(`  <section class="hero">
+    <h1>Северный маршрут</h1>
+    <p>Небольшое путешествие на выходные.</p>
+    <a href="#">Подробнее</a>
+  </section>`),
+  spacing:htmlDoc(`  <article class="card">
+    <p>Новая подборка маршрутов уже доступна.</p>
+    <p class="label">НОВАЯ ПОДБОРКА</p>
+  </article>`),
+  group:htmlDoc(`  <h2>Заголовок раздела</h2>
+  <h3>Подзаголовок</h3>
+  <p>Оба заголовка должны выглядеть одинаково.</p>`),
+  descendant:htmlDoc(`  <div class="card">
+    <h2>Карточка</h2>
+    <p>Абзац внутри карточки</p>
+  </div>
+  <p>Абзац вне карточки</p>`),
+  classes:htmlDoc(`  <a class="button" href="#">Подробнее</a>
+  <a class="button" href="#">Забронировать</a>`),
+  specificity:htmlDoc(`  <div class="card">
+    <p class="text">Важный текст</p>
+  </div>`),
+  vars:htmlDoc(`  <header>
+    <strong class="logo">Мой сайт</strong>
+    <a class="link" href="#">Подробнее</a>
+  </header>
+  <button class="button">Начать</button>
+  <span class="badge">Новинка</span>`),
+  varuse:htmlDoc(`  <strong class="logo">Мой сайт</strong>
+  <button class="button">Начать</button>
+  <h2 class="card-title">Добро пожаловать!</h2>`),
+  theme:htmlDoc(`  <header>
+    <strong class="logo">Мой сайт</strong>
+    <nav><a class="link" href="#">Контакты</a></nav>
+  </header>
+  <h1>Создаём лучшее вместе!</h1>
+  <button class="button">Начать</button>
+  <span class="badge">★ Новинка</span>`),
+  mini:htmlDoc(`  <main class="pricing">
+    <header class="pricing-head">
+      <p class="eyebrow">ТАРИФЫ</p>
+      <h1 class="section-title">Выберите тариф</h1>
+      <p class="section-lead">Простой вариант для учёбы, команды и проекта.</p>
+    </header>
+
+    <section class="plans">
+      <article class="plan">
+        <p class="plan-label">базовый</p>
+        <h2 class="plan-title">Старт</h2>
+        <p class="plan-text">Для личных учебных проектов.</p>
+        <a class="plan-button" href="#">Выбрать</a>
+      </article>
+
+      <article class="plan plan-featured">
+        <p class="plan-label plan-label-accent">популярный</p>
+        <h2 class="plan-title">Команда</h2>
+        <p class="plan-text">Для совместной работы над проектом.</p>
+        <a class="plan-button plan-button-accent" href="#">Выбрать</a>
+      </article>
+
+      <article class="plan">
+        <p class="plan-label">расширенный</p>
+        <h2 class="plan-title">Максимум</h2>
+        <p class="plan-text">Для большого учебного проекта.</p>
+        <a class="plan-button" href="#">Выбрать</a>
+      </article>
+    </section>
+
+    <p class="plans-note">Условия тарифов уточняйте перед подключением.</p>
+  </main>`)
+};
+const S={
+  one:`p {
+  font-size: 18px; /* увеличьте размер */
+}
+
+.lead {
+  color: #7c3aed;
+}`,
+  onesol:`p {
+  font-size: 24px;
+}
+
+.lead {
+  color: #7c3aed;
+}`,
+  order:`.note {
+  color: #2563eb;
+}
+
+.note {
+  color: #dc2626;
+}`,
+  ordersol:`.note {
+  color: #dc2626;
+}
+
+.note {
+  color: #2563eb;
+}`,
+  tagclass:`.lead {
+  font-size: 24px;
+}
+
+p {
+  font-size: 18px;
+}`,
+  tagclasssol:`.lead {
+  font-size: 24px;
+}
+
+p {
+  font-size: 18px;
+}`,
+  conflict:`p {
+  color: #64748b;
+  font-size: 18px;
+}
+
+.message {
+  color: #2563eb;
+}
+
+.message {
+  color: #059669;
+  font-size: 20px;
+}`,
+  conflictsol:`p {
+  color: #64748b;
+  font-size: 18px;
+}
+
+.message {
+  color: #2563eb;
+}
+
+.message {
+  color: #059669;
+}`,
+  inherit:`.card {
+  /* Задайте общий цвет и шрифт */
+}`,
+  inheritsol:`.card {
+  color: #334155;
+  font-family: Arial, sans-serif;
+}`,
+  own:`.card {
+  color: #ffffff;
+  background-color: #0b1220;
+  border: 2px solid #94a3b8;
+  padding: 16px;
+}
+
+p {
+  /* Задайте абзацу собственный цвет */
+}`,
+  ownsol:`.card {
+  color: #ffffff;
+  background-color: #0b1220;
+  border: 2px solid #94a3b8;
+  padding: 16px;
+}
+
+p {
+  color: #64748b;
+}`,
+  explicit:`.card {
+  color: #ffffff;
+  background-color: #0b1220;
+  padding: 16px;
+}
+
+.text {
+  color: #64748b;
+}`,
+  explicitsol:`.card {
+  color: #ffffff;
+  background-color: #0b1220;
+  padding: 16px;
+}
+
+.text {
+  color: inherit;
+}`,
+  align:`.hero {
+  padding: 24px;
+  background-color: #e0f2fe;
+  /* Выровняйте содержимое по центру */
+}`,
+  alignsol:`.hero {
+  padding: 24px;
+  background-color: #e0f2fe;
+  text-align: center;
+}`,
+  spacing:`.card {
+  letter-spacing: 1px;
+}
+
+.label {
+  /* Для этой подписи нужен больший интервал */
+}`,
+  spacingsol:`.card {
+  letter-spacing: 1px;
+}
+
+.label {
+  letter-spacing: 2px;
+}`,
+  group:`h2 {
+  color: #172033;
+  font-family: Arial, sans-serif;
+}
+
+h3 {
+  color: #172033;
+  font-family: Arial, sans-serif;
+}`,
+  groupsol:`h2,
+h3 {
+  color: #172033;
+  font-family: Arial, sans-serif;
+}`,
+  descendant:`.card {
+  padding: 16px;
+  background-color: #f1f5f9;
+}
+
+/* Измените только абзац внутри .card */`,
+  descendantsol:`.card {
+  padding: 16px;
+  background-color: #f1f5f9;
+}
+
+.card p {
+  color: #2563eb;
+}`,
+  classes:`.button {
+  display: inline-block;
+  padding: 12px 20px;
+  border-radius: 8px;
+  background-color: #e2e8f0;
+  color: #172033;
+  text-decoration: none;
+}
+
+.button-accent {
+  background-color: #635bff;
+  color: #ffffff;
+}`,
+  classessol:`.button {
+  display: inline-block;
+  padding: 12px 20px;
+  border-radius: 8px;
+  background-color: #e2e8f0;
+  color: #172033;
+  text-decoration: none;
+}
+
+.button-accent {
+  background-color: #635bff;
+  color: #ffffff;
+}`,
+  specificity:`.text {
+  color: #2563eb;
+}
+
+.card .text {
+  color: #dc2626; /* это правило выигрывает */
+}`,
+  specificitysol:`.text {
+  color: #2563eb;
+}
+
+.card .text {
+  color: #059669;
+}`,
+  vars:`.logo {
+  color: #635bff;
+}
+
+.button {
+  background-color: #635bff;
+  color: #ffffff;
+}
+
+.link {
+  color: #635bff;
+}
+
+.badge {
+  border: 2px solid #635bff;
+}`,
+  varssol:`:root {
+  --accent: #635bff;
+}
+
+.logo {
+  color: #635bff;
+}
+
+.button {
+  background-color: #635bff;
+  color: #ffffff;
+}
+
+.link {
+  color: #635bff;
+}
+
+.badge {
+  border: 2px solid #635bff;
+}`,
+  varuse:`:root {
+  --accent: #635bff;
+  --text: #273047;
+}
+
+.logo {
+  color: #635bff;
+}
+
+.button {
+  background-color: #635bff;
+  color: #ffffff;
+}
+
+.card-title {
+  color: #273047;
+}`,
+  varusesol:`:root {
+  --accent: #635bff;
+  --text: #273047;
+}
+
+.logo {
+  color: var(--accent);
+}
+
+.button {
+  background-color: var(--accent);
+  color: #ffffff;
+}
+
+.card-title {
+  color: var(--text);
+}`,
+  theme:`:root {
+  --accent: #635bff;
+}
+
+.logo {
+  color: var(--accent);
+}
+
+.link {
+  color: var(--accent);
+}
+
+.button {
+  background-color: var(--accent);
+  color: #ffffff;
+}
+
+.badge {
+  color: var(--accent);
+  border: 2px solid var(--accent);
+}`,
+  themesol:`:root {
+  --accent: #0f9f8f;
+}
+
+.logo {
+  color: var(--accent);
+}
+
+.link {
+  color: var(--accent);
+}
+
+.button {
+  background-color: var(--accent);
+  color: #ffffff;
+}
+
+.badge {
+  color: var(--accent);
+  border: 2px solid var(--accent);
+}`,
+  mini:`:root {
+  --text: #172033;
+  --muted: #64748b;
+}
+
+.pricing {
+  color: var(--text);
+  font-family: Georgia, serif;
+}
+
+.section-title {
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.plan-title {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.section-lead {
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.plan {
+  color: var(--text);
+  background-color: #ffffff;
+}
+
+.plan-featured {
+  color: #ffffff;
+  background-color: #172033;
+}
+
+.plan-text {
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.plan-button {
+  color: #172033;
+  background-color: #e2e8f0;
+  font-family: Verdana, sans-serif;
+  font-size: 14px;
+  text-decoration: underline;
+}
+
+.plan-button-accent {
+  color: #ffffff;
+  background-color: #635bff;
+  font-family: Verdana, sans-serif;
+  font-size: 14px;
+  text-decoration: underline;
+}
+
+.plan-label-accent {
+  color: #635bff;
+}
+
+p {
+  text-align: center;
+}
+
+.plan-label {
+  color: #64748b;
+  font-size: 14px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.plans-note {
+  color: #64748b;
+  font-size: 14px;
+}
+`
+};
+const MINI_LAYOUT_CSS=`
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 32px;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  background-color: #f4f7fb;
+  font-family: Arial, sans-serif;
+}
+.pricing {
+  width: min(980px, 100%);
+}
+.pricing-head {
+  margin-bottom: 22px;
+  text-align: center;
+}
+.pricing-head p,
+.pricing-head h1 {
+  margin-top: 0;
+}
+.eyebrow {
+  margin-bottom: 6px;
+  color: #7b8aa1;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+.section-title {
+  margin-bottom: 8px;
+}
+.section-lead {
+  margin-bottom: 0;
+}
+.plans {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.plan {
+  min-height: 286px;
+  padding: 26px 24px;
+  border: 1px solid #cbd5e1;
+  border-radius: 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+.plan-featured {
+  border-color: #172033;
+  box-shadow: 0 14px 32px rgba(23,32,51,.16);
+}
+.plan-label {
+  margin: 0 0 10px;
+}
+.plan-title {
+  margin: 0 0 12px;
+}
+.plan-text {
+  margin: 0 0 22px;
+  flex: 1;
+}
+.plan-button {
+  display: inline-block;
+  align-self: center;
+  padding: 11px 18px;
+  border-radius: 10px;
+}
+.plans-note {
+  margin: 18px 0 0;
+}
+`;
+function filePair(html,css){return {html,css}}
+const projectSteps=[];
+const steps=[
+ {kind:'cover',section:'intro',title:'Основы CSS: каскад, наследование и специфичность'},
+ {kind:'overview',section:'intro',title:'Как пройдёт эта пара'},
+ {kind:'editor',section:'core',n:1,title:'Один элемент — несколько правил',visual:visual(1),starter:filePair(H.one,S.one),solution:filePair(H.one,S.onesol),defaultFile:'css',
+  theory:P('К одному HTML-элементу могут одновременно подходить несколько CSS-правил. Если эти правила задают разные свойства, они не спорят: каждое добавляет свою часть итогового оформления.','В этом примере селектор <code>p</code> задаёт размер текста, а класс <code>.lead</code> — цвет. Абзац одновременно подходит под оба правила, поэтому получает и <code>font-size</code>, и <code>color</code>.'),
+  task:P('Увеличьте размер текста с <code>18px</code> до <code>24px</code>. Меняйте только <code>font-size</code> в правиле <code>p</code>. Правило <code>.lead</code> не трогайте: абзац должен остаться фиолетовым.'),hints:['Размер задаёт правило <code>p</code>. Цвет уже приходит из <code>.lead</code>.','В правиле <code>p</code> замените <code>font-size: 18px;</code> на <code>font-size: 24px;</code>.'],validate:()=>[res(norm(rule('p')['font-size'])==='24px'&&norm(rule('.lead').color)==='#7c3aed','Размер изменён через p, а цвет по-прежнему приходит из .lead.','У p нужен font-size: 24px. Правило .lead с color: #7c3aed менять не нужно.')]},
+ {kind:'editor',section:'core',n:2,title:'Равный приоритет — решает порядок',visual:visual(2),starter:filePair(H.note,S.order),solution:filePair(H.note,S.ordersol),defaultFile:'css',
+  theory:P('Теперь два правила задают одному элементу одно и то же свойство <code>color</code>. Селекторы у них одинаковые — <code>.note</code>, поэтому и приоритет у правил одинаковый.','Когда приоритет одинаковый, решает порядок в CSS: для одного и того же свойства используется значение из правила, которое записано ниже. Это один из базовых случаев работы <strong>каскада</strong>.'),
+  task:P('Сделайте заметку синей, не меняя селекторы и значения цветов. Разрешено только поменять два правила <code>.note</code> местами.'),hints:['Сейчас нижнее правило задаёт красный цвет, поэтому оно и побеждает.','Чтобы итоговый цвет стал <code>#2563eb</code>, правило с этим значением должно оказаться ниже правила с <code>#dc2626</code>.'],validate:()=>[duplicateOrderCheck('.note','color','#dc2626','#2563eb','Правила переставлены: при равном приоритете теперь побеждает нижнее синее значение.','Не меняйте значения и селекторы: сверху должно быть #dc2626, снизу — #2563eb.')]},
+ {kind:'editor',section:'core',n:3,title:'Класс сильнее тега',visual:visual(3),starter:filePair(H.lead,S.tagclass),solution:filePair(H.leadsol,S.tagclasssol),defaultFile:'html',
+  theory:P('Если несколько правил задают одному элементу одно и то же свойство, важен не только порядок. Селектор класса имеет более высокий приоритет, чем селектор одного тега.','В CSS правило <code>.lead</code> задаёт <code>24px</code>, а расположенное ниже правило <code>p</code> — <code>18px</code>. Но <code>.lead</code> сработает только у элемента, которому действительно назначен класс <code>lead</code>.'),
+  task:P('CSS не меняйте. Добавьте абзацу класс <code>lead</code>, чтобы его размер стал <code>24px</code>, хотя правило <code>p</code> записано ниже.'),hints:['Менять нужно только <code>index.html</code>. В CSS уже есть готовый класс <code>.lead</code>.','У абзаца должно получиться <code>&lt;p class="lead"&gt;Главный абзац&lt;/p&gt;</code>.'],validate:()=>[htmlTextClasses('p','Главный абзац',['lead'],'Класс lead добавлен абзацу.','Добавьте абзацу class="lead".'),res(norm(rule('.lead')['font-size'])==='24px'&&norm(rule('p')['font-size'])==='18px','CSS сохранён: класс задаёт 24px, тег — 18px.','CSS менять не нужно: у .lead должно остаться 24px, у p — 18px.')]},
+ {kind:'editor',section:'core',n:4,title:'Собираем всё вместе',visual:visual(4),starter:filePair(H.message,S.conflict),solution:filePair(H.message,S.conflictsol),defaultFile:'css',
+  theory:P('Теперь к одному элементу подходят сразу три правила. Итог рассчитывается отдельно для каждого свойства: браузер не выбирает один CSS-блок целиком.','Для <code>color</code> правила класса <code>.message</code> сильнее правила <code>p</code>, а между двумя одинаковыми <code>.message</code> побеждает нижнее — поэтому цвет зелёный. Для <code>font-size</code> нижний <code>.message</code> сейчас задаёт <code>20px</code>; если убрать эту декларацию, размер снова возьмётся из <code>p</code> — <code>18px</code>.'),
+  task:P('Получите зелёный текст размером <code>18px</code>. HTML, порядок правил, селекторы и значения цветов не меняйте. Удалите только ту декларацию, из-за которой размер сейчас равен <code>20px</code>.'),hints:['Цвет уже правильный: его задаёт нижнее правило <code>.message</code>. Нужно изменить только источник размера.','Удалите строку <code>font-size: 20px;</code> из нижнего <code>.message</code>. Тогда размер <code>18px</code> останется из правила <code>p</code>.'],validate:()=>[res((()=>{const rows=parseCSSRules(getFiles(currentStep()).css),pRow=rows.find(r=>r.selector==='p'),msgs=rows.filter(r=>r.selector==='.message');return !!pRow&&norm(pRow.props.color)==='#64748b'&&norm(pRow.props['font-size'])==='18px'&&msgs.length>=2&&norm(msgs[0].props.color)==='#2563eb'&&norm(msgs.at(-1).props.color)==='#059669'&&!msgs.at(-1).props['font-size']})(),'Готово: цвет остаётся зелёным из нижнего .message, а размер 18px берётся из p.','Оставьте цвета и порядок как есть. Удалите только font-size: 20px из нижнего .message.')]},
+ {kind:'editor',section:'core',n:5,title:'Стиль от родителя',visual:visual(5),starter:filePair(H.inherit,S.inherit),solution:filePair(H.inherit,S.inheritsol),defaultFile:'css',
+  theory:P('Некоторые свойства текста могут передаваться вложенным элементам от родителя. Это называется <strong>наследованием</strong>. Например, если контейнеру задать <code>color</code> и <code>font-family</code>, вложенные заголовки и абзацы обычно используют эти значения автоматически.','Благодаря наследованию не приходится повторять одинаковые текстовые настройки у каждого дочернего элемента.'),
+  task:P('Для <code>.card</code> задайте цвет текста <code>#334155</code> и семейство шрифта <code>Arial, sans-serif</code>. Отдельные правила для <code>h2</code> и <code>p</code> не создавайте.'),hints:['Оба свойства нужно задать родительскому элементу .card.','Добавьте <code>color: #334155;</code> и <code>font-family: Arial, sans-serif;</code>.'],validate:()=>[declCheck('.card','color','#334155','Цвет задан родителю.','У .card нужен color: #334155;'),familyCheck('.card')]},
+ {kind:'editor',section:'core',n:6,title:'Своё значение важнее наследованного',visual:visual(6),starter:filePair(H.own,S.own),solution:filePair(H.own,S.ownsol),defaultFile:'css',
+  theory:P('Наследованное значение используется, если у самого элемента нет собственного значения этого свойства. Если абзацу напрямую задать <code>color</code>, цвет родителя ему уже не нужен.','Это не спор специфичности между родителем и ребёнком. У абзаца просто появляется собственное значение. При этом такие свойства, как <code>border</code> и <code>padding</code>, каждому вложенному элементу автоматически не передаются.'),
+  task:P('У карточки уже задан белый цвет текста. Задайте самому абзацу собственный цвет <code>#64748b</code>, чтобы он больше не использовал унаследованный белый.'),hints:['Нужно дописать свойство в уже готовое правило p.','Добавьте <code>color: #64748b;</code>.'],validate:()=>[declCheck('p','color','#64748b','У абзаца появилось собственное значение color.','У p нужен color: #64748b;')]},
+ {kind:'editor',section:'core',n:7,title:'inherit',visual:visual(7),starter:filePair(H.explicit,S.explicit),solution:filePair(H.explicit,S.explicitsol),defaultFile:'css',
+  theory:P('<code>inherit</code> явно говорит свойству взять значение у родительского элемента. Это работает и для свойств, которые обычно наследуются автоматически, и для тех, которые обычно не наследуются.','В нашем примере у <code>.text</code> уже есть собственный серый <code>color</code>. Значение <code>inherit</code> убирает необходимость вручную копировать белый цвет: <code>.text</code> берёт <code>color</code> у родительской <code>.card</code>.'),
+  task:P('Текст внутри карточки сейчас серый. Сделайте его таким же по цвету, как задаёт родительская <code>.card</code>, но не копируйте значение <code>#ffffff</code>. В правиле <code>.text</code> используйте <code>inherit</code>.'),hints:['Менять нужно только значение свойства <code>color</code> у класса <code>.text</code>.','Замените <code>#64748b</code> на <code>inherit</code>: <code>color: inherit;</code>.'],validate:()=>[declCheck('.text','color','inherit','Класс .text теперь берёт color у родительской .card.','У .text нужен color: inherit;')]},
+ {kind:'editor',section:'core',n:8,title:'Выравнивание текста',visual:visual(8),starter:filePair(H.align,S.align),solution:filePair(H.align,S.alignsol),defaultFile:'css',
+  theory:P('<code>text-align</code> управляет выравниванием текста и другого строчного содержимого внутри элемента. Значение <code>center</code> выравнивает содержимое по центру доступной ширины.','Удобно задавать <code>text-align</code> общему контейнеру: тогда вложенный текст использует одно направление выравнивания без повторения правила у каждого элемента.'),
+  task:P('В правиле <code>.hero</code> добавьте <code>text-align: center;</code>, чтобы содержимое секции выровнялось по центру.'),hints:['Нужное свойство задаём контейнеру .hero.','Добавьте <code>text-align: center;</code>.'],validate:()=>[declCheck('.hero','text-align','center','Содержимое секции выровнено по центру.','У .hero нужен text-align: center;')]},
+ {kind:'editor',section:'core',n:9,title:'Расстояние между буквами',visual:visual(9),starter:filePair(H.spacing,S.spacing),solution:filePair(H.spacing,S.spacingsol),defaultFile:'css',
+  theory:P('<code>letter-spacing</code> управляет расстоянием между символами. Небольшое значение полезно для коротких подписей и меток, когда нужно сделать их визуально более разреженными.','Это свойство наследуется. В примере карточка уже задаёт <code>1px</code>, а отдельной метке можно дать своё значение и тем самым переопределить унаследованное.'),
+  task:P('Для <code>.label</code> задайте <code>letter-spacing: 2px;</code>. Значение <code>1px</code> у родительской <code>.card</code> оставьте без изменений.'),hints:['Нужно задать метке собственное значение свойства.','В .label добавьте <code>letter-spacing: 2px;</code>.'],validate:()=>[declCheck('.label','letter-spacing','2px','Метка получила собственный интервал между буквами.','У .label нужен letter-spacing: 2px;')]},
+ {kind:'editor',section:'core',n:10,title:'Один стиль для нескольких элементов',visual:visual(10),starter:filePair(H.group,S.group),solution:filePair(H.group,S.groupsol),defaultFile:'css',
+  theory:P('Если нескольким селекторам нужен один и тот же набор свойств, CSS не обязательно дублировать. Селекторы можно перечислить через запятую и открыть один общий блок объявлений.','Запись <code>h2, h3</code> означает два отдельных селектора: правило применяется и к <code>h2</code>, и к <code>h3</code>.'),
+  task:P('Уберите два одинаковых правила <code>h2</code> и <code>h3</code> и замените их одним сгруппированным правилом. Перечислите <code>h2</code> и <code>h3</code> через запятую, сохранив оба свойства.'),hints:['Свойства должны остаться в одном блоке, а перед ним — два селектора.','Начало правила: <code>h2, h3 {</code>.'],validate:()=>[groupRuleCheck(['h2','h3'],{'color':'#172033','font-family':'Arial, sans-serif'},'Селекторы объединены в одно правило.','Нужно одно правило для h2 и h3 через запятую с обоими свойствами.')]},
+ {kind:'editor',section:'core',n:11,title:'Элемент внутри блока',visual:visual(11),starter:filePair(H.descendant,S.descendant),solution:filePair(H.descendant,S.descendantsol),defaultFile:'css',
+  theory:P('Иногда нужно изменить не все элементы одного типа, а только те, которые находятся внутри конкретного блока. Для этого подходит <strong>селектор потомка</strong>.','Запись <code>.card p</code> читается так: выбери абзацы <code>p</code>, которые находятся внутри элемента с классом <code>card</code>. Пробел здесь имеет смысл и не заменяется запятой.'),
+  task:P('Задайте цвет <code>#2563eb</code> только абзацу внутри <code>.card</code>. Абзац за пределами карточки должен остаться без изменений.'),hints:['Нужен селектор из двух частей: сначала класс контейнера, затем тег внутри.','Используйте <code>.card p { color: #2563eb; }</code>.'],validate:()=>[declCheck('.card p','color','#2563eb','Изменился только абзац внутри карточки.','Нужно правило .card p { color: #2563eb; }')]},
+ {kind:'editor',section:'core',n:12,title:'Несколько классов у одного элемента',visual:visual(12),starter:filePair(H.classes,S.classes),solution:filePair(H.classes.replace('class="button" href="#">Забронировать','class="button button-accent" href="#">Забронировать'),S.classessol),defaultFile:'html',
+  theory:P('У одного HTML-элемента может быть несколько классов. В атрибуте <code>class</code> их записывают через пробел: <code>class="button button-accent"</code>.','Так удобно собирать оформление: один класс задаёт общий вид всех кнопок, а второй добавляет только отличие конкретного варианта.'),
+  task:P('Во второй ссылке «Забронировать» добавьте к уже существующему классу <code>button</code> второй класс <code>button-accent</code>. CSS для обоих классов уже готов.'),hints:['Менять нужно атрибут class у второй ссылки, CSS трогать не нужно.','Получится <code>class="button button-accent"</code>.'],validate:()=>[htmlTextClasses('a','Забронировать',['button','button-accent'],'У второй кнопки теперь два класса.','Добавьте второй ссылке класс button-accent, сохранив button.')]},
+ {kind:'editor',section:'core',n:13,title:'Специфичность',visual:visual(13),starter:filePair(H.specificity,S.specificity),solution:filePair(H.specificity,S.specificitysol),defaultFile:'css',
+  theory:P('Когда несколько правил напрямую задают одному элементу одно и то же свойство, браузер сравнивает их <strong>специфичность</strong>. В пределах изученных селекторов сначала важнее количество классов, затем количество тегов.','Поэтому <code>.card .text</code> сильнее, чем <code>.text</code>: в первом селекторе два класса, а во втором один. Если специфичность одинакова, тогда уже решает положение правила в файле.','<strong>Как разбирать конфликт:</strong> 1) найдите все правила, которые подходят элементу; 2) определите, какое свойство конфликтует; 3) сравните специфичность; 4) если она одинакова — смотрите, какое правило записано ниже.'),
+  task:P('Сделайте текст зелёным <code>#059669</code>, не меняя HTML и не добавляя новый селектор. Измените значение в том правиле, которое действительно выигрывает по специфичности.'),hints:['Сравните .text и .card .text по количеству классов.','Изменить нужно color в <code>.card .text</code>.'],validate:()=>[declCheck('.card .text','color','#059669','Изменено более специфичное правило, поэтому результат стал зелёным.','У .card .text нужен color: #059669;')]},
+ {kind:'editor',section:'core',n:14,title:'Повторяющиеся значения',visual:visual(14),starter:filePair(H.vars,S.vars),solution:filePair(H.vars,S.varssol),defaultFile:'css',
+  theory:P('В большом CSS одни и те же значения часто повторяются. Если акцентный цвет записан в четырёх правилах, при смене дизайна его придётся искать в четырёх местах.','CSS-переменная позволяет дать значению имя. Общие переменные удобно объявлять внутри <code>:root</code>. Само объявление переменной ничего визуально не меняет — оно только сохраняет значение для дальнейшего использования.'),
+  task:P('В самое начало CSS добавьте правило <code>:root</code> и объявите в нём переменную <code>--accent</code> со значением <code>#635bff</code>. Повторяющиеся значения ниже пока не заменяйте.'),hints:['Имя CSS-переменной начинается с двух дефисов.','Добавьте <code>:root { --accent: #635bff; }</code>.'],validate:()=>[declCheck(':root','--accent','#635bff','Переменная --accent объявлена в :root.','В :root нужна переменная --accent: #635bff;')]},
+ {kind:'editor',section:'core',n:15,title:'Используем var()',visual:visual(15),starter:filePair(H.varuse,S.varuse),solution:filePair(H.varuse,S.varusesol),defaultFile:'css',
+  theory:P('После объявления переменной её значение можно подставлять в обычные CSS-свойства через функцию <code>var()</code>. Например, <code>color: var(--accent)</code> означает: возьми значение переменной <code>--accent</code>.','Переменная хранит значение, а <code>var()</code> использует его. Благодаря этому несколько правил могут ссылаться на одно место в CSS.'),
+  task:P('Замените повторяющиеся значения на переменные. Для <code>.logo</code> и фона <code>.button</code> используйте <code>var(--accent)</code>, а для <code>.card-title</code> — <code>var(--text)</code>.'),hints:['Вместо HEX-значения записывается функция var с именем переменной.','Нужны <code>var(--accent)</code> и <code>var(--text)</code>.'],validate:()=>[declCheck('.logo','color','var(--accent)','Логотип использует --accent.','У .logo нужен color: var(--accent);'),declCheck('.button','background-color','var(--accent)','Кнопка использует --accent.','У .button нужен background-color: var(--accent);'),declCheck('.card-title','color','var(--text)','Заголовок использует --text.','У .card-title нужен color: var(--text);')]},
+ {kind:'editor',section:'core',n:16,title:'Меняем стиль из одного места',visual:visual(16),starter:filePair(H.theme,S.theme),solution:filePair(H.theme,S.themesol),defaultFile:'css',
+  theory:P('Когда несколько элементов используют одну CSS-переменную, изменение её значения сразу отражается во всех связанных правилах. Это и есть главный практический смысл такого рефакторинга.','Вместо поиска одинакового цвета по всему файлу достаточно изменить одно значение в <code>:root</code>.'),
+  task:P('В <code>:root</code> замените значение <code>--accent</code> с <code>#635bff</code> на <code>#0f9f8f</code>. Остальные правила не меняйте.'),hints:['Все элементы уже используют var(--accent), поэтому менять нужно только переменную.','В :root должно получиться <code>--accent: #0f9f8f;</code>.'],validate:()=>[declCheck(':root','--accent','#0f9f8f','Одно изменение обновило все элементы с var(--accent).','У --accent должно быть значение #0f9f8f.')]},
+ {kind:'ideMini',section:'mini',title:'Итоговое мини-задание · тарифы',visual:visual(17)}
+];
+
+const freshState=()=>({current:0,student:null,code:{},activeFile:{},editorViews:{},done:{},coreScore:{},usedSolution:{},hint:{},miniDone:false,miniScore:0,miniChecks:[],miniIdeCss:'',miniIdeVersion:0,projectDone:{},projectPreviewMode:{},projectPreviewPage:{},projectPreviewScroll:{},projectGuideScroll:{},projectHint:{},theoryCollapsed:false});
+let state=freshState();
+try{const raw=localStorage.getItem(STORAGE);if(raw)state={...freshState(),...JSON.parse(raw)}}catch(e){}
+// После удаления проектной практики в localStorage мог остаться номер шага из старой версии.
+// Всегда приводим его к существующему диапазону, чтобы интерактив открывался без ошибки.
+{const savedCurrent=Number(state.current);state.current=Number.isFinite(savedCurrent)?Math.max(0,Math.min(Math.trunc(savedCurrent),steps.length-1)):0}
+if(state.miniIdeVersion!==1){state.miniDone=false;state.miniScore=0;state.miniChecks=[];state.miniIdeCss='';state.miniIdeVersion=1;delete state.done?.mini;delete state.code?.mini}
+function save(){try{localStorage.setItem(STORAGE,JSON.stringify(state))}catch(e){}}
+function keyOf(s){return s.section==='core'?`core-${s.n}`:s.section==='mini'?'mini':s.section==='project'&&s.n?`project-${s.n}`:s.section==='extra'?`extra-${s.n}`:`${s.section}-${steps.indexOf(s)}`}
+steps.filter(s=>s.section==='core').forEach(s=>{const k=keyOf(s);if(state.usedSolution?.[k]&&state.coreScore?.[k]==null){state.done[k]=true;state.coreScore[k]=0.5}});save();
+function cloneFiles(x){return {html:x.html,css:x.css}}
+function getFiles(s){const k=keyOf(s);if(!state.code[k])state.code[k]=cloneFiles(s.starter||filePair('',''));return state.code[k]}
+function studentCode(){return String(state.student?.code||'').trim()}
+function showStart(){const ss=$('#startScreen'),app=$('#app');ss.classList.remove('hidden');app.classList.add('app-hidden');$('#studentCode').value=studentCode()}
+function enterApp(){ $('#startScreen').classList.add('hidden');$('#app').classList.remove('app-hidden');$('#studentChip').textContent=`Личный код: ${studentCode()}`;render() }
+$('#studentForm').addEventListener('submit',e=>{e.preventDefault();const code=$('#studentCode').value.trim();if(!code){$('#startError').textContent='Укажите личный код.';return}$('#startError').textContent='';state.student={code};save();enterApp()});
+function currentStep(){const i=Math.max(0,Math.min(Number.isFinite(Number(state.current))?Math.trunc(Number(state.current)):0,steps.length-1));if(i!==state.current){state.current=i;save()}return steps[i]}
+function sectionMeta(sec){return {intro:['Введение','Введение'],core:['Основная часть','CORE'],extra:['Закрепление','Закрепление'],mini:['Итоговое мини-задание','20 баллов'],summary:['Итог','Итог']}[sec]||['','']}
+function updateChrome(){const s=currentStep(),meta=sectionMeta(s.section);$('#progressLabel').textContent=meta[0];$('#modeChip').textContent=meta[1];$('#modeChip').className='chip '+(['extra','project'].includes(s.section)?'home':'core');const group=steps.filter(x=>x.section===s.section),idx=group.indexOf(s),pct=group.length?((idx+1)/group.length*100):0;$('#progressFill').style.width=`${pct}%`;$('#progressCount').textContent=`${idx+1} / ${group.length}`;$('#prevBtn').disabled=state.current===0;$('#nextBtn').disabled=state.current===steps.length-1;const isMini=s.section==='mini';$('#toggleTheoryBtn').style.display=s.kind==='editor'&&!isMini?'':'none';$('#toggleTheoryBtn').textContent=state.theoryCollapsed?'Открыть теорию':'Скрыть теорию';$('#app').classList.toggle('theory-collapsed',!!state.theoryCollapsed&&s.kind==='editor'&&!isMini);$('#app').classList.toggle('mini-focus',isMini&&s.kind==='editor');$('#nextBtn').textContent=s.kind==='project'?'Сделано →':s.kind==='projectIntro'?'Начать практику →':s.kind==='projectFinish'?'К итогу →':'Далее →'}
+function render(){updateChrome();const s=currentStep();if(s.kind==='cover')renderCover();else if(s.kind==='overview')renderOverview();else if(s.kind==='editor')renderEditor(s);else if(s.kind==='ideMini')renderMiniIDE(s);else if(s.kind==='projectIntro')renderProjectIntro(s);else if(s.kind==='project')renderProjectStep(s);else if(s.kind==='projectFinish')renderProjectFinish(s);else renderSummary(s);renderDrawer()}
+function miniIdeDiagnosticMarkup(checks=state.miniChecks||[]){
+ if(!checks.length)return '<div class="mini-ide-diagnostic" id="miniIdeDiagnostic"></div>';
+ return `<div class="mini-ide-diagnostic" id="miniIdeDiagnostic">${checks.map((x,i)=>`<div class="ide-check-row ${x.ok?'ok':'bad'}"><span class="ide-check-icon">${x.ok?'✓':'✕'}</span><span>${i+1}. ${esc(x.ok?x.msg:(x.bad||x.msg))}</span></div>`).join('')}</div>`
+}
+function renderMiniIDE(s){
+ const passed=(state.miniChecks||[]).filter(x=>x.ok).length;
+ const done=passed===10;
+ $('#main').innerHTML=`<section class="mini-ide-screen">
+   <div class="mini-ide-head"><div><div class="mini-ide-kicker">Самостоятельная работа в IDE · 20 баллов</div><h1>Тарифы</h1></div><span class="mini-ide-score ${done?'done':''}" id="miniIdeTopScore">${done?'выполнено · 20':`IDE: ${passed} / 10`}</span></div>
+   <p class="mini-ide-intro">Скачайте стартовый проект и откройте папку в своей IDE. <strong>HTML уже подготовлен — менять <code>index.html</code> не нужно.</strong> Работайте только в <code>styles.css</code>. После заметных изменений открывайте <code>index.html</code> в браузере и сравнивайте результат с эталоном.</p>
+   <div class="mini-ide-grid">
+     <section class="mini-ide-brief"><h3>Вся страница</h3><p>Для блока тарифов задайте <code>font-family: Arial, sans-serif</code>. Акцентный цвет <code>#635bff</code> объявите в <code>:root</code> один раз как <code>--accent</code>.</p></section>
+     <section class="mini-ide-brief"><h3>Заголовки и описания</h3><p>Главный заголовок и названия тарифов должны иметь насыщенность <code>700</code> без дублирования одинаковой декларации. Описания тарифов: <code>16px</code> и межстрочный интервал <code>1.5</code>.</p></section>
+     <section class="mini-ide-brief"><h3>Метки</h3><p>Метки «БАЗОВЫЙ», «ПОПУЛЯРНЫЙ», «РАСШИРЕННЫЙ»: размер <code>12px</code>, верхний регистр, расстояние между буквами <code>2px</code>. Только «ПОПУЛЯРНЫЙ» получает акцентный цвет.</p></section>
+     <section class="mini-ide-brief"><h3>Карточки</h3><p>Текст внутри карточек выровняйте по центру, но абзац под карточками оставьте слева. Акцентная карточка: фон <code>#172033</code>, текст <code>#ffffff</code>; описание должно брать цвет у родителя без повторения белого значения.</p></section>
+     <section class="mini-ide-brief"><h3>Кнопки</h3><p>Общая кнопка: размер текста <code>16px</code>, семейство шрифта от родителя, без подчёркивания. В дополнительном классе акцентной кнопки оставьте только отличия: белый текст и фон <code>var(--accent)</code>.</p></section>
+   </div>
+   <div class="mini-ide-note">Работа проверяется по <strong>10 независимым пунктам</strong> — по 2 балла за каждый. Частично выполненная работа тоже приносит баллы, но для оценки 5 нужно пройти все десять проверок.</div>
+   <div class="mini-ide-download"><div class="mini-ide-download-copy"><b>Работайте в своём проекте</b><span>В архиве уже есть готовая разметка и служебная раскладка. Редактируйте только <code>styles.css</code>.</span></div><div class="mini-ide-download-actions"><button class="btn" id="miniSampleBtn" type="button">Эталон результата</button><a class="btn primary" href="assets/mini-project/TARIFFS_START.zip" download>Скачать стартовый архив</a></div></div>
+   <section class="mini-ide-checker"><h2>Проверка работы из IDE</h2><p>Когда стили готовы, скопируйте сюда <strong>весь CSS из своего <code>styles.css</code></strong>. Тренажёр проверит десять требований независимо друг от друга.</p><textarea class="mini-ide-code" id="miniIdeCode" spellcheck="false" placeholder="Вставьте сюда весь код из styles.css…">${esc(state.miniIdeCss||'')}</textarea><div class="mini-ide-actions"><button class="btn primary" id="miniIdeCheckBtn" type="button">Проверить CSS из IDE</button><button class="btn" id="miniIdeReportBtn" type="button">Открыть отчёт</button><span class="mini-ide-score ${done?'done':''}" id="miniIdeScore">IDE: ${passed} / 10</span></div><div class="mini-ide-feedback" id="miniIdeFeedback"></div>${miniIdeDiagnosticMarkup()}</section>
+ </section>`;
+ const ta=$('#miniIdeCode');ta.addEventListener('input',()=>{state.miniIdeCss=ta.value;save()});ta.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runMiniIdeCheck()}});
+ $('#miniIdeCheckBtn').onclick=runMiniIdeCheck;$('#miniIdeReportBtn').onclick=openReport;$('#miniSampleBtn').onclick=()=>openMiniSample(s.visual)
+}
+function runMiniIdeCheck(){
+ const ta=$('#miniIdeCode');if(!ta)return;state.miniIdeCss=ta.value;const checks=miniChecksFromCss(ta.value),passed=checks.filter(x=>x.ok).length,score=passed*2,done=passed===checks.length;state.miniChecks=checks;state.miniScore=score;state.miniDone=done;if(done)state.done.mini=true;else delete state.done.mini;save();
+ const diag=$('#miniIdeDiagnostic');if(diag)diag.outerHTML=miniIdeDiagnosticMarkup(checks);const scoreEl=$('#miniIdeScore');if(scoreEl){scoreEl.textContent=`IDE: ${passed} / ${checks.length}`;scoreEl.classList.toggle('done',done)}const top=$('#miniIdeTopScore');if(top){top.textContent=done?'выполнено · 20':`IDE: ${passed} / ${checks.length}`;top.classList.toggle('done',done)}const fb=$('#miniIdeFeedback');if(fb){fb.className=`mini-ide-feedback show ${done?'good':'bad'}`;fb.textContent=done?'Все 10 проверок пройдены — 20 баллов.':`Выполнено ${passed} из ${checks.length} проверок — ${score} / 20 баллов. Исправьте отмеченные пункты и проверьте работу ещё раз.`}renderDrawer()
+}
+function renderCover(){
+ $('#main').innerHTML=`<section class="cover"><div class="cover-copy"><h1>Почему браузер выбирает именно этот стиль</h1><p>На этой паре разберём, что происходит, когда к одному элементу подходят разные правила, откуда берутся унаследованные значения и как сделать CSS удобнее для изменений.</p><div class="cover-steps"><div class="cover-stat"><b>${CORE_COUNT}</b><span>оцениваемых шагов</span></div><div class="cover-stat"><b>80 + 20</b><span>баллов за основу и мини-задание</span></div><div class="cover-stat"><b>2 файла</b><span>index.html + styles.css</span></div><div class="cover-stat"><b>4 блока</b><span>от каскада до переменных</span></div></div><div class="flow-line"><span class="flow-node">правила</span><span class="flow-arrow">→</span><span class="flow-node">выбор значения</span><span class="flow-arrow">→</span><span class="flow-node">результат</span></div></div><div class="cover-demo image-demo"><img src="${visual(1)}" alt="Несколько CSS-правил для одного элемента"></div></section>`
+}
+function renderOverview(){
+ $('#main').innerHTML=`<section class="overview-wrap"><div class="overview-card"><h1>Как пройдёт эта пара</h1><p>Каждую новую идею сразу проверяем в коде и смотрим результат в мини-браузере. Сначала разберём конфликты правил и наследование, затем научимся точнее выбирать элементы и в конце уберём повторяющиеся значения в CSS-переменные.</p><div class="overview-route"><div class="route-row"><div class="route-num">1</div><div><b>Когда правила спорят</b><span>4 шага</span></div></div><div class="route-row"><div class="route-num">2</div><div><b>Наследование</b><span>3 шага</span></div></div><div class="route-row"><div class="route-num">3</div><div><b>Текст и селекторы</b><span>5 шагов</span></div></div><div class="route-row"><div class="route-num">4</div><div><b>CSS-переменные</b><span>4 шага</span></div></div><div class="route-row"><div class="route-num">5</div><div><b>Итоговое мини-задание</b><span>1 задание</span></div></div></div></div><div class="overview-card"><div class="overview-mini">оценивание</div><h1 style="font-size:28px">100 баллов без скрытых штрафов</h1><div class="score-explainer"><div class="score-box"><b>80</b><span>${CORE_COUNT} оцениваемых шагов. Самостоятельно — ${fmt(80/CORE_COUNT)}, после показа решения — ${fmt(40/CORE_COUNT)}.</span></div><div class="score-box"><b>20</b><span>Итоговое мини-задание. Для оценки 5 оно обязательно.</span></div><div class="score-box"><b>без штрафов</b><span>Ошибочные попытки и подсказки не уменьшают баллы.</span></div></div><div class="callout" style="margin-top:16px">Можно спокойно экспериментировать: если код не сработал, исправьте его и проверьте ещё раз.</div></div></section>`
+}
+
+function taskStatusMarkup(s){const k=keyOf(s);if(s.section==='core'&&state.coreScore[k]!=null)return `<span class="task-status ${state.coreScore[k]===1?'self':'solution'}">${state.coreScore[k]===1?`самостоятельно · ${fmt(80/CORE_COUNT)}`:`с решением · ${fmt(40/CORE_COUNT)}`}</span>`;if(s.section==='mini'&&state.miniDone)return `<span class="task-status self">выполнено · 20</span>`;if(state.done[k])return `<span class="task-status self">выполнено</span>`;return `<span class="task-status pending">ещё не выполнено</span>`}
+function miniDiagnosticMarkup(checks=state.miniChecks||[]){if(!checks.length)return '<div class="mini-guide" id="miniDiagnostic"><h3>Как выполнять</h3><p><strong>1.</strong> Откройте вкладку <code>styles.css</code>. <code>index.html</code> можно посмотреть, но редактировать его нельзя.</p><p><strong>2.</strong> Исправляйте CSS по условию и следите за результатом в мини-браузере справа.</p><p><strong>3.</strong> Сравните страницу с эталоном и нажмите «Проверить работу». Здесь появятся результаты всех 10 проверок.</p></div>';return `<div class="ide-diagnostic" id="miniDiagnostic">${checks.map((x,i)=>`<div class="ide-check-row ${x.ok?'ok':'bad'}"><span class="ide-check-icon">${x.ok?'✓':'✕'}</span><span>${i+1}. ${esc(x.ok?x.msg:(x.bad||x.msg))}</span></div>`).join('')}</div>`}
+function taskActionsMarkup(s){if(s.section==='mini')return `<div class="feedback-row"><div class="feedback-action"><button class="small-button" data-action="sample">Эталон результата</button><button class="small-button check-button" data-action="check">Проверить работу</button></div><div class="inline-feedback" id="inlineFeedback" aria-hidden="true"></div></div>${miniDiagnosticMarkup()}`;const n=state.hint[keyOf(s)]||0;const allowSolution=s.allowSolution!==false&&!!s.solution;let hintText='Показать подсказку';let cls='';if(n===1)hintText='Показать ещё подсказку';if(n>=2&&allowSolution){hintText='Показать решение · половина баллов';cls='solution-ready'}else if(n>=2&&!allowSolution)hintText='Подсказки закончились';if(state.usedSolution[keyOf(s)]){hintText='Решение показано';cls='solution-used'}return `<div class="feedback-row"><div class="feedback-action"><button class="small-button check-button" data-action="check">Проверить</button></div><div class="inline-feedback" id="inlineFeedback" aria-hidden="true"></div></div><div class="help-row"><button class="small-button ${cls}" data-action="hint" ${n>=2&&!allowSolution?'disabled':''}>${hintText}</button><div class="help-box" id="inlineHelp"></div></div>`}
+function renderEditor(s){const files=getFiles(s),k=keyOf(s),active=state.activeFile[k]||s.defaultFile||'css';state.activeFile[k]=active;
+ const theoryMarkup=s.section==='mini'?'':`<section class="panel theory-panel"><div class="panel-head"><div><div class="step-kicker">${s.section==='core'?`Основная часть · шаг ${s.n} из ${CORE_COUNT}`:'Закрепление перед итоговым заданием'}</div><h1 class="step-title">${esc(s.title)}</h1></div></div><div class="theory-scroll"><div class="theory-copy">${s.theory}</div><div class="visual-card"><img id="zoomVisual" src="${s.visual}" alt="Визуализация: ${esc(s.title)}" title="Нажмите, чтобы открыть крупнее" role="button" tabindex="0"></div></div></section>`;
+ $('#main').innerHTML=`${theoryMarkup}<section class="panel practice-panel"><div class="task-card"><div class="task-top"><span class="task-tag ${s.section==='mini'?'mini':s.section==='extra'?'extra':''}">${s.section==='mini'?'20 баллов':s.section==='extra'?'Закрепление':'Мини-задача'}</span>${taskStatusMarkup(s)}</div><div class="task-copy">${s.task}</div>${taskActionsMarkup(s)}</div><div class="practice-work"><div class="editor-card"><div class="subhead"><div class="file-tabs"><button class="file-tab ${active==='html'?'active':''} ${s.lockHtml?'locked':''}" data-file="html">index.html</button><button class="file-tab ${active==='css'?'active':''}" data-file="css">styles.css</button></div><span class="editor-file-label" id="editorFileLabel">${active==='html'?'HTML':'CSS'}</span><div class="right"><span class="editor-help">Tab — отступ · Ctrl/Cmd+Enter — проверить</span><span class="editor-position" id="editorPosition">Стр 1, стлб 1</span><button class="small-btn" id="resetCode">Сбросить код</button></div></div><div class="editor-wrap"><div class="editor-active-line" id="editorActiveLine"></div><div class="editor-lines" id="editorLines"></div><pre class="editor-highlight" id="editorHighlight" aria-hidden="true"></pre><textarea class="editor-input" id="editor" spellcheck="false" aria-label="Редактор кода"></textarea></div></div><div class="preview-card"><div class="subhead"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><b>Мини-браузер</b><div class="right"><span>css.local</span></div></div><div class="preview-body"><div class="browser-wrap"><div class="browser-bar"><span class="browser-dots">● ● ●</span><span class="address">https://css.local/</span></div><iframe class="preview-frame" id="preview" sandbox=""></iframe><div class="preview-note">CSS применяется только если в index.html корректно подключён styles.css.</div></div></div></div></div></section>`;
+ bindEditor(s,active);const zoom=$('#zoomVisual');if(zoom){zoom.onclick=()=>openImage(s.visual);zoom.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openImage(s.visual)}}}$$('[data-action="sample"]').forEach(b=>b.onclick=()=>openMiniSample(s.visual));$$('[data-action="check"]').forEach(b=>b.onclick=()=>runCheck(s));$$('[data-action="hint"]').forEach(b=>b.onclick=()=>showHint(s));$$('.file-tab').forEach(b=>b.onclick=()=>switchFile(s,b.dataset.file));
+}
+function switchFile(s,file){saveCurrentEditor(s);state.activeFile[keyOf(s)]=file;save();renderEditor(s)}
+function bindEditor(s,file){const files=getFiles(s),ed=$('#editor');ed.value=files[file]||'';const locked=!!(s.lockHtml&&file==='html');ed.readOnly=locked;ed.classList.toggle('readonly',locked);restoreEditorView(s,file,ed);syncEditor(file);renderPreview(s);ed.addEventListener('input',()=>{if(locked)return;files[file]=ed.value;rememberEditorView(s,file,ed);save();syncEditor(file);renderPreviewDebounced(s)});ed.addEventListener('scroll',()=>{syncEditorScroll(ed);rememberEditorView(s,file,ed)});ed.addEventListener('keydown',e=>handleEditorKeydown(e,s,file));['click','keyup','select'].forEach(ev=>ed.addEventListener(ev,()=>{rememberEditorView(s,file,ed);updateEditorCursor(ed)}));ed.addEventListener('focus',()=>updateEditorCursor(ed));$('#resetCode').onclick=()=>{if(confirm('Вернуть код этого шага к исходной заготовке? Результат шага, подсказки и факт просмотра решения сохранятся.')){state.code[keyOf(s)]=cloneFiles(s.starter);state.editorViews[keyOf(s)]={};state.activeFile[keyOf(s)]=s.defaultFile||'css';save();render()}}}
+function saveCurrentEditor(s){const ed=$('#editor');if(!ed)return;const k=keyOf(s),file=state.activeFile[k]||s.defaultFile||'css';getFiles(s)[file]=ed.value;rememberEditorView(s,file,ed);save()}
+function rememberEditorView(s,file,ed){const k=keyOf(s);state.editorViews[k]??={};state.editorViews[k][file]={start:ed.selectionStart,end:ed.selectionEnd,scrollTop:ed.scrollTop,scrollLeft:ed.scrollLeft}}
+function restoreEditorView(s,file,ed){const v=state.editorViews[keyOf(s)]?.[file];if(!v)return;requestAnimationFrame(()=>{ed.selectionStart=v.start||0;ed.selectionEnd=v.end||v.start||0;ed.scrollTop=v.scrollTop||0;ed.scrollLeft=v.scrollLeft||0;syncEditorScroll(ed);updateEditorCursor(ed)})}
+function handleEditorKeydown(e,s,file){if(s.lockHtml&&file==='html'){if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runCheck(s)}return}if(e.key==='Tab'){e.preventDefault();const ed=e.target,start=ed.selectionStart,end=ed.selectionEnd;ed.setRangeText('  ',start,end,'end');ed.dispatchEvent(new Event('input',{bubbles:true}))}if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runCheck(s)}}
+function highlightHTML(src){let out='',pos=0;const re=/<!--[\s\S]*?-->|<\/?[A-Za-z][^>]*>/g;let m;while((m=re.exec(src))){out+=esc(src.slice(pos,m.index));const t=m[0];if(t.startsWith('<!--'))out+=`<span class="tok-comment">${esc(t)}</span>`;else out+=highlightTag(t);pos=m.index+t.length}out+=esc(src.slice(pos));return out+'\n'}
+function highlightTag(t){let x=esc(t);x=x.replace(/^(&lt;\/?)([A-Za-z][\w-]*)/,(_,a,b)=>`${a}<span class="tok-name">${b}</span>`);x=x.replace(/\s([A-Za-z_:][-\w:.]*)(=)(&quot;[^&]*?&quot;|&#39;[^&]*?&#39;)/g,(_,a,eq,v)=>` <span class="tok-attr">${a}</span>${eq}<span class="tok-str">${v}</span>`);return `<span class="tok-tag">${x}</span>`}
+function highlightCSS(src){const lines=src.split('\n');return lines.map(line=>{let e=esc(line);if(/^\s*\/\*/.test(line))return `<span class="tok-comment">${e}</span>`;if(line.includes('{')){const i=e.indexOf('{');return `<span class="tok-selector">${e.slice(0,i).trimEnd()}</span> <span class="tok-brace">{</span>${e.slice(i+1)}`;}if(line.includes('}'))return e.replace('}',`<span class="tok-brace">}</span>`);const m=line.match(/^(\s*)([-\w]+)(\s*:\s*)(.*)$/);if(m)return `${esc(m[1])}<span class="tok-prop">${esc(m[2])}</span>${esc(m[3])}<span class="tok-value">${esc(m[4])}</span>`;return e}).join('\n')+'\n'}
+function syncEditor(file){const ed=$('#editor'),hi=$('#editorHighlight'),ln=$('#editorLines');if(!ed||!hi||!ln)return;hi.innerHTML=file==='css'?highlightCSS(ed.value):highlightHTML(ed.value);ln.textContent=Array.from({length:Math.max(1,ed.value.split('\n').length)},(_,i)=>i+1).join('\n');syncEditorScroll(ed);updateEditorCursor(ed)}
+function syncEditorScroll(ed){const hi=$('#editorHighlight'),ln=$('#editorLines');if(hi){hi.scrollTop=ed.scrollTop;hi.scrollLeft=ed.scrollLeft}if(ln)ln.scrollTop=ed.scrollTop;updateEditorCursor(ed)}
+function updateEditorCursor(ed){const before=ed.value.slice(0,ed.selectionStart),parts=before.split('\n'),line=parts.length,col=parts.at(-1).length+1,pos=$('#editorPosition');if(pos)pos.textContent=`Стр ${line}, стлб ${col}`;const active=$('#editorActiveLine');if(active){const fs=parseFloat(getComputedStyle(ed).fontSize)||14,lh=parseFloat(getComputedStyle(ed).lineHeight)||21.28,pad=parseFloat(getComputedStyle(ed).paddingTop)||14;active.style.top=`${pad+(line-1)*lh-ed.scrollTop}px`}}
+let previewTimer;function renderPreviewDebounced(s){clearTimeout(previewTimer);previewTimer=setTimeout(()=>renderPreview(s),130)}
+function linkedStyles(html){try{const d=new DOMParser().parseFromString(html,'text/html');return [...d.querySelectorAll('link[rel~="stylesheet"]')].some(l=>(l.getAttribute('href')||'').replace(/^\.\//,'')==='styles.css')}catch(e){return false}}
+function previewDoc(files){let html=files.html||'';let css=files.css||'';if(currentStep()?.section==='mini')css=MINI_LAYOUT_CSS+'\n'+css;if(linkedStyles(html)){const styleTag=`<style>${css.replace(/<\/style/gi,'<\\/style')}</style>`;if(/<\/head>/i.test(html))html=html.replace(/<\/head>/i,styleTag+'\n</head>');else html=styleTag+html}return html}
+function renderPreview(s){const fr=$('#preview');if(fr)fr.srcdoc=previewDoc(getFiles(s))}
+function parseCSS(css){const clean=String(css||'').replace(/\/\*[\s\S]*?\*\//g,'');const map={};const re=/([^{}]+)\{([^{}]*)\}/g;let m;while((m=re.exec(clean))){const selector=m[1].trim();const props={};m[2].split(';').forEach(part=>{const i=part.indexOf(':');if(i<0)return;const k=part.slice(0,i).trim().toLowerCase(),v=part.slice(i+1).trim().replace(/\s+/g,' ');if(k)props[k]=v});map[selector]=props}return map}
+function parseCSSRules(css){const clean=String(css||'').replace(/\/\*[\s\S]*?\*\//g,'');const out=[];const re=/([^{}]+)\{([^{}]*)\}/g;let m;while((m=re.exec(clean))){const selector=m[1].trim();const props={};m[2].split(';').forEach(part=>{const i=part.indexOf(':');if(i<0)return;const k=part.slice(0,i).trim().toLowerCase(),v=part.slice(i+1).trim().replace(/\s+/g,' ');if(k)props[k]=v});out.push({selector,props})}return out}
+function rule(selector){return parseCSS(getFiles(currentStep()).css)[selector]||{}}
+function lastDeclCheck(selector,prop,value,msg,bad){const rows=parseCSSRules(getFiles(currentStep()).css).filter(r=>r.selector===selector);const got=rows.length?rows.at(-1).props[prop]:'';return res(norm(got)===norm(value),msg,bad)}
+function duplicateOrderCheck(selector,prop,firstValue,lastValue,msg,bad){const rows=parseCSSRules(getFiles(currentStep()).css).filter(r=>r.selector===selector);const ok=rows.length>=2&&norm(rows[0].props[prop])===norm(firstValue)&&norm(rows.at(-1).props[prop])===norm(lastValue);return res(ok,msg,bad)}
+function groupRuleCheck(selectors,props,msg,bad){const want=[...selectors].map(x=>x.trim()).sort(),rows=parseCSSRules(getFiles(currentStep()).css);const row=rows.find(r=>r.selector.split(',').map(x=>x.trim()).filter(Boolean).sort().join('|')===want.join('|'));if(!row)return res(false,msg,bad);const propsOk=Object.entries(props).every(([k,v])=>norm(row.props[k])===norm(v)),hasDuplicates=rows.some(r=>want.includes(r.selector.trim()));return res(propsOk&&!hasDuplicates,msg,bad)}
+function htmlTextClasses(tag,text,classes,msg,bad){try{const d=new DOMParser().parseFromString(getFiles(currentStep()).html,'text/html');const el=[...d.querySelectorAll(tag)].find(x=>x.textContent.trim()===text);const ok=!!el&&classes.every(c=>el.classList.contains(c));return res(ok,msg,bad)}catch(e){return res(false,msg,bad)}}
+function norm(v){return String(v||'').trim().toLowerCase().replace(/\s+/g,' ')}
+function res(ok,msg,bad){return {ok:!!ok,msg,bad}}
+function declCheck(selector,prop,value,msg,bad){const got=rule(selector)[prop];return res(norm(got)===norm(value),msg,bad)}
+function familyCheck(selector){const got=norm(rule(selector)['font-family']);return res(got.includes('arial')&&got.includes('sans-serif'),'Шрифт задан как Arial с запасным sans-serif.',`У ${selector} нужен font-family: Arial, sans-serif;`)}
+function linkCheck(){return res(linkedStyles(getFiles(currentStep()).html),'styles.css подключён к HTML.','В index.html пока нет корректного <link rel="stylesheet" href="styles.css"> внутри head.')}
+function miniChecksFromCss(cssText){const css=parseCSS(cssText),rows=parseCSSRules(cssText),root=css[':root']||{};
+ const accentVar='var(--accent)';
+ const pricing=css['.pricing']||{},plan=css['.plan']||{},featured=css['.plan-featured']||{},text=css['.plan-text']||{},label=css['.plan-label']||{},baseBtn=css['.plan-button']||{},accentBtn=css['.plan-button-accent']||{},note=css['.plans-note']||{};
+ const accentOk=norm(root['--accent'])==='#635bff';
+ const family=norm(pricing['font-family']),familyOk=family.includes('arial')&&family.includes('sans-serif');
+ const titleGroup=rows.find(r=>{const sels=r.selector.split(',').map(x=>x.trim()).sort();return sels.length===2&&sels[0]==='.plan-title'&&sels[1]==='.section-title'&&norm(r.props['font-weight'])==='700'});
+ const titleClean=!rows.some(r=>(r.selector.trim()==='.section-title'||r.selector.trim()==='.plan-title')&&'font-weight' in r.props);
+ const descriptionsOk=norm(text['font-size'])==='16px'&&norm(text['line-height'])==='1.5';
+ const labelsOk=norm(label['font-size'])==='12px'&&norm(label['text-transform'])==='uppercase'&&norm(label['letter-spacing'])==='2px';
+ const alignmentOk=norm(plan['text-align'])==='center'&&norm((css['p']||{})['text-align'])!=='center'&&norm(note['text-align'])!=='center';
+ const baseButtonOk=norm(baseBtn['font-size'])==='16px'&&norm(baseBtn['font-family'])==='inherit'&&norm(baseBtn['text-decoration'])==='none';
+ const variantClean=!('font-family' in accentBtn)&&!('font-size' in accentBtn)&&!('text-decoration' in accentBtn);
+ const variantButtonOk=variantClean&&norm(accentBtn.color)==='#ffffff'&&norm(accentBtn['background-color'])===accentVar;
+ const inheritOk=norm(featured.color)==='#ffffff'&&norm(featured['background-color'])==='#172033'&&norm(text.color)==='inherit';
+ const specificLabel=rows.find(r=>{const classes=r.selector.match(/\.[A-Za-z0-9_-]+/g)||[];const targetsAccent=classes.includes('.plan-label-accent')||(classes.includes('.plan-featured')&&classes.includes('.plan-label'));return targetsAccent&&classes.length>=2&&norm(r.props.color)===accentVar});
+ return [
+  res(accentOk,'--accent хранит #635bff в :root.','Акцент: объявите --accent: #635bff внутри :root.'),
+  res(familyOk,'Шрифт блока — Arial, sans-serif.','Шрифт: задайте блоку тарифов font-family: Arial, sans-serif.'),
+  res(!!titleGroup&&titleClean,'Заголовки используют общий font-weight: 700.','Заголовки: объедините общий font-weight: 700 для .section-title и .plan-title через запятую; в отдельных правилах это свойство не дублируйте.'),
+  res(descriptionsOk,'Описания: 16px и line-height 1.5.','Описания: нужны font-size: 16px и line-height: 1.5.'),
+  res(labelsOk,'Метки: 12px, uppercase, letter-spacing 2px.','Метки: нужны font-size: 12px, text-transform: uppercase и letter-spacing: 2px.'),
+  res(alignmentOk,'Карточки по центру, нижний абзац слева.','Выравнивание: задайте text-align: center карточкам, а не всем p на странице.'),
+  res(baseButtonOk,'Общая кнопка: inherit, 16px, без подчёркивания.','Обычная кнопка: font-family: inherit; font-size: 16px; text-decoration: none.'),
+  res(variantButtonOk,'Акцентная кнопка хранит только отличия.','Акцентная кнопка: оставьте в дополнительном классе только color: #ffffff и background-color: var(--accent).'),
+  res(inheritOk,'Тёмная карточка: свои цвета, описание наследует color.','Тёмная карточка: фон #172033, текст #ffffff; у описания нужен color: inherit.'),
+  res(!!specificLabel,'«Популярный» получает var(--accent) по специфичности.','Метка «популярный»: используйте var(--accent) в более специфичном правиле, не переставляя общее правило .plan-label.')
+ ]}
+function setFeedback(kind,html){const box=$('#inlineFeedback');if(!box)return;box.className=`inline-feedback ${kind}`;box.setAttribute('aria-hidden','false');box.innerHTML=html}
+function runCheck(s=currentStep()){saveCurrentEditor(s);const checks=s.validate?s.validate():[];const bad=checks.filter(x=>!x.ok);
+ if(s.section==='mini'){
+  state.miniChecks=checks;
+  const box=$('#miniDiagnostic');if(box)box.outerHTML=miniDiagnosticMarkup(checks);
+  if(bad.length){save();setFeedback('bad',`Пока выполнено ${checks.length-bad.length} из ${checks.length} проверок. Исправьте отмеченные пункты и проверьте работу ещё раз.`);return}
+ }else if(bad.length){setFeedback('bad',bad[0].bad||'Пока не всё готово.');return}
+ const k=keyOf(s);state.done[k]=true;let message='Готово.';
+ if(s.section==='core'){const earned=state.usedSolution[k]?0.5:1;state.coreScore[k]=Math.max(Number(state.coreScore[k]||0),earned);message=state.coreScore[k]===1?`Готово. Шаг выполнен самостоятельно — ${fmt(80/CORE_COUNT)} баллов.`:`Готово. Этот шаг зачтён через решение — ${fmt(40/CORE_COUNT)} балла.`}
+ else if(s.section==='mini'){state.miniDone=true;state.miniScore=20;message='Все проверки пройдены. Итоговое мини-задание выполнено — 20 баллов.'}
+ save();const status=$('.task-status');if(status){if(s.section==='core'){status.className=`task-status ${state.coreScore[k]===1?'self':'solution'}`;status.textContent=state.coreScore[k]===1?`самостоятельно · ${fmt(80/CORE_COUNT)}`:`с решением · ${fmt(40/CORE_COUNT)}`}else if(s.section==='mini'){status.className='task-status self';status.textContent='выполнено · 20'}else{status.className='task-status self';status.textContent='выполнено'}}setFeedback('good',message);renderDrawer()}
+function showInlineHelp(title,text){const box=$('#inlineHelp');if(!box)return;box.classList.add('show');box.innerHTML=`<strong>${title}</strong><span>${text}</span>`}
+function archiveHtmlAsComments(src){return String(src).split('\n').map(line=>`<!-- ${line.replace(/--/g,'—')} -->`).join('\n')}
+function archiveCssAsComments(src){return String(src).split('\n').map(line=>`/* ${line.replace(/\/\*/g,'/ *').replace(/\*\//g,'* /')} */`).join('\n')}
+function showHint(s){const k=keyOf(s),n=state.hint[k]||0,allowSolution=s.allowSolution!==false&&!!s.solution;
+ if(n===0){state.hint[k]=1;showInlineHelp('Подсказка 1',s.hints?.[0]||'Перечитайте условие.')}
+ else if(n===1){state.hint[k]=2;showInlineHelp('Подсказка 2',s.hints?.[1]||'Сравните код с теорией шага.')}
+ else if(allowSolution&&!state.usedSolution[k]){
+  saveCurrentEditor(s);const old=cloneFiles(getFiles(s)),sol=cloneFiles(s.solution),alreadySelf=state.coreScore[k]===1;
+  sol.html+=`\n\n<!-- Ваш вариант до показа решения: -->\n${archiveHtmlAsComments(old.html)}`;
+  sol.css+=`\n\n/* Ваш вариант до показа решения: */\n${archiveCssAsComments(old.css)}`;
+  state.code[k]=sol;state.usedSolution[k]=true;state.hint[k]=3;state.activeFile[k]=s.defaultFile||'css';
+  if(s.section==='core'&&!alreadySelf){state.done[k]=true;state.coreScore[k]=Math.max(Number(state.coreScore[k]||0),0.5)}
+ }
+ save();renderEditor(s);renderDrawer();const newN=state.hint[k]||0;
+ if(newN===1)showInlineHelp('Подсказка 1',s.hints?.[0]||'Перечитайте условие.');
+ if(newN===2)showInlineHelp('Подсказка 2',s.hints?.[1]||'Сравните код с теорией шага.');
+ if(newN===3){const kept=state.coreScore[k]===1;showInlineHelp('Решение подставлено',kept?'Эталон находится сверху, ваш вариант сохранён ниже в комментарии. Шаг уже был выполнен самостоятельно, поэтому результат не изменился.':`Эталон находится сверху, ваш вариант сохранён ниже в комментарии. Шаг уже засчитан через готовое решение — ${fmt(40/CORE_COUNT)} балла.`);setFeedback('good',kept?'Решение показано. Самостоятельный результат сохранён.':`Шаг сразу засчитан через готовое решение — ${fmt(40/CORE_COUNT)} балла.`)}
+}
+function openImage(src){$('#imageModalImg').src=src;$('#imageModal').classList.add('show')}
+function openMiniSample(src){const img=$('#sampleModalImg');if(img)img.src=src;$('#sampleModal').classList.add('show')}
+function closeMiniSample(){$('#sampleModal').classList.remove('show')}
+
+function copyProjectText(text,button){
+ const done=()=>{if(button){const old=button.textContent;button.textContent='Скопировано';setTimeout(()=>button.textContent=old,1200)}};
+ if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text,done));}else fallbackCopy(text,done);
+}
+function fallbackCopy(text,done){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done&&done()}catch(e){}ta.remove()}
+function projectHighlightedLine(line,type){return type==='html'?highlightHTML(line):highlightCSS(line)}
+function projectMaskCss(code){return String(code??'').replace(/^(\s*)[\w-]+\s*:\s*.*;\s*$/gm,'$1…')}
+function projectScaffoldCode(s){return s.codeType==='css'?projectMaskCss(s.solution):s.scaffold}
+function projectNumberedCode(code,startLine,type,label){const lines=String(code??'').replace(/\r/g,'').split('\n');if(lines.length&&lines[lines.length-1]==='')lines.pop();const body=lines.map((line,i)=>`<div class="project-code-line"><span class="project-line-no">${startLine+i}</span><code class="project-line-code">${line?projectHighlightedLine(line,type):'&nbsp;'}</code></div>`).join('');return `<div class="project-code-wrap"><div class="project-code-head"><b>${type==='html'?'HTML':'CSS'}</b><span>${label}</span><span class="spacer"></span><span class="project-code-note">номера строк — ориентир; в вашем файле могут отличаться</span></div><div class="project-code-lines">${body}</div></div>`}
+function renderProjectIntro(){
+ $('#main').innerHTML=`<section class="project-intro"><div class="project-intro-inner"><div><div class="mini-badge">Проектная практика</div><h1>Arctic Trips: применяем CSS к настоящему проекту</h1><p>Основная оценочная часть уже закончена. Дальше — необязательная, но рекомендуемая и полезная практика на настоящем проекте. На каждом шаге сначала найдите нужный элемент в небольшом фрагменте HTML, затем оформите его в своём <code>style.css</code> и сравните результат в мини-браузере.</p><div class="project-checklist"><div class="project-check"><i>1</i><span>Скачайте стартовый проект и откройте папку в VS Code или WebStorm.</span></div><div class="project-check"><i>2</i><span>Сначала находите элемент в показанном фрагменте HTML и связывайте его класс с CSS-селектором. Фрагменты сокращены, поэтому номер строки в вашем файле может немного отличаться.</span></div><div class="project-check"><i>3</i><span>В условии указаны цель и нужные значения. Готового CSS перед глазами нет — его пишете вы.</span></div><div class="project-check"><i>4</i><span>Если хотите свериться с записью, откройте готовый фрагмент кода. Он нужен именно для проверки после собственной попытки.</span></div><div class="project-check"><i>5</i><span>Справа используйте «До / После» и «Главная / Каталог»: позиция внутри мини-браузера сохраняется.</span></div></div><div class="project-downloads"><a class="project-download primary" href="assets/project/ARCTIC_TRIPS_START.zip" download>Скачать стартовый проект</a><button class="project-skip" id="skipProject" type="button">Пропустить практику</button></div></div><div class="project-intro-card"><h3>Как проходит один шаг</h3><p><strong>1.</strong> Смотрим, что сейчас хотим изменить.<br><strong>2.</strong> Находим этот элемент в небольшом фрагменте HTML.<br><strong>3.</strong> Пишем CSS в своём проекте.<br><strong>4.</strong> Сохраняем файл и сравниваем «До / После».</p><div class="project-reason"><b>Здесь можно работать в своём темпе</b><span>Если что-то забыли, откройте готовый фрагмент для сверки. Главное — увидеть связь между элементом в HTML, CSS-селектором и изменением страницы.</span></div></div></div></section>`;
+ $('#skipProject').onclick=()=>{const i=steps.findIndex(x=>x.section==='summary');go(i)};
+}
+function projectPreviewFile(s,phase,page){const n=phase==='before'?Math.max(0,s.n-1):s.n;return `assets/project-preview/step-${String(n).padStart(2,'0')}-${page}.html`}
+function projectScrollBucketKey(k){state.projectPreviewScroll??={};state.projectPreviewScroll[k]??={};return state.projectPreviewScroll[k]}
+function projectScrollBucket(s){return projectScrollBucketKey(keyOf(s))}
+function projectCurrentSavedScroll(s){const k=keyOf(s),page=state.projectPreviewPage?.[k]||s.page||'index';return projectScrollBucket(s)[page]||null}
+function rememberProjectFrameScroll(s){const frame=$('#projectFrame');if(frame){try{frame.contentWindow?.postMessage({type:'arctic-preview-get-scroll'},'*')}catch(e){}}return projectCurrentSavedScroll(s)}
+function rememberProjectGuideScroll(s){const el=$('.project-guide-scroll');if(!el)return;state.projectGuideScroll??={};state.projectGuideScroll[keyOf(s)]=el.scrollTop||0}
+function restoreProjectGuideScroll(s){const el=$('.project-guide-scroll');if(!el)return;const y=state.projectGuideScroll?.[keyOf(s)]||0;requestAnimationFrame(()=>{el.scrollTop=y})}
+function refreshProjectHintUI(s){const k=keyOf(s),shown=Number(state.projectHint?.[k]||0)>0,btn=$('#projectHintBtn'),area=$('#projectHintArea');if(btn)btn.textContent=shown?'Скрыть помощь':'Показать готовый фрагмент';if(area)area.innerHTML=projectHintMarkup(s,k)}
+let projectPreviewBridgeReady=false;
+function ensureProjectPreviewBridge(){
+  if(projectPreviewBridgeReady)return;
+  projectPreviewBridgeReady=true;
+  window.addEventListener('message',e=>{
+    const frame=$('#projectFrame');
+    if(!frame||e.source!==frame.contentWindow)return;
+    const d=e.data||{};
+    const k=frame.dataset.projectKey;
+    const page=frame.dataset.projectPage;
+    if(!k||!page)return;
+    if(d.type==='arctic-preview-scroll'){
+      const x=Math.max(0,Math.round(Number(d.x)||0));
+      const y=Math.max(0,Math.round(Number(d.y)||0));
+      projectScrollBucketKey(k)[page]={x,y};
+      save();
+    }
+    if(d.type==='arctic-preview-ready'){
+      const pending=frame.__arcticPendingScroll;
+      const selector=frame.__arcticPendingSelector;
+      if(pending)sendProjectFrameScroll(frame,pending);
+      else if(selector){try{frame.contentWindow.postMessage({type:'arctic-preview-scroll-selector',selector},'*')}catch(err){}}
+    }
+  });
+}
+function sendProjectFrameScroll(frame,pos){
+  if(!frame||!pos)return;
+  const msg={type:'arctic-preview-set-scroll',x:Math.max(0,Math.round(pos.x||0)),y:Math.max(0,Math.round(pos.y||0))};
+  const send=()=>{try{frame.contentWindow?.postMessage(msg,'*')}catch(e){}};
+  send();
+  setTimeout(send,45);
+  setTimeout(send,130);
+  setTimeout(send,260);
+}
+function renderProjectPreview(s,forcedPos){
+  ensureProjectPreviewBridge();
+  const k=keyOf(s),phase=state.projectPreviewMode[k]||'after',page=state.projectPreviewPage[k]||s.page||'index';
+  state.projectPreviewMode[k]=phase;
+  state.projectPreviewPage[k]=page;
+  const frame=$('#projectFrame'),addr=$('#projectAddress');
+  if(!frame)return;
+  $$('[data-project-phase]').forEach(b=>b.classList.toggle('active',b.dataset.projectPhase===phase));
+  $$('[data-project-page]').forEach(b=>b.classList.toggle('active',b.dataset.projectPage===page));
+  const src=projectPreviewFile(s,phase,page);
+  const saved=forcedPos||projectScrollBucket(s)[page]||null;
+  addr.textContent=`${page}.html · ${phase==='before'?'до шага':'после шага'}`;
+  frame.dataset.projectKey=k;
+  frame.dataset.projectPage=page;
+  frame.dataset.projectPhase=phase;
+  frame.__arcticPendingScroll=saved;
+  frame.__arcticPendingSelector=!saved&&page===s.page&&s.focus?s.focus:null;
+  frame.onload=()=>{
+    if(frame.__arcticPendingScroll){
+      sendProjectFrameScroll(frame,frame.__arcticPendingScroll);
+    }else if(frame.__arcticPendingSelector){
+      try{frame.contentWindow?.postMessage({type:'arctic-preview-scroll-selector',selector:frame.__arcticPendingSelector},'*')}catch(e){}
+    }else{
+      sendProjectFrameScroll(frame,{x:0,y:0});
+    }
+    setTimeout(()=>{frame.style.visibility='visible'},80);
+  };
+  if(frame.getAttribute('src')!==src){
+    frame.style.visibility='hidden';
+    frame.src=src;
+  }else if(saved){
+    sendProjectFrameScroll(frame,saved);
+    frame.style.visibility='visible';
+  }else{
+    frame.style.visibility='visible';
+  }
+  save();
+}
+function projectContextMarkup(s){if(!s.contextCode)return '';const map=s.selectorMap?`<div class="project-selector-link"><span class="arrow">↳</span><div>${s.selectorMap}</div></div>`:'';return `<section class="project-context"><div class="project-context-head"><b>${s.contextTitle||'Что стилизуем'}</b><span class="project-context-badge">HTML проекта</span></div>${projectNumberedCode(s.contextCode,s.contextStartLine||1,s.contextType||'html','фрагмент разметки')}${map}<p class="project-context-note">${s.contextNote||''}</p></section>`}
+function projectHintMarkup(s,k){const shown=Number(state.projectHint?.[k]||0)>0;if(!shown)return '';return `<div class="project-hint-content"><span class="project-hint-label">Готовый фрагмент для сверки</span>Сначала сравните селекторы, затем свойства и их значения. Форматирование и количество пустых строк могут отличаться.</div>${projectNumberedCode(s.solution,s.solutionLine||s.startLine,s.codeType,'готовый фрагмент')}`}
+function renderProjectStep(s){
+ const k=keyOf(s),done=!!state.projectDone[k],level=state.projectHint?.[k]||0;
+ const hasContext=!!s.contextCode;$('#main').innerHTML=`<section class="project-workshop"><article class="project-guide"><header class="project-guide-head"><div class="project-kicker">Arctic Trips · ${s.chapter||'Практика'} · ${s.n} из ${PROJECT_COUNT}</div><h2>${esc(s.title)}</h2><span class="project-file">Работаем в: ${s.file}</span></header><div class="project-guide-scroll"><p>${s.lead}</p>${hasContext?projectContextMarkup(s):`<div class="project-reason"><b>Зачем это делаем</b><span>${s.why}</span></div>`}<div class="project-task-plain"><h3>${hasContext?'Что сделать в редакторе':'Что нужно сделать'}</h3><p>${s.action}</p></div>${hasContext?`<div class="project-reason"><b>Почему это изменение нужно</b><span>${s.why}</span></div>`:''}<div class="project-code-label"><b>Ориентир по ${s.codeType==='html'?'HTML':'CSS'}-файлу</b><span>Многоточия писать не нужно</span></div>${projectNumberedCode(projectScaffoldCode(s),s.startLine,s.codeType,'ориентир, не готовое решение')}<div class="project-hints"><button class="project-hint-btn" id="projectHintBtn" type="button">${level>0?'Скрыть помощь':'Показать готовый фрагмент'}</button></div><div id="projectHintArea">${projectHintMarkup(s,k)}</div><div class="project-observe"><b>После сохранения проверьте</b><span>${s.observe}</span></div>${done?'<div class="task-status self">готово</div>':''}</div></article><aside class="project-preview"><div class="project-preview-head"><b>Мини-браузер</b><div class="preview-toggle"><button type="button" data-project-page="index">Главная</button><button type="button" data-project-page="catalog">Каталог</button></div><span class="spacer"></span><div class="preview-toggle"><button type="button" data-project-phase="before">До</button><button type="button" data-project-phase="after">После</button></div></div><div class="project-browser"><div class="project-browser-bar"><span class="project-browser-dots">● ● ●</span><span class="project-address" id="projectAddress"></span></div><iframe class="project-frame" id="projectFrame" title="Предпросмотр Arctic Trips"></iframe></div></aside></section>`;
+ const hb=$('#projectHintBtn');if(hb)hb.onclick=()=>{state.projectHint[k]=Number(state.projectHint?.[k]||0)>0?0:1;save();refreshProjectHintUI(s)};$$('[data-project-phase]').forEach(b=>b.onclick=()=>{const pos=projectCurrentSavedScroll(s);rememberProjectFrameScroll(s);state.projectPreviewMode[k]=b.dataset.projectPhase;save();renderProjectPreview(s,pos)});$$('[data-project-page]').forEach(b=>b.onclick=()=>{const pos=projectCurrentSavedScroll(s),target=b.dataset.projectPage,bucket=projectScrollBucket(s);rememberProjectFrameScroll(s);if(pos)bucket[target]={...pos};state.projectPreviewPage[k]=target;save();renderProjectPreview(s,pos)});restoreProjectGuideScroll(s);renderProjectPreview(s)
+}
+function renderProjectFinish(){
+ $('#main').innerHTML=`<section class="project-finish"><div class="mini-badge">Проектная практика завершена</div><h1>Базовое оформление Arctic Trips готово</h1><p>Если вы выполняли шаги по порядку, обе HTML-страницы подключают <code>css/style.css</code>, а сам файл содержит полный набор базовых стилей этой пары. Форматирование и количество пустых строк могут отличаться — важны селекторы, свойства и значения.</p><div class="project-checklist"><div class="project-check"><i>✓</i><span><code>index.html</code> и <code>catalog.html</code> подключают один и тот же <code>./css/style.css</code>.</span></div><div class="project-check"><i>✓</i><span>В CSS используются только уже изученные базовые свойства: цвета, шрифты, текст и фон.</span></div><div class="project-check"><i>✓</i><span>На следующем занятии продолжим этот же проект и разберём каскад, наследование и специфичность.</span></div></div><div class="project-downloads"><a class="project-download primary" href="assets/project/ARCTIC_TRIPS_REFERENCE.zip" download>Скачать эталон для сверки</a></div><div class="project-final-preview"><iframe src="assets/project-preview/step-${String(PROJECT_COUNT).padStart(2,'0')}-index.html" title="Итоговый вид Arctic Trips после проектной практики"></iframe></div></section>`;
+}
+function renderSummary(s){$('#main').innerHTML=`<section class="summary-screen"><img id="summaryVisual" src="${s.visual}" alt="Итог первой пары CSS"></section>`;$('#summaryVisual').onclick=()=>openImage(s.visual)}
+function coreUnits(){return Object.values(state.coreScore).reduce((a,v)=>a+Number(v||0),0)}
+function gradeData(){const units=coreUnits(),corePoints=units*(80/CORE_COUNT),mini=Math.max(0,Math.min(20,Number(state.miniScore||0))),total=Math.round((corePoints+mini)*100)/100;let grade=total>=85?5:total>=65?4:total>=50?3:2;if(grade===5&&!state.miniDone)grade=4;return {units,corePoints,mini,total,grade}}
+function hintsUsed(){return Object.values(state.hint).filter(x=>Number(x)>0).length}
+function reportHtml(){const g=gradeData(),checks=state.miniChecks||[];return `<div class="report-grid"><div class="report-stat"><b>${fmt(g.corePoints)} / 80</b><span>основная часть</span></div><div class="report-stat"><b>${g.mini} / 20</b><span>итоговое мини-задание</span></div><div class="report-stat"><b>${fmt(g.total)} / 100</b><span>всего баллов</span></div><div class="report-stat"><b>${g.grade}</b><span>итоговая оценка</span></div></div><div class="grade-card"><div class="grade-number">${g.grade}</div><div class="grade-copy"><b>Текущая итоговая оценка</b><p>Основная часть даёт до 80 баллов, итоговое мини-задание — до 20.</p></div></div><section class="report-section"><h3>Личный код: ${esc(studentCode())}</h3></section><section class="report-section"><h3>Проверка итогового мини-задания</h3><div class="report-list">${checks.length?checks.map((x,i)=>`<div class="report-row"><span>${x.ok?'✓':'✕'}</span><span>${i+1}. ${esc(x.ok?x.msg:(x.bad||x.msg))}</span><span class="score">${x.ok?'✓':'—'}</span></div>`).join(''):'<div class="report-note">Итоговое мини-задание ещё не проверялось. Выполните работу в IDE, вставьте сюда CSS из styles.css и нажмите «Проверить CSS из IDE».</div>'}</div></section><section class="report-section"><div class="report-note"><strong>Как считается оценка.</strong> 0–49 → 2; 50–64 → 3; 65–84 → 4; 85–100 → 5. Для оценки 5 итоговое мини-задание должно быть выполнено полностью.</div></section>`}
+function fmt(n){const x=Number(n);if(Number.isInteger(x))return String(x);return x.toFixed(2).replace('.',',').replace(/0+$/,'').replace(/,$/,'')}
+function openReport(){if(!studentCode()){showStart();return}$('#reportSubtitle').textContent=`Личный код: ${studentCode()}`;$('#reportBody').innerHTML=reportHtml();$('#printReport').innerHTML=`<h1>Основы CSS: каскад, наследование и специфичность — отчёт</h1><p>Личный код: ${esc(studentCode())}</p>${reportHtml()}`;$('#reportModal').classList.add('show')}
+function closeReport(){$('#reportModal').classList.remove('show')}
+function renderDrawer(){let html='';const groups=[['Введение','intro'],[`Основная часть · ${CORE_COUNT} шагов`,'core'],['Итоговое мини-задание · 20 баллов','mini']];for(const [label,sec] of groups){html+=`<div class="section-label">${label}</div>`;steps.forEach((s,i)=>{if(s.section!==sec)return;const k=keyOf(s),projectDone=s.kind==='project'&&!!state.projectDone[k],done=!!state.done[k]||(s.section==='mini'&&state.miniDone)||projectDone;let status='';let cls='';if(s.section==='core'&&state.coreScore[k]!=null){status=state.coreScore[k]===1?`самостоятельно · ${fmt(80/CORE_COUNT)}`:`с решением · ${fmt(40/CORE_COUNT)}`;cls=state.coreScore[k]===1?'solved-self':'solved-solution'}else if(s.section==='mini')status=state.miniDone?'выполнено · 20':state.miniScore?`${state.miniScore} / 20 · для 5 нужно 10/10`:'обязательно для 5';else if(s.kind==='project')status=projectDone?'готово':'рекомендуется';else if(s.kind==='projectIntro')status='рекомендуется';else if(s.kind==='projectFinish')status='эталон для сверки';else if(done)status='выполнено';const num=s.section==='core'?String(s.n).padStart(2,'0'):s.section==='mini'?'★':s.kind==='project'?String(s.n).padStart(2,'0'):'•';html+=`<button class="step-link ${i===state.current?'active':''} ${done?'done':''} ${cls}" data-step="${i}"><span class="step-num">${num}</span><span class="step-name">${esc(s.title)}</span><span class="step-state">${status}</span></button>`})}$('#drawerList').innerHTML=html;$$('.step-link').forEach(b=>b.onclick=()=>{closeDrawer();go(+b.dataset.step)})}
+function closeDrawer(){$('#drawer').classList.remove('show')}
+function go(i){const s=currentStep();if(s?.kind==='editor')saveCurrentEditor(s);if(s?.kind==='project'){rememberProjectFrameScroll(s);rememberProjectGuideScroll(s)}state.current=Math.max(0,Math.min(steps.length-1,i));save();$('#hintBox').classList.remove('show');render()}
+$('#prevBtn').onclick=()=>go(state.current-1);$('#nextBtn').onclick=()=>{const s=currentStep();if(s.kind==='project'){state.projectDone[keyOf(s)]=true;save();renderDrawer()}go(state.current+1)};$('#allStepsBtn').onclick=()=>$('#drawer').classList.add('show');$('#drawerBackdrop').onclick=closeDrawer;$('#drawerClose').onclick=closeDrawer;$('#fullResetBtn').onclick=()=>{if(confirm('Сбросить весь прогресс и начать интерактив заново?')){localStorage.removeItem(STORAGE);location.reload()}};$('#imageClose').onclick=()=>$('#imageModal').classList.remove('show');$('#imageModal').onclick=e=>{if(e.target===$('#imageModal'))$('#imageModal').classList.remove('show')};$('#sampleClose').onclick=closeMiniSample;$('#sampleModal').onclick=e=>{if(e.target===$('#sampleModal'))closeMiniSample()};$('#toggleTheoryBtn').onclick=()=>{state.theoryCollapsed=!state.theoryCollapsed;save();render()};$('#reportBtn').onclick=openReport;$('#reportClose').onclick=closeReport;$('#reportModal').onclick=e=>{if(e.target===$('#reportModal'))closeReport()};$('#printReportBtn').onclick=()=>{window.print()};$('#hintClose').onclick=()=>$('#hintBox').classList.remove('show');
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('#imageModal').classList.remove('show');closeMiniSample();closeDrawer();closeReport()}if((e.ctrlKey||e.metaKey)&&e.key==='Enter'&&currentStep().kind==='editor'&&!['TEXTAREA','INPUT'].includes(document.activeElement?.tagName)){e.preventDefault();runCheck(currentStep())}});
+
+// Запускаем приложение только после объявления всех функций и переменных.
+// Это исключает обращение к projectPreviewBridgeReady до его инициализации.
+if(studentCode())enterApp();else showStart();
+</script>
+</body>
+</html>
