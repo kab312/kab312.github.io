@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <title>Морской клуб «Маяк» — Владивосток</title>
+  </head>
+  <body>
+    <header class="page-header">
+      <nav class="main-nav">
+        <a class="logo" href="#">
+          <img src="img/logo.svg" width="64" height="68" alt="Логотип морского клуба «Маяк»">
+        </a>
+        <input class="menu-toggle" type="checkbox" id="menu-toggle" aria-label="Открыть меню">
+        <label class="menu-button" for="menu-toggle"><span></span></label>
+        <ul class="site-navigation">
+          <li><a href="#club">О клубе</a></li>
+          <li><a href="#rent">Аренда</a></li>
+          <li><a href="#gallery">Галерея</a></li>
+          <li><a href="#contacts">Контакты</a></li>
+        </ul>
+        <a class="signin" href="#" aria-label="Кабинет пользователя">
+          <img src="img/user.svg" width="16" height="18" alt="">
+        </a>
+      </nav>
+    </header>
+    <main class="main-content">
+      <section class="hero">
+        <h1>Открой море Владивостока</h1>
+        <img src="img/main-photo-1.jpg" width="1170" height="466" alt="Парусное судно в море">
+      </section>
+      <section class="about" id="club">
+        <div class="about-content">
+          <p class="about-date">Май — октябрь</p>
+          <h2>Стань частью команды</h2>
+          <p>Если вы давно хотели попробовать яхтинг, начните с тренировок в заливе Петра Великого.
+            На занятиях вы познакомитесь с устройством яхты, работой с парусами и основами управления,
+            а затем сможете выйти в море вместе с командой клуба.</p>
+        </div>
+        <img class="about-img" src="img/blog-photo-1.jpg" width="600" height="262" alt="Мужчина на яхте смотрит в бинокль">
+      </section>
+      <section class="rent" id="rent">
+        <h2>Яхты и катера</h2>
+        <ul class="cards">
+          <li class="card">
+            <img class="card-img" src="img/photo-card-1.jpg" width="310" height="141" alt="Белая двухпалубная яхта">
+            <h3>Яхта Aurora 32</h3>
+            <p class="card-description">Комфортная яхта для прогулок по Амурскому заливу, вместимость — до 8 человек.</p>
+            <ul class="card-features">
+              <li class="feature-cabin">2 каюты</li>
+              <li class="feature-bed">4 спальных места</li>
+              <li class="feature-comfort">кондиционер и кухня</li>
+            </ul>
+            <p class="card-price"><span>Цена:</span><b>14 000 ₽/час</b></p>
+          </li>
+          <li class="card">
+            <img class="card-img" src="img/photo-card-2.jpg" width="310" height="141" alt="Белая двухпалубная яхта">
+            <h3>Катер Pacific 38</h3>
+            <p class="card-description">Просторный катер для морских прогулок и небольших путешествий вдоль побережья.</p>
+            <ul class="card-features">
+              <li class="feature-cabin">6 кают</li>
+              <li class="feature-deck">просторный флайбридж</li>
+              <li class="feature-kitchen">оборудованная кухня</li>
+            </ul>
+            <p class="card-price"><span>Цена:</span><b>25 000 ₽/час</b></p>
+          </li>
+          <li class="card">
+            <img class="card-img" src="img/photo-card-3.jpg" width="310" height="141" alt="Белая яхта">
+            <h3>Яхта Breeze 36</h3>
+            <p class="card-description">Парусная яхта для спокойных прогулок, тренировок и первого знакомства с яхтингом.</p>
+            <ul class="card-features">
+              <li class="feature-cabin">4 каюты</li>
+              <li class="feature-bed">6 спальных мест</li>
+              <li class="feature-comfort">кондиционер и кухня</li>
+            </ul>
+            <p class="card-price"><span>Цена:</span><b>18 000 ₽/час</b></p>
+          </li>
+          <li class="card">
+            <img class="card-img" src="img/photo-card-4.jpg" width="310" height="141" alt="Белый катер">
+            <h3>Катер Wave 30</h3>
+            <p class="card-description">Небольшой манёвренный катер для коротких маршрутов по бухтам Владивостока.</p>
+            <ul class="card-features">
+              <li class="feature-cabin">1 каюта</li>
+              <li class="feature-bed">2 спальных места</li>
+              <li class="feature-comfort">кондиционер и кухня</li>
+            </ul>
+            <p class="card-price"><span>Цена:</span><b>11 000 ₽/час</b></p>
+          </li>
+        </ul>
+      </section>
+      <section class="gallery" id="gallery">
+        <h2>Галерея</h2>
+        <div class="gallery-grid">
+          <div class="gallery-photo gallery-photo-main">
+            <img src="img/gallery-photo-1.jpg" width="970" height="690" alt="Яхта в море">
+          </div>
+          <div class="gallery-photo gallery-photo-wide">
+            <img src="img/gallery-photo-2.jpg" width="970" height="690" alt="Парусная яхта у побережья">
+          </div>
+          <div class="gallery-photo gallery-photo-small-1">
+            <img src="img/gallery-photo-3.jpg" width="970" height="690" alt="Морская прогулка на яхте">
+          </div>
+          <div class="gallery-photo gallery-photo-small-2">
+            <img src="img/gallery-photo-4.jpg" width="970" height="690" alt="Яхта на волнах">
+          </div>
+        </div>
+      </section>
+      <section class="contacts" id="contacts">
+        <div class="contacts-content">
+          <h2>Контакты</h2>
+          <ul class="contact-items">
+            <li><b>Адрес:</b> <address>г. Владивосток, Спортивная гавань</address></li>
+            <li><b>Телефон:</b> <a href="tel:+74230002026">+7 (423) 000-20-26</a></li>
+            <li><b>E-mail:</b> <a href="mailto:hello@mayak-club.ru">hello@mayak-club.ru</a></li>
+          </ul>
+          <ul class="social-list">
+            <li><a href="#" aria-label="ВКонтакте"><img src="img/vk.svg" alt="" width="20" height="12"></a></li>
+            <li><a href="#" aria-label="Telegram"><img src="img/telegram.svg" alt="" width="18" height="16"></a></li>
+            <li><a href="#" aria-label="YouTube"><img src="img/youtube.svg" alt="" width="19" height="14"></a></li>
+          </ul>
+        </div>
+        <div class="contacts-map" id="map"></div>
+      </section>
+    </main>
+    <footer class="main-footer">
+      <div class="footer-container">
+        <a class="footer-logo" href="#">
+          <img src="img/logo.svg" width="64" height="68" alt="Логотип морского клуба Маяк">
+        </a>
+        <p>Морской клуб Маяк © 2026</p>
+        <ul class="footer-navigation">
+          <li><a href="#club">О клубе</a></li>
+          <li><a href="#rent">Аренда</a></li>
+          <li><a href="#contacts">Контакты</a></li>
+        </ul>
+      </div>
+    </footer>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=YOUR_API_KEY&lang=ru_RU"></script>
+    <script>
+      ymaps.ready(function () {
+        const map = new ymaps.Map("map", {
+          center: [43.118708, 131.875998],
+          zoom: 14
+        });
+
+        const placemark = new ymaps.Placemark([43.118708, 131.875998]);
+        map.geoObjects.add(placemark);
+      });
+    </script>
+  </body>
+</html>
