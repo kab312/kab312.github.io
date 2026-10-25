@@ -222,7 +222,7 @@ function renameSavedStatus(source){
  return code();
 }
 let db={version:2,contentRevision:CONTENT_REVISION,index:0,unlocked:0,work:{},finish:false};
-let storageOK=true;
+let storageOK=true,resettingProgress=false;
 try {
  const old=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
  if(old?.version===2 && old.work && typeof old.work==='object') {
@@ -250,7 +250,7 @@ let selectedNode='',headExpanded=false,runPromise=Promise.resolve(),finishRun=nu
 const current=()=>steps[db.index];
 const work=()=>db.work[db.index];
 const files=()=>work().files;
-function save(){ try {localStorage.setItem(STORAGE_KEY,JSON.stringify(db));storageOK=true;}catch{storageOK=false;} }
+function save(){if(resettingProgress)return;try{localStorage.setItem(STORAGE_KEY,JSON.stringify(db));storageOK=true;}catch{storageOK=false;}}
 function serialize(doc){return '<!doctype html>\n'+doc.documentElement.outerHTML;}
 function ensureStep(index){
  if(db.work[index]) return;
@@ -642,8 +642,8 @@ $$('.inspect-tab').forEach(b=>b.onclick=()=>panel(b.dataset.panel));
 $('#prev').onclick=()=>{if(finished){render();return;}if(db.index>0){persistEditor();db.index--;render();}};
 $('#next').onclick=()=>{if(!work()?.complete||finished)return;persistEditor();if(db.index<steps.length-1){db.index++;render();}else if(steps.every((_,i)=>db.work[i]?.complete))finish();else showSteps();};
 $('#resetStep').onclick=()=>{if(!confirm('Вернуть начальный код этого шага? Изменения только на этом шаге будут удалены.'))return;work().files=clone(work().startFiles);work().complete=false;save();render();};
-$('#resetProgress').onclick=()=>{if(!confirm('Начать занятие заново? Все версии кода и выполненные шаги этого занятия будут удалены.'))return;try{localStorage.removeItem(STORAGE_KEY);}catch{}location.reload();};
-window.addEventListener('beforeunload',()=>{persistEditor();save();});
+$('#resetProgress').onclick=()=>{if(!confirm('Начать занятие заново? Все версии кода и выполненные шаги этого занятия будут удалены.'))return;resettingProgress=true;clearTimeout(autoTimer);try{localStorage.removeItem(STORAGE_KEY);}catch{}location.reload();};
+window.addEventListener('beforeunload',()=>{if(resettingProgress)return;persistEditor();save();});
 const restoreFinish=!!db.finish;render();if(restoreFinish&&steps.every((_,i)=>db.work[i]?.complete))finish();loadMonaco();
 })();
 </script>
