@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <title>HTML — связи, ресурсы и табличные данные</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <section class="start-screen" id="startScreen" aria-labelledby="startTitle">
+    <div class="start-card">
+      <div class="start-brand" aria-hidden="true">&lt;/&gt;</div>
+      <div class="start-copy">
+        <span class="start-kicker">Интерактивная пара</span>
+        <h1 id="startTitle">HTML</h1>
+        <p><strong>Связи, ресурсы и табличные данные.</strong></p>
+      </div>
+      <form class="student-form" id="studentForm" novalidate>
+        <label>
+          <span>Личный код</span>
+          <input id="studentCode" name="personalCode" type="text" autocomplete="off" maxlength="60" required>
+        </label>
+        <p class="start-error" id="startError" aria-live="polite"></p>
+        <button class="start-button" id="startButton" type="submit" disabled>Начать</button>
+      </form>
+      <p class="start-note">Учебные шаги 1–7 и 9–11 проходят без баллов. Оценка складывается только из трёх миссий: 5 + 4 + 6 = 15 баллов. Готовое решение в миссии уменьшает её баллы вдвое.</p>
+    </div>
+  </section>
+
+  <div class="app-shell" id="appShell" hidden>
+    <header class="topbar">
+      <div class="brand-block" aria-label="Название интерактива">
+        <span class="brand-mark" aria-hidden="true">&lt;/&gt;</span>
+        <div>
+          <strong>HTML</strong>
+          <span>Связи, ресурсы и табличные данные</span>
+        </div>
+      </div>
+
+      <div class="progress-shell" aria-label="Прогресс занятия">
+        <div class="progress-meta">
+          <span id="stepCounter">Шаг 1 из 15</span>
+          <span id="sectionLabel">Ссылки и пути</span>
+          <span id="progressPercent">0%</span>
+        </div>
+        <div class="progress-track" aria-hidden="true"><span id="progressBar"></span></div>
+      </div>
+
+      <div class="topbar-actions">
+        <span class="student-chip" id="studentChip" title="Личный код"></span>
+        <button class="ghost-button theory-toggle-button" id="theoryToggleButton" type="button" aria-pressed="false" aria-controls="theoryCard stepImage">
+          <span class="theory-toggle-icon" aria-hidden="true">◐</span>
+          <span id="theoryToggleLabel">Скрыть теорию</span>
+        </button>
+        <button class="ghost-button" id="stepsButton" type="button" aria-haspopup="dialog" aria-controls="stepsDrawer">
+          Все шаги
+        </button>
+        <button class="icon-button" id="resetButton" type="button" title="Начать заново" aria-label="Начать заново">
+          ↺
+        </button>
+      </div>
+    </header>
+
+    <main class="lesson" id="lesson" tabindex="-1">
+      <section class="left-column" aria-label="Теория и визуализация">
+        <div class="step-heading">
+          <span class="eyebrow" id="stepEyebrow">Связи между страницами</span>
+          <h1 id="stepTitle">Ссылка превращает текст в переход</h1>
+          <p class="lead" id="stepLead"></p>
+        </div>
+
+        <div class="theory-card" id="theoryCard"></div>
+
+        <section class="visual-panel" aria-labelledby="stepTitle">
+          <div class="visual-frame">
+            <img id="stepImage" src="assets/images/01.jpg" alt="" width="1672" height="941" tabindex="0" role="button" aria-label="Открыть визуализацию крупнее">
+          </div>
+        </section>
+      </section>
+
+      <section class="content-panel">
+        <section class="task-card" id="taskCard" aria-labelledby="taskTitle">
+          <div class="task-heading">
+            <h2 class="task-kicker" id="taskTitle">Мини-задача</h2>
+            <span class="task-status" id="taskStatus" aria-live="polite">Не выполнено</span>
+          </div>
+          <div id="taskBody"></div>
+          <div class="feedback-row" id="feedbackRow">
+            <div class="feedback-action" id="feedbackAction"></div>
+            <div class="feedback" id="feedback" aria-live="polite" aria-hidden="true"></div>
+          </div>
+          <div class="help-row" id="helpRow">
+            <button class="small-button" id="hintButton" type="button">Показать подсказку</button>
+            <div class="help-box" id="helpBox" aria-live="polite" aria-hidden="true"></div>
+          </div>
+        </section>
+
+        <section class="preview-card" id="previewCard" aria-label="Предпросмотр результата" hidden>
+          <div class="preview-toolbar">
+            <span class="preview-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="preview-address" id="previewAddress">Результат в браузере</span>
+            <div class="semantic-preview-controls" id="semanticPreviewControls" hidden aria-label="Режим предпросмотра">
+              <button class="preview-mode-button is-active" id="previewModeBrowser" type="button">Браузер</button>
+              <button class="preview-mode-button" id="previewModeStructure" type="button">Структура</button>
+              <button class="preview-article-button" id="previewArticleButton" type="button" hidden>Показать article отдельно</button>
+            </div>
+          </div>
+          <div class="preview-stage" id="previewStage">
+            <iframe id="previewFrame" title="Предпросмотр HTML-кода" sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="lesson-nav" id="lessonNav">
+      <div class="nav-group">
+        <button class="nav-button secondary" id="prevButton" type="button">← Назад</button>
+        <button class="nav-button primary" id="nextButton" type="button" disabled>Далее →</button>
+      </div>
+    </footer>
+  </div>
+
+  <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
+  <aside class="steps-drawer" id="stepsDrawer" aria-label="Все шаги" aria-modal="true" role="dialog" hidden>
+    <div class="drawer-header">
+      <div>
+        <strong>Маршрут пары</strong>
+        <span>13 шагов + результат + работа на 5</span>
+      </div>
+      <button class="icon-button" id="closeDrawerButton" type="button" aria-label="Закрыть список шагов">×</button>
+    </div>
+    <nav id="stepsList" class="steps-list" aria-label="Шаги занятия"></nav>
+  </aside>
+
+  <div class="image-modal" id="imageModal" role="dialog" aria-modal="true" aria-label="Увеличенная визуализация" hidden>
+    <button class="modal-close" id="imageCloseButton" type="button" aria-label="Закрыть">×</button>
+    <img id="modalImage" alt="" width="1672" height="941">
+  </div>
+
+  <section class="print-report" id="printReport" aria-hidden="true"></section>
+
+  <script src="assets/js/preview-assets.js" defer></script>
+  <script src="assets/js/app.js" defer></script>
+</body>
+</html>
