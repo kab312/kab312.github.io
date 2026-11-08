@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>CSS с нуля · ДУП.04</title>
+<style>
+:root{
+  --bg:#0d1020;--bg2:#11162a;--panel:#151b31;--panel2:#1a213a;--panel3:#0f1427;
+  --line:#2a3558;--line2:#3b4a77;--text:#f5f7ff;--muted:#aeb8d3;--quiet:#7b87a8;
+  --blue:#4e8cff;--blue2:#76b5ff;--violet:#8b6dff;--green:#45d498;--red:#ff6b7a;--amber:#ffbe55;
+  --shadow:0 18px 60px rgba(0,0,0,.28);--radius:20px;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:radial-gradient(circle at 15% 0%,#192650 0,transparent 35%),radial-gradient(circle at 95% 15%,#2a1f57 0,transparent 28%),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.app{height:100vh;display:grid;grid-template-rows:auto auto 1fr auto;overflow:hidden}
+.topbar{min-height:58px;display:flex;align-items:center;gap:14px;padding:9px 18px;border-bottom:1px solid rgba(255,255,255,.07);background:rgba(11,15,30,.88);backdrop-filter:blur(16px);z-index:5}
+.brand{display:flex;align-items:center;gap:10px;min-width:230px}.brand-mark{width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--violet));display:grid;place-items:center;font-weight:900;box-shadow:0 8px 30px rgba(82,116,255,.35)}
+.brand-copy b{display:block;font-size:15px}.brand-copy span{display:block;color:var(--quiet);font-size:12px;margin-top:1px}
+.top-spacer{flex:1}.chip{border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:999px;padding:7px 11px;font-size:13px;white-space:nowrap}.chip.core{border-color:rgba(78,140,255,.45);color:#bdd6ff;background:rgba(78,140,255,.12)}.chip.home{border-color:rgba(139,109,255,.45);color:#d7caff;background:rgba(139,109,255,.12)}
+.icon-btn{height:38px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:12px;padding:0 12px}.icon-btn:hover{border-color:var(--line2);background:var(--panel2)}
+.progress-row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:8px 18px;background:rgba(13,17,34,.92);border-bottom:1px solid rgba(255,255,255,.05)}
+.progress-label{font-size:13px;color:var(--muted);min-width:120px}.progress-track{height:7px;background:#212a47;border-radius:999px;overflow:hidden}.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--violet));border-radius:999px;transition:width .25s ease}.progress-count{font-size:13px;color:var(--quiet);min-width:72px;text-align:right}
+.main{min-height:0;display:grid;grid-template-columns:minmax(380px,44%) minmax(0,56%);gap:12px;padding:12px 14px}.app.theory-collapsed .main{grid-template-columns:1fr}.app.theory-collapsed .theory-panel{display:none}.app.theory-collapsed .practice-panel{display:grid;grid-template-rows:auto 1fr}.app.theory-collapsed .practice-work{grid-template-columns:minmax(0,1fr) minmax(360px,1fr);grid-template-rows:1fr}.app.theory-collapsed .editor-card,.app.theory-collapsed .preview-card{min-height:0}
+.panel{min-height:0;border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(180deg,rgba(24,31,55,.98),rgba(17,23,42,.98));box-shadow:var(--shadow);overflow:hidden}
+.theory-panel{display:grid;grid-template-rows:auto 1fr}.panel-head{display:flex;align-items:flex-start;gap:12px;padding:15px 16px 12px;border-bottom:1px solid var(--line)}.step-kicker{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--blue2);margin-bottom:4px}.step-title{margin:0;font-size:23px;line-height:1.12;letter-spacing:-.02em}.head-actions{margin-left:auto;display:flex;gap:7px}.theory-scroll{overflow:auto;padding:16px;scrollbar-width:thin;scrollbar-color:#3b486e transparent}.theory-copy{font-size:16px;line-height:1.55;color:#d7def2}.theory-copy p{margin:0 0 12px}.theory-copy strong{color:#fff}.theory-copy code,.task-copy code,.feedback code,.mini-code{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;background:#0c1225;border:1px solid #293557;border-radius:7px;padding:1px 5px;color:#cbd9ff}.code-example{background:#0a1020;border:1px solid #273456;border-radius:14px;padding:12px 14px;margin:12px 0;color:#dce7ff;overflow:auto;font-family:"SFMono-Regular",Consolas,monospace;white-space:pre-wrap;line-height:1.45;font-size:14px}.callout{border-left:3px solid var(--blue);background:rgba(78,140,255,.09);border-radius:0 12px 12px 0;padding:10px 12px;margin:12px 0;color:#dce8ff}.visual-card{margin-top:15px;border:1px solid var(--line);border-radius:16px;background:#0a0f20;overflow:hidden;position:relative}.visual-card img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;cursor:zoom-in}.visual-card img:focus-visible{outline:3px solid var(--blue);outline-offset:-3px}.visual-card button{position:absolute;right:9px;bottom:9px;border:1px solid rgba(255,255,255,.2);background:rgba(10,15,32,.78);color:white;border-radius:10px;padding:7px 9px;backdrop-filter:blur(8px)}
+.practice-panel{display:grid;grid-template-rows:auto 1fr;min-height:0}.app.mini-scroll .practice-panel{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#b8c7da transparent}.app.mini-scroll .practice-work{min-height:560px}.task-card{padding:13px 15px;border-bottom:1px solid var(--line);background:rgba(12,17,33,.52)}.task-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}.task-tag{font-size:12px;font-weight:800;color:#bcd4ff;background:rgba(78,140,255,.12);border:1px solid rgba(78,140,255,.34);padding:5px 8px;border-radius:999px}.task-copy{color:#e4e9f7;font-size:15px;line-height:1.45}.task-copy p{margin:0 0 8px}.task-copy p:last-child{margin-bottom:0}.practice-work{min-height:0;display:grid;grid-template-rows:minmax(230px,48%) minmax(220px,52%)}
+.editor-card,.preview-card{min-height:0;display:grid;grid-template-rows:auto 1fr;border-bottom:1px solid var(--line)}.preview-card{border-bottom:0}.subhead{height:40px;display:flex;align-items:center;gap:9px;padding:0 12px;background:#11172a;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}.subhead b{color:#f5f7ff}.subhead .right{margin-left:auto;display:flex;gap:7px;align-items:center}.dot{width:8px;height:8px;border-radius:50%}.dot.r{background:#ff6a70}.dot.y{background:#ffc85a}.dot.g{background:#57d783}
+.editor-wrap{position:relative;min-height:0;background:#080d1a;overflow:hidden;--editor-pad-y:14px;--editor-gutter:48px;--editor-font:14px;--editor-leading:1.52}.editor-highlight,.editor-input,.editor-lines{position:absolute;margin:0;border:0;white-space:pre;font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:var(--editor-font);line-height:var(--editor-leading);tab-size:2}.editor-highlight,.editor-input{inset:0;padding:var(--editor-pad-y) 16px var(--editor-pad-y) calc(var(--editor-gutter) + 12px);overflow:auto}.editor-highlight{pointer-events:none;color:#dbe5ff;z-index:1}.editor-input{resize:none;outline:none;background:transparent;color:transparent;-webkit-text-fill-color:transparent;caret-color:#fff;z-index:3}.editor-input::selection{background:rgba(79,142,255,.34)}.editor-lines{left:0;top:0;bottom:0;width:var(--editor-gutter);padding:var(--editor-pad-y) 10px var(--editor-pad-y) 0;overflow:hidden;text-align:right;color:#657594;background:#0d162c;border-right:1px solid rgba(255,255,255,.08);pointer-events:none;user-select:none;z-index:4}.editor-active-line{position:absolute;left:var(--editor-gutter);right:0;height:calc(var(--editor-font) * var(--editor-leading));background:rgba(111,214,255,.055);border-top:1px solid rgba(111,214,255,.035);border-bottom:1px solid rgba(111,214,255,.035);pointer-events:none;z-index:0;transition:top .05s linear}.editor-position{font-family:"SFMono-Regular",Consolas,monospace;font-size:11px;color:#7087a0;background:#eaf0f7;border:1px solid #d5e0ec;border-radius:7px;padding:4px 7px;white-space:nowrap}.editor-help{font-size:11px;color:#8295ab;white-space:nowrap}.tok-tag{color:#ff79c6}.tok-name{color:#8be9fd}.tok-attr{color:#50fa7b}.tok-str{color:#f1fa8c}.tok-comment{color:#6272a4;font-style:italic}.editor-fallback{color:#e3e9fa!important;-webkit-text-fill-color:#e3e9fa!important}.editor-wrap:focus-within{box-shadow:inset 0 0 0 2px rgba(111,214,255,.18)}.preview-body{min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 220px;background:#dfe5f0}.browser-wrap{min-height:0;padding:9px;display:grid;grid-template-rows:auto 1fr}.browser-bar{height:34px;border:1px solid #bcc6d9;border-bottom:0;border-radius:12px 12px 0 0;background:#d0d6e2;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:10px;padding:0 10px}.browser-dots{font-size:11px;letter-spacing:2px;color:#65718a}.address{height:20px;border-radius:999px;background:#e7ebf2;color:#8993a8;font-size:11px;padding:3px 9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.preview-frame{width:100%;height:100%;border:1px solid #bcc6d9;background:#fff;border-radius:0 0 12px 12px}.data-panel{border-left:1px solid #bdc7d7;background:#f5f7fb;color:#1a2338;padding:10px;overflow:auto}.data-title{font-size:13px;font-weight:800;margin-bottom:8px}.data-empty{font-size:12px;color:#7b869d;line-height:1.4}.data-line{font-family:"SFMono-Regular",Consolas,monospace;font-size:12px;background:white;border:1px solid #d6deeb;border-radius:8px;padding:7px 8px;margin-bottom:6px;overflow-wrap:anywhere}.data-line b{color:#654cff}.data-actions{margin-bottom:9px}.small-btn{border:1px solid #bcc8dc;background:#fff;color:#273450;border-radius:9px;padding:6px 8px;font-size:12px}.small-btn:hover{background:#eef3fb}
+.footer{min-height:64px;display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;padding:9px 16px;border-top:1px solid rgba(255,255,255,.07);background:rgba(11,15,30,.94)}.footer-left{min-width:0;display:flex;align-items:center;gap:8px}.footer-center{display:flex;gap:8px;justify-content:center}.footer-right{display:flex;justify-content:flex-end;gap:8px}.btn{min-height:40px;border-radius:11px;border:1px solid var(--line);padding:8px 13px;background:var(--panel);color:var(--text);font-weight:700}.btn:hover{border-color:var(--line2);background:var(--panel2)}.btn.primary{border-color:#4e8cff;background:linear-gradient(135deg,#3276ff,#6d66ff);box-shadow:0 8px 24px rgba(62,108,255,.22)}.btn.success{border-color:#2fac7d;background:rgba(69,212,152,.14);color:#bfffe2}.btn:disabled{opacity:.34;cursor:not-allowed}.feedback{min-width:0;max-width:520px;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.feedback.good{color:#9ff0cd}.feedback.bad{color:#ffadb5}.hint-box{position:fixed;left:50%;bottom:78px;transform:translateX(-50%);z-index:25;width:min(660px,calc(100vw - 30px));background:#121a31;border:1px solid #405180;border-radius:16px;box-shadow:0 20px 80px rgba(0,0,0,.46);padding:14px 16px;color:#e7ecfb;display:none}.hint-box.show{display:block}.hint-box b{display:block;margin-bottom:5px}.hint-box p{margin:0;color:#c9d2e8;line-height:1.45}.hint-close{position:absolute;right:10px;top:8px;border:0;background:transparent;color:#96a3c2;font-size:20px}
+.drawer{position:fixed;inset:0;z-index:40;display:none}.drawer.show{display:block}.drawer-backdrop{position:absolute;inset:0;background:rgba(4,7,16,.66);backdrop-filter:blur(5px)}.drawer-panel{position:absolute;left:0;top:0;bottom:0;width:min(430px,92vw);background:#10162a;border-right:1px solid #344266;box-shadow:30px 0 80px rgba(0,0,0,.35);display:grid;grid-template-rows:auto 1fr}.drawer-head{display:flex;align-items:center;gap:10px;padding:15px;border-bottom:1px solid var(--line)}.drawer-head h2{font-size:18px;margin:0}.drawer-list{overflow:auto;padding:10px}.section-label{font-size:11px;font-weight:900;letter-spacing:.08em;color:#7180a4;text-transform:uppercase;padding:12px 8px 6px}.step-link{width:100%;display:grid;grid-template-columns:28px 1fr auto;gap:9px;align-items:center;text-align:left;border:1px solid transparent;background:transparent;color:#d9e0f3;border-radius:11px;padding:8px;margin:2px 0}.step-link:hover{background:#171f38;border-color:#283659}.step-link.active{background:rgba(78,140,255,.12);border-color:rgba(78,140,255,.45)}.step-num{width:27px;height:27px;border-radius:9px;background:#202943;display:grid;place-items:center;font-size:12px;color:#aab6d3}.step-link.done .step-num{background:rgba(69,212,152,.14);color:#80efbd}.step-name{font-size:13px;line-height:1.25}.step-state{font-size:12px;color:#6f7b9e}
+.modal{position:fixed;inset:0;z-index:60;background:rgba(3,5,12,.9);display:none;place-items:center;padding:20px}.modal.show{display:grid}.modal img{max-width:95vw;max-height:92vh;border-radius:14px;box-shadow:0 30px 100px #000}.modal button{position:absolute;right:18px;top:14px;border:1px solid #465373;background:#141b30;color:#fff;border-radius:12px;padding:9px 12px}
+.cover{grid-column:1/-1;display:grid;grid-template-columns:1.08fr .92fr;gap:20px;align-items:stretch;min-height:0}.cover-copy,.cover-demo{border:1px solid var(--line);border-radius:24px;background:linear-gradient(160deg,#171f38,#11162a);box-shadow:var(--shadow);padding:28px;overflow:auto}.cover-eyebrow{color:#89b6ff;font-size:13px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.cover h1{font-size:clamp(38px,4vw,64px);line-height:.98;margin:14px 0 14px;letter-spacing:-.045em}.cover p{font-size:18px;line-height:1.55;color:#c9d2e8;max-width:730px}.cover-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}.cover-stat{border:1px solid #2e3a60;border-radius:14px;background:#10162b;padding:12px}.cover-stat b{display:block;font-size:20px}.cover-stat span{font-size:12px;color:#8f9bbc}.mock-form{height:100%;min-height:430px;background:linear-gradient(145deg,#eaf2ff,#f4efff);color:#18223a;border-radius:20px;padding:18px;display:flex;flex-direction:column}.mock-window{background:#fff;border:1px solid #d3dceb;border-radius:17px;box-shadow:0 18px 50px rgba(55,76,118,.16);overflow:hidden;margin:auto;width:100%;max-width:570px}.mock-window-top{height:38px;background:#425b86;display:flex;align-items:center;padding:0 12px;color:#dbe6f6;font-size:11px}.mock-window-body{padding:20px}.mock-window h3{margin:0 0 4px;font-size:24px}.mock-window p{margin:0 0 14px;color:#6d7992;font-size:13px}.mf-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mf label{display:block;font-size:12px;font-weight:700;margin-bottom:4px}.fake-input{height:36px;border:1px solid #b7c6de;border-radius:8px;background:#fff}.fake-button{margin-top:14px;background:linear-gradient(135deg,#397ef8,#7659e8);height:42px;border-radius:9px;color:#fff;display:grid;place-items:center;font-weight:800}.flow-line{display:flex;align-items:center;gap:8px;color:#a5b0c9;font-family:monospace;margin-top:18px;flex-wrap:wrap}.flow-node{border:1px solid #344265;background:#11182c;border-radius:10px;padding:7px 9px;color:#dae3f5}.flow-arrow{color:#658dff}
+.overview-wrap{grid-column:1/-1;display:grid;grid-template-columns:1fr .9fr;gap:12px;min-height:0}.overview-card{border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,#171f38,#11172b);padding:22px;overflow:auto}.overview-card h1{font-size:34px;margin:0 0 9px}.overview-card p{color:#cbd4e8;font-size:17px;line-height:1.5}.overview-form{background:#f6f8fc;color:#202a40;border-radius:16px;padding:18px;border:1px solid #ccd5e4}.overview-form label{font-size:12px;font-weight:700;display:block;margin:7px 0 4px}.overview-form input,.overview-form select,.overview-form textarea{width:100%;border:1px solid #b7c2d5;border-radius:8px;padding:8px;background:white}.overview-form fieldset{border:1px solid #c4cede;border-radius:10px;margin:10px 0;padding:8px 10px}.overview-form legend{font-weight:700}.overview-form button{border:0;border-radius:9px;background:#3479ee;color:white;padding:10px 16px;font-weight:800;margin-top:12px;width:100%}.overview-form-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}.overview-form-head h2{margin:2px 0 0;font-size:22px;color:#0b3558}.overview-mini{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#006bff}.overview-status{font-size:11px;font-weight:700;color:#476788;background:#eef3f8;border:1px solid #dbe5ef;border-radius:999px;padding:5px 8px;white-space:nowrap}.overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}.overview-field{margin:0!important;display:flex!important;flex-direction:column;gap:5px}.overview-field>span{font-size:12px;font-weight:800;color:#0b3558}.overview-field input,.overview-field select,.overview-field textarea{box-sizing:border-box;min-height:38px;color:#0b3558}.overview-span{grid-column:1/-1}.overview-choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.overview-choice-grid fieldset{margin:0;padding:10px 12px;background:#fff;border-color:#d6e0ec}.overview-choice-grid legend{font-size:12px;color:#0b3558;padding:0 4px}.overview-option{display:flex!important;align-items:center;gap:7px;margin:2px 0!important;font-size:13px!important}.overview-option input,.overview-rules input{width:auto!important;margin:0}.overview-comment{margin-top:10px!important}.overview-rules{display:flex!important;align-items:center;gap:8px;margin:10px 0 0!important;padding:9px 10px;border-radius:9px;background:#f2f7ff;color:#0b3558}.overview-form textarea{resize:none}.data-sample{font-family:monospace;background:#0b1121;border:1px solid #273657;border-radius:14px;padding:14px;color:#dbe7ff;line-height:1.7}.big-action{margin-top:18px}.big-action .btn{min-height:46px;padding:10px 18px;font-size:15px}
+.ide-screen{grid-column:1/-1;border:1px solid var(--line);border-radius:22px;background:linear-gradient(160deg,#171f39,#10162a);box-shadow:var(--shadow);padding:24px;overflow:auto}.ide-screen h1{font-size:36px;margin:0 0 8px}.ide-screen .lead{font-size:18px;line-height:1.5;color:#cbd5e9;max-width:980px}.ide-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin:18px 0}.ide-brief{border:1px solid #2d3a5d;background:#10172c;border-radius:14px;padding:15px}.ide-brief h3{margin:0 0 7px;color:#dce8ff}.ide-brief p{margin:0;color:#b9c4dc;line-height:1.5}.download-card{display:flex;align-items:center;gap:14px;border:1px solid rgba(69,212,152,.35);background:rgba(69,212,152,.08);border-radius:16px;padding:14px;margin-top:16px}.download-card .btn{margin-left:auto}.selfcheck{margin-top:16px;border-top:1px solid #283659;padding-top:13px;color:#aeb9d2}.selfcheck summary{cursor:pointer;color:#d9e4f8;font-weight:800}.checks{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:10px}.check{background:#11192e;border:1px solid #283758;border-radius:10px;padding:9px;font-size:13px;color:#b8c4dc}
+.special-wrap{min-height:0;overflow:auto;padding:16px}.predict-card{display:grid;grid-template-columns:1fr 1fr;gap:12px}.predict-side{border:1px solid var(--line);border-radius:14px;background:#11172b;padding:13px}.predict-side textarea{width:100%;min-height:190px;background:#090f1e;color:#e5edff;border:1px solid #344466;border-radius:10px;padding:11px;font-family:monospace;line-height:1.5;resize:vertical}.result-list{margin-top:10px}.result-row{background:#0b1122;border:1px solid #2a385b;border-radius:9px;padding:8px;margin-bottom:6px;font-family:monospace;font-size:13px}.mission-done{padding:20px;border:1px solid rgba(69,212,152,.3);border-radius:16px;background:rgba(69,212,152,.07);text-align:center}.mission-done h2{margin-top:0}.mission-done p{color:#bdc8dc;line-height:1.55}
+@media(max-width:980px){
+  .app{height:auto;min-height:100vh;overflow:visible;grid-template-rows:auto auto auto auto}.main{grid-template-columns:1fr;padding:9px}.panel{min-height:620px}.theory-panel{min-height:560px}.practice-panel{min-height:850px}.practice-work{grid-template-rows:390px 430px}.footer{position:sticky;bottom:0;z-index:20;grid-template-columns:1fr auto;background:rgba(11,15,30,.97)}.footer-left{display:none}.footer-center{justify-content:flex-start}.footer-right{grid-column:2}.cover,.overview-wrap{grid-template-columns:1fr}.cover-demo{min-height:520px}.app.theory-collapsed .practice-work{grid-template-columns:1fr;grid-template-rows:410px 440px}.ide-grid{grid-template-columns:1fr}.checks{grid-template-columns:1fr}.predict-card{grid-template-columns:1fr}.preview-body{grid-template-columns:1fr}.data-panel{border-left:0;border-top:1px solid #bdc7d7;max-height:170px}.brand-copy span{display:none}.chip{display:none}}
+@media(max-width:600px){.overview-grid,.overview-choice-grid{grid-template-columns:1fr}.overview-span{grid-column:auto}.overview-form-head{flex-direction:column}.topbar{padding:8px 10px}.brand{min-width:auto}.brand-copy b{font-size:13px}.progress-row{padding:7px 10px}.progress-label{display:none}.main{padding:7px}.panel-head{padding:12px}.step-title{font-size:20px}.theory-scroll{padding:13px}.theory-copy{font-size:15px}.footer{padding:8px}.btn{padding:8px 9px;font-size:13px}.cover-copy,.cover-demo{padding:18px}.cover-steps{grid-template-columns:1fr}.ide-screen{padding:17px}.ide-screen h1{font-size:29px}.mf-grid{grid-template-columns:1fr}}
+
+/* ===== Light course shell · aligned with previous HTML interactives ===== */
+:root{
+  --bg:#f7f9fc;--bg2:#f4f7fb;--panel:#ffffff;--panel2:#f4f7fb;--panel3:#eef3f8;
+  --line:#dbe4f0;--line2:#b9c9dd;--text:#0b3558;--muted:#476788;--quiet:#7890aa;
+  --blue:#006bff;--blue2:#2f83ff;--violet:#7657e8;--green:#198754;--red:#c33d4b;--amber:#a46a00;
+  --shadow:rgba(71,103,136,.04) 0 4px 5px,rgba(71,103,136,.03) 0 8px 15px,rgba(71,103,136,.08) 0 30px 50px;
+  --radius:20px;
+}
+html,body{background:radial-gradient(circle at 7% 2%,rgba(0,153,255,.07),transparent 22rem),radial-gradient(circle at 97% 3%,rgba(229,92,255,.06),transparent 24rem),#f7f9fc;color:var(--text)}
+.app{background:transparent}.app.app-hidden{display:none}
+.topbar{border-bottom:1px solid var(--line);background:rgba(255,255,255,.92);box-shadow:0 4px 18px rgba(71,103,136,.04)}
+.brand{min-width:255px}.brand-mark{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,#006bff,#7657e8);color:#fff;box-shadow:0 10px 24px rgba(0,107,255,.20)}
+.brand-copy b{font-size:16px;color:var(--text)}.brand-copy span{color:var(--muted)}
+.icon-btn{height:42px;border:1px solid var(--line);background:#fff;color:var(--text);border-radius:12px;font-weight:800;transition:.18s ease}
+.icon-btn:hover{border-color:#afc3dd;background:#f4f7fb;transform:translateY(-1px)}
+.student-chip{max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:7px 10px;border-radius:999px;background:#eef2f7;color:#476788;font-size:12px;font-weight:750;border:1px solid #e0e7f0}
+.chip{border-color:var(--line);background:#f4f7fb;color:#476788}.chip.core{border-color:#c9d8ff;color:#004eba;background:#eef3ff}.chip.home{border-color:#ddd2ff;color:#6846c9;background:#f5f1ff}
+.progress-row{background:rgba(255,255,255,.92);border-bottom:1px solid var(--line)}.progress-label{color:var(--muted)}.progress-track{background:#e7edf5}.progress-fill{background:linear-gradient(90deg,#006bff,#7657e8)}.progress-count{color:var(--quiet)}
+.panel,.cover-copy,.cover-demo,.overview-card,.ide-screen{border-color:var(--line);background:#fff;box-shadow:var(--shadow)}
+.panel-head{border-bottom-color:var(--line)}.step-kicker,.cover-eyebrow{color:#006bff}.step-title,.cover h1,.overview-card h1,.ide-screen h1{color:var(--text)}
+.theory-copy{color:#294b6b}.theory-copy strong{color:#0b3558}.theory-copy code,.task-copy code,.feedback code,.mini-code{background:#edf2f7;border-color:#dce5ef;color:#184f89}
+.code-example{background:#101a33;border-color:#c8d3e5;color:#e9efff}
+.callout{border-left-color:#006bff;background:#eef5ff;color:#244c73}
+.visual-card{border-color:var(--line);background:#fff;box-shadow:0 12px 32px rgba(71,103,136,.08)}.visual-card button{border-color:#d4e0ed;background:rgba(255,255,255,.94);color:#0b3558}
+.task-card{border-bottom-color:var(--line);background:#fbfcfe}.task-tag{color:#004eba;background:#eef3ff;border-color:#c9d8ff}.task-copy{color:#294b6b}
+.subhead{background:#f4f7fb;border-bottom-color:var(--line);color:#607996}.subhead b{color:#0b3558}
+.editor-card,.preview-card{border-bottom-color:var(--line)}
+/* Keep the code editor dark, as in the first two interactives. */
+.editor-wrap{background:#101a33}.editor-highlight{color:#e9efff}.editor-input{caret-color:#fff}.tok-tag{color:#6fd6ff}.tok-name{color:#8aa4ff}.tok-attr{color:#c4a7ff}.tok-str{color:#ffd479}.tok-comment{color:#7f91ad}.editor-fallback{color:#e9efff!important;-webkit-text-fill-color:#e9efff!important}
+.preview-body{background:#eef2f7}.data-panel{background:#f8fafc;color:#173754}.data-title{color:#0b3558}.data-empty{color:#6e829a}.data-line{border-color:#d8e2ee;background:#fff;color:#24465f}.data-line b{color:#006bff}.small-btn{border-color:#d4e0ed;background:#fff;color:#0b3558}.small-btn:hover{background:#eef3f8}
+.footer{border-top:1px solid var(--line);background:rgba(255,255,255,.96);box-shadow:0 -6px 22px rgba(71,103,136,.05)}.btn{border-color:var(--line);background:#fff;color:var(--text);border-radius:12px}.btn:hover{border-color:#afc3dd;background:#f5f8fb}.btn.primary{border-color:#006bff;background:#006bff;color:#fff;box-shadow:0 12px 26px rgba(0,107,255,.18)}.btn.success{border-color:#9ed7bd;background:#e9f7ef;color:#146c43}.feedback{color:var(--muted)}.feedback.good{color:#198754}.feedback.bad{color:#c33d4b}
+.hint-box{background:#fff;border-color:#cad8e8;box-shadow:0 22px 70px rgba(26,45,82,.18);color:#0b3558}.hint-box p{color:#476788}.hint-close{color:#7087a0}
+.drawer-backdrop{background:rgba(9,20,45,.34);backdrop-filter:blur(2px)}.drawer-panel{left:auto;right:0;background:#fff;border-right:0;border-left:1px solid var(--line);box-shadow:-24px 0 70px rgba(10,24,54,.18);width:min(420px,92vw);grid-template-rows:auto 1fr auto}.drawer-head{border-bottom-color:var(--line);padding:18px}.drawer-head h2{color:#0b3558;font-size:19px}.drawer-sub{display:block;margin-top:3px;color:#60708f;font-size:12px}.drawer-list{padding:10px 18px 18px}.section-label{color:#768aa3}.step-link{color:#10214a}.step-link:hover{background:#f4f7fb;border-color:#e0e8f1}.step-link.active{background:#eef2ff;border-color:#c8d3ff}.step-num{background:#eef2f7;color:#62718d}.step-link.done .step-num{background:#e8f7ef;color:#198754}.step-state{color:#7c8ea5}.drawer-reset{border-top:1px solid var(--line);padding:14px 18px 16px;background:#fff}.drawer-reset .btn{width:100%;min-height:42px}.drawer-reset span{display:block;margin-top:7px;color:#7c8ea5;font-size:11.5px;text-align:center}.danger-outline{background:#fff7f7!important;border-color:#efb6b6!important;color:#b42318!important}.danger-outline:hover{background:#fff0f0!important}
+.modal{background:rgba(5,13,31,.88)}
+.cover-copy,.cover-demo{background:#fff}.cover p{color:#476788}.cover-stat{border-color:#dbe4f0;background:#f7f9fc}.cover-stat span{color:#60708f}.flow-line{color:#60708f}.flow-node{border-color:#dbe4f0;background:#f4f7fb;color:#0b3558}.flow-arrow{color:#006bff}.fake-button{background:#006bff}.mock-window-top{background:#0b3558}
+.overview-card{background:#fff}.overview-card p{color:#476788}.data-sample{background:#101a33;border-color:#c8d3e5;color:#e9efff}
+.ide-screen{background:#fff}.ide-screen .lead{color:#476788}.ide-brief{border-color:#dbe4f0;background:#f8fafc}.ide-brief h3{color:#0b3558}.ide-brief p{color:#476788}.download-card{border-color:#b9dfca;background:#edf8f2}.download-card div div{color:#58756a!important}.selfcheck{border-top-color:#dbe4f0;color:#476788}.selfcheck summary{color:#0b3558}.check{background:#f8fafc;border-color:#dbe4f0;color:#35536e}
+.special-wrap{background:#fff}.predict-side{border-color:#dbe4f0;background:#f8fafc}.predict-side textarea{background:#101a33;color:#e9efff;border-color:#c8d3e5}.result-row{background:#fff;border-color:#dbe4f0;color:#294b6b}.mission-done{border-color:#b9dfca;background:#edf8f2}.mission-done p{color:#476788}
+
+/* ===== Student start screen ===== */
+.start-screen{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:22px;background:radial-gradient(circle at 10% 8%,rgba(0,153,255,.10),transparent 23rem),radial-gradient(circle at 92% 5%,rgba(229,92,255,.08),transparent 24rem),#f7f9fc}.start-screen.hidden{display:none}.start-card{width:min(760px,96vw);display:grid;grid-template-columns:auto 1fr;gap:20px;padding:28px;border:1px solid #dbe4f0;border-radius:26px;background:#fff;box-shadow:var(--shadow)}.start-brand{width:64px;height:64px;border-radius:18px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#006bff,#7657e8);font-size:23px;font-weight:900}.start-copy h1{font-size:31px;line-height:1.12;margin:2px 0 8px;color:#0b3558}.start-subtitle{margin:0 0 9px;color:#006bff;font-size:16px;font-weight:800;line-height:1.35}.start-copy p{margin:0;color:#476788;line-height:1.5}.start-kicker{color:#006bff;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.student-form{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end;margin-top:6px;max-width:480px}.student-form label span{display:block;margin-bottom:6px;color:#0b3558;font-size:12px;font-weight:800}.student-form input{width:100%;height:44px;border:1px solid #ccd9e8;border-radius:10px;background:#fff;color:#0b3558;padding:0 11px;outline:none}.student-form input:focus{border-color:#006bff;box-shadow:0 0 0 3px rgba(0,107,255,.12)}.start-button{height:44px;border:0;border-radius:10px;background:#006bff;color:#fff;padding:0 20px;font-weight:800}.start-error{grid-column:1/-1;margin:0;color:#c33d4b;font-size:13px}.start-note{grid-column:1/-1;margin:0;padding-top:2px;color:#60708f;font-size:12px;line-height:1.45}
+
+/* ===== IDE automated semantic check ===== */
+.ide-checker{margin-top:20px;padding:18px;border:1px solid #dbe4f0;border-radius:18px;background:#f8fafc}.ide-checker h2{margin:0 0 6px;color:#0b3558;font-size:22px}.ide-checker>p{margin:0 0 12px;color:#476788;line-height:1.5}.ide-code{width:100%;min-height:210px;resize:vertical;padding:13px 14px;border:1px solid #c8d3e5;border-radius:12px;background:#101a33;color:#e9efff;font:13px/1.5 "SFMono-Regular",Consolas,monospace;outline:none}.ide-code:focus{box-shadow:0 0 0 3px rgba(0,107,255,.12);border-color:#7caeff}.ide-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:10px}.ide-score-pill{margin-left:auto;padding:7px 10px;border-radius:999px;background:#eef2f7;color:#476788;font-size:13px;font-weight:800}.ide-diagnostic{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:13px}.ide-check-row{display:flex;gap:8px;align-items:flex-start;padding:9px 10px;border:1px solid #dbe4f0;border-radius:10px;background:#fff;color:#35536e;font-size:13px;line-height:1.35}.ide-check-row.ok{border-color:#b9dfca;background:#edf8f2;color:#176f48}.ide-check-row.bad{border-color:#efc3c8;background:#fff2f3;color:#9b2f3b}.ide-check-icon{font-weight:900;flex:0 0 auto}
+
+/* ===== Report ===== */
+.report-modal{position:fixed;inset:0;z-index:90;display:none;place-items:center;padding:22px;background:rgba(9,20,45,.38);backdrop-filter:blur(5px)}.report-modal.show{display:grid}.report-card{width:min(920px,96vw);max-height:92vh;overflow:auto;border:1px solid #dbe4f0;border-radius:24px;background:#fff;box-shadow:0 28px 90px rgba(10,24,54,.22);padding:22px}.report-head{display:flex;align-items:flex-start;gap:14px;padding-bottom:14px;border-bottom:1px solid #dbe4f0}.report-head h2{margin:0;color:#0b3558;font-size:26px}.report-head p{margin:4px 0 0;color:#60708f}.report-head .right{margin-left:auto;display:flex;gap:8px}.report-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:16px 0}.report-stat{padding:13px;border:1px solid #dbe4f0;border-radius:14px;background:#f8fafc}.report-stat b{display:block;color:#0b3558;font-size:22px}.report-stat span{display:block;color:#60708f;font-size:11px;margin-top:3px}.grade-card{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;padding:16px;border:1px solid #c9d8ff;border-radius:16px;background:#eef3ff}.grade-number{width:72px;height:72px;border-radius:20px;display:grid;place-items:center;background:#006bff;color:#fff;font-size:38px;font-weight:900}.grade-copy b{color:#0b3558;font-size:18px}.grade-copy p{margin:5px 0 0;color:#476788;line-height:1.45}.report-section{margin-top:16px}.report-section h3{margin:0 0 8px;color:#0b3558;font-size:17px}.report-list{display:grid;gap:6px}.report-row{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:8px;align-items:center;padding:8px 10px;border-radius:10px;background:#f8fafc;border:1px solid #e2e9f1;color:#35536e;font-size:12.5px}.report-row .score{font-weight:900;color:#0b3558}.report-note{padding:10px 12px;border-left:4px solid #006bff;border-radius:0 10px 10px 0;background:#eef5ff;color:#35536e;font-size:12.5px;line-height:1.45}.print-report{display:none}
+@media print{body{background:#fff!important}.app,.start-screen,.report-modal,.hint-box,.drawer,.modal{display:none!important}.print-report{display:block!important;color:#0b3558;font-family:Inter,Arial,sans-serif;padding:12mm}.print-report h1{font-size:22pt;margin:0 0 3mm}.print-report h2{font-size:14pt;margin:5mm 0 2mm}.print-report p{margin:1.5mm 0;font-size:10.5pt}.print-report table{width:100%;border-collapse:collapse;font-size:9.5pt}.print-report th,.print-report td{border:1px solid #cbd7e5;padding:2.2mm;text-align:left}.print-report .print-grade{font-size:20pt;font-weight:900;color:#006bff}.print-report .muted{color:#60708f}}
+
+@media(max-width:1100px){.editor-help{display:none}}
+@media(max-width:980px){.footer{background:rgba(255,255,255,.97)}.student-form{grid-template-columns:1fr 1fr}.student-form .start-button{grid-column:1/-1}.report-grid{grid-template-columns:repeat(2,1fr)}.ide-diagnostic{grid-template-columns:1fr}}
+@media(max-width:600px){.student-chip{display:none}.start-card{grid-template-columns:1fr;padding:20px}.start-brand{width:54px;height:54px}.start-copy h1{font-size:32px}.student-form{grid-template-columns:1fr}.report-grid{grid-template-columns:1fr 1fr}.report-head{flex-wrap:wrap}.report-head .right{margin-left:0;width:100%}.drawer-panel{width:min(410px,96vw)}}
+
+
+/* ===== v4: task controls aligned with the first two interactives ===== */
+.legacy-footer-actions{display:none!important}
+.footer{min-height:72px;display:flex!important;justify-content:center!important;align-items:center;padding:10px 18px;background:rgba(255,255,255,.97);border-top:1px solid #dbe4f0;box-shadow:0 -5px 20px rgba(71,103,136,.05)}
+.footer-center.nav-group{display:flex;gap:10px;justify-content:center;align-items:center}
+.nav-button{min-width:132px;min-height:46px;border-radius:12px;padding:9px 18px;font-size:14px;font-weight:800;transition:.18s ease;cursor:pointer}
+.nav-button.secondary{border:1px solid #d4e0ed;background:#fff;color:#0b3558}
+.nav-button.secondary:hover:not(:disabled){background:#f4f7fb;border-color:#afc3dd;transform:translateY(-1px)}
+.nav-button.primary{border:1px solid #006bff;background:#006bff;color:#fff;box-shadow:0 10px 22px rgba(0,107,255,.16)}
+.nav-button.primary:hover:not(:disabled){background:#005fe5;transform:translateY(-1px)}
+.nav-button:disabled{opacity:.38;cursor:not-allowed;transform:none!important;box-shadow:none}
+.task-card{padding:16px 18px 14px;background:#fff;border-bottom:1px solid #dbe4f0}
+.task-top{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:8px}
+.task-status{margin-left:auto;display:inline-flex;align-items:center;min-height:28px;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:850;border:1px solid #dbe4f0;background:#f4f7fb;color:#6e829a}
+.task-status.self{border-color:#b9dfca;background:#eaf7f0;color:#187248}
+.task-status.solution{border-color:#efd9a4;background:#fff7e4;color:#8a5a00}
+.task-status.pending{border-color:#dbe4f0;background:#f4f7fb;color:#6e829a}
+.feedback-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid #e5ecf4}
+.feedback-action{flex:0 0 auto}
+.small-button{min-height:40px;border:1px solid #cdd9e8;border-radius:10px;background:#fff;color:#0b3558;padding:8px 13px;font-weight:800;cursor:pointer;transition:.16s ease}
+.small-button:hover{background:#f4f7fb;border-color:#afc3dd}
+.check-button{background:#006bff;border-color:#006bff;color:#fff;box-shadow:0 8px 18px rgba(0,107,255,.14)}
+.check-button:hover{background:#005fe5;border-color:#005fe5}
+.inline-feedback{flex:1;min-width:220px;max-width:none;white-space:normal;overflow:visible;text-overflow:clip;padding:9px 11px;border-radius:10px;border:1px solid transparent;font-size:13px;font-weight:650;line-height:1.35;min-height:40px;display:flex;align-items:center}
+.inline-feedback[aria-hidden="true"]{visibility:hidden}
+.inline-feedback.good{visibility:visible!important;color:#176f48;background:#edf8f2;border-color:#b9dfca}
+.inline-feedback.bad{visibility:visible!important;color:#9b2f3b;background:#fff2f3;border-color:#efc3c8}
+.help-row{display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-top:9px}
+.help-row .small-button{flex:0 0 auto}
+.help-box{display:none;flex:1;min-width:240px;border:1px solid #d4e0ed;border-radius:10px;background:#f6f9fc;padding:9px 11px;color:#476788;font-size:13px;line-height:1.4}
+.help-box.show{display:flex;gap:8px;align-items:flex-start}
+.help-box strong{color:#0b3558;white-space:nowrap}.help-box span{min-width:0}
+.small-button.solution-ready{border-color:#d92d20;background:#d92d20;color:#fff}.small-button.solution-ready:hover{border-color:#b42318;background:#b42318;color:#fff}.small-button.solution-used{border-color:#e2c87a;background:#fff3cf;color:#805600}
+.step-link.solved-self .step-num{background:#e8f7ef;color:#198754}.step-link.solved-self .step-state{color:#198754;font-weight:800}
+.step-link.solved-solution .step-num{background:#fff2cf;color:#9a6500}.step-link.solved-solution .step-state{color:#9a6500;font-weight:800}
+.step-link.done .step-num{font-weight:800}
+.browser-wrap{background:#fff}.preview-frame{background:#fff}
+.predict-side p,.predict-empty{color:#607996!important}
+@media(max-width:760px){.feedback-row,.help-row{align-items:stretch}.feedback-action,.feedback-action .small-button,.help-row>.small-button{width:100%}.inline-feedback,.help-box{min-width:100%}.nav-button{min-width:118px}}
+
+
+
+/* ===== CSS lesson additions ===== */
+.preview-body{grid-template-columns:1fr!important}
+.file-tabs{display:flex;align-items:center;gap:6px}
+.file-tab{height:30px;border:1px solid #d4e0ed;background:#f4f7fb;color:#476788;border-radius:8px;padding:0 10px;font-size:12px;font-weight:800;cursor:pointer}
+.file-tab.active{background:#0b3558;border-color:#0b3558;color:#fff}
+.file-tab.changed::after{content:' •';color:#006bff}
+.editor-file-label{font-family:"SFMono-Regular",Consolas,monospace;font-size:11px;color:#60708f}
+.tok-selector{color:#ff79c6}.tok-prop{color:#8be9fd}.tok-value{color:#f1fa8c}.tok-brace{color:#bd93f9}.tok-comment{color:#6272a4;font-style:italic}
+.preview-note{padding:7px 10px;border-top:1px solid #dbe4f0;background:#f7f9fc;color:#60708f;font-size:11px;line-height:1.35}
+.cover-demo.image-demo{padding:0;display:grid;place-items:center;background:#eef4fb;overflow:hidden}
+.cover-demo.image-demo img{width:100%;height:100%;object-fit:contain;display:block}
+.overview-route{display:grid;gap:10px;margin-top:14px}.overview-route .route-row{display:grid;grid-template-columns:36px 1fr;gap:10px;align-items:start;padding:11px 12px;border:1px solid #dbe4f0;border-radius:13px;background:#f8fafc}.route-num{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:#eaf2ff;color:#006bff;font-weight:900}.route-row b{display:block;color:#0b3558;font-size:14px}.route-row span{display:block;color:#60708f;font-size:12px;margin-top:2px;line-height:1.35}
+.score-explainer{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}.score-box{padding:13px;border:1px solid #dbe4f0;border-radius:14px;background:#f8fafc}.score-box b{display:block;color:#0b3558;font-size:20px}.score-box span{display:block;color:#60708f;font-size:12px;line-height:1.35;margin-top:3px}
+.summary-screen{grid-column:1/-1;min-height:0;border:1px solid var(--line);border-radius:24px;background:#fff;box-shadow:var(--shadow);padding:20px;overflow:auto}.summary-screen img{display:block;width:min(1180px,100%);margin:0 auto;border-radius:18px;border:1px solid #dbe4f0}.summary-screen .summary-copy{max-width:900px;margin:15px auto 0;color:#476788;line-height:1.55;text-align:center}.summary-screen .summary-copy h2{color:#0b3558;margin:0 0 7px;font-size:28px}
+.mini-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;border:1px solid #b7d2ff;background:#eef5ff;color:#0056c7;font-size:12px;font-weight:900}
+.task-tag.mini{border-color:#b7d2ff;background:#eef5ff;color:#0056c7}.task-tag.extra{border-color:#dacbff;background:#f4f0ff;color:#6744cb}
+.report-stat b.small{font-size:18px}.report-note strong{color:#0b3558}
+@media(max-width:980px){.score-explainer{grid-template-columns:1fr}.cover-demo.image-demo{min-height:340px}.file-tabs{max-width:58vw;overflow:auto}}
+
+
+
+/* ===== v19: dedicated POLAR SIGNAL workspace ===== */
+.app.mini-workspace .main{grid-template-columns:1fr;padding:12px 14px;overflow:hidden}
+.app.mini-workspace #toggleTheoryBtn{display:none!important}
+.mini-final-layout{grid-column:1/-1;min-height:0;display:grid;grid-template-columns:minmax(420px,49%) minmax(430px,51%);gap:12px}
+.mini-editors-panel,.mini-result-panel{min-height:0;border:1px solid var(--line);border-radius:20px;background:#fff;box-shadow:var(--shadow);overflow:hidden}
+.mini-editors-panel{display:grid;grid-template-rows:minmax(0,1fr) minmax(0,1fr)}
+.mini-editor-block{min-height:0;display:grid;grid-template-rows:40px 1fr;border-bottom:1px solid var(--line)}
+.mini-editor-block:last-child{border-bottom:0}
+.mini-editor-block .editor-wrap{min-height:0}
+.mini-editor-block.html-readonly .editor-input{cursor:default}
+.mini-editor-block.html-readonly .editor-wrap:focus-within{box-shadow:none}
+.mini-result-panel{display:grid;grid-template-rows:minmax(0,55fr) minmax(0,45fr);overflow:hidden}
+.mini-result-scroll{min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#b8c7da transparent;background:#fff}
+.mini-result-head{padding:14px 16px 12px;border-bottom:1px solid var(--line);background:#fff}
+.mini-result-title-row{display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.mini-result-title{min-width:0}.mini-result-title .step-kicker{margin-bottom:3px}.mini-result-title h1{margin:0;color:#0b3558;font-size:22px;line-height:1.12}
+.mini-result-title-row .task-status{margin-left:auto}
+.mini-action-row{display:flex;align-items:center;gap:10px;margin-top:12px}
+.mini-action-row .small-button{min-width:138px}
+.assignment-button{background:#fff;border-color:#9ec2f1;color:#0056c7}
+.assignment-button:hover{background:#eef5ff;border-color:#6aa6ed}
+.mini-action-row .check-button{min-width:160px}
+.mini-action-row .inline-feedback{margin-left:0;min-width:240px}
+.mini-task-copy{padding:14px 16px 4px;color:#294b6b;font-size:14px;line-height:1.55;background:#fff}
+.mini-task-copy p{margin:0 0 12px}.mini-task-copy p:last-child{margin-bottom:0}
+.mini-task-copy strong{color:#0b3558}.mini-task-copy code{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;background:#edf2f7;border:1px solid #dce5ef;border-radius:7px;padding:1px 5px;color:#184f89}
+.mini-checks-wrap{padding:12px 14px 4px;background:#fbfcfe}
+.mini-checks-wrap .ide-diagnostic{margin-top:0}
+.mini-browser-card{min-height:0;height:100%;display:grid;grid-template-rows:40px minmax(0,1fr);border-bottom:1px solid var(--line);background:#fff;overflow:hidden}
+.mini-browser-card .preview-body{min-height:0;height:100%}
+.mini-browser-card .browser-wrap{min-height:0;height:100%;display:grid;grid-template-rows:34px minmax(0,1fr)}
+.mini-browser-card .preview-frame{min-height:0;height:100%}
+
+.assignment-modal{position:fixed;inset:0;z-index:95;display:none;place-items:center;padding:22px;background:rgba(9,20,45,.42);backdrop-filter:blur(5px)}
+.assignment-modal.show{display:grid}
+.assignment-card{width:min(920px,96vw);max-height:90vh;display:grid;grid-template-rows:auto 1fr;border:1px solid #dbe4f0;border-radius:24px;background:#fff;box-shadow:0 28px 90px rgba(10,24,54,.24);overflow:hidden}
+.assignment-head{display:flex;align-items:flex-start;gap:12px;padding:18px 20px 14px;border-bottom:1px solid #dbe4f0}
+.assignment-head h2{margin:0;color:#0b3558;font-size:24px}.assignment-head p{margin:4px 0 0;color:#60708f;font-size:13px}.assignment-head .right{margin-left:auto}
+.assignment-body{overflow:auto;padding:18px 20px 22px;color:#294b6b;font-size:15px;line-height:1.55}
+.assignment-body p{margin:0 0 13px}.assignment-body p:last-child{margin-bottom:0}
+.assignment-body strong{color:#0b3558}.assignment-body code{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;background:#edf2f7;border:1px solid #dce5ef;border-radius:7px;padding:1px 5px;color:#184f89}
+
+@media(max-width:980px){
+  .app.mini-workspace .main{overflow:visible}
+  .mini-final-layout{grid-template-columns:1fr;grid-template-rows:minmax(720px,auto) minmax(720px,auto)}
+  .mini-editors-panel{min-height:720px}
+  .mini-result-panel{min-height:720px;overflow:hidden}
+}
+@media(max-width:600px){
+  .mini-action-row{align-items:stretch;flex-direction:column}.mini-action-row .small-button,.mini-action-row .inline-feedback{width:100%;min-width:0}
+  .assignment-card{width:98vw}.assignment-head{padding:14px}.assignment-body{padding:14px;font-size:14px}
+}
+
+
+/* ===== v23: final task as IDE hand-off ===== */
+.app.mini-workspace .main{padding:12px 14px;overflow:hidden}
+.mini-ide-page{grid-column:1/-1;min-height:0;height:100%;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#b8c7da transparent;border:1px solid #dbe4f0;border-radius:20px;background:#fff;box-shadow:0 14px 40px rgba(35,66,105,.10);padding:14px 20px 18px;color:#0b3558}
+.mini-ide-assignment{max-width:1500px;margin:0 auto}
+.mini-ide-kicker{color:#006bff;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.mini-ide-title-row{display:flex;align-items:flex-start;gap:16px;margin-bottom:10px}.mini-ide-title-row>div{min-width:0;flex:1}.mini-ide-title-row h1{margin:0;color:#0b3558;font-size:32px;line-height:1.05;letter-spacing:-.025em}.mini-ide-title-row p{max-width:1180px;margin:7px 0 0;color:#476788;font-size:14px;line-height:1.42}.mini-ide-title-row code,.mini-ide-task-card code,.mini-ide-download-row code,.mini-ide-checker code{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;background:#edf2f7;border:1px solid #dce5ef;border-radius:6px;padding:1px 5px;color:#184f89;font-size:.9em}
+.mini-ide-task-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.mini-ide-task-card{border:1px solid #dbe4f0;border-radius:13px;background:#f8fafc;padding:10px 12px}.mini-ide-task-card h2{margin:0 0 3px;color:#0b3558;font-size:15px}.mini-ide-task-card p{margin:0;color:#476788;font-size:13px;line-height:1.4}.mini-ide-task-wide{grid-column:1/-1}
+.mini-ide-score-note{margin:8px 0 0;padding:7px 10px;border-left:4px solid #006bff;border-radius:0 10px 10px 0;background:#eef5ff;color:#35536e;font-size:12px;line-height:1.35}.mini-ide-score-note strong{color:#0b3558}
+.mini-ide-download-row{display:flex;align-items:center;gap:14px;margin-top:9px;padding:9px 12px;border:1px solid #b9dfca;border-radius:13px;background:#edf8f2}.mini-ide-download-row>div:first-child{min-width:0;flex:1}.mini-ide-download-row strong{display:block;color:#0b3558;font-size:14px}.mini-ide-download-row span{display:block;margin-top:2px;color:#476788;font-size:12px;line-height:1.35}.mini-ide-download-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.mini-download-button{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap}
+.mini-ide-checker{max-width:1500px;margin:12px auto 0;padding:16px;border-radius:16px}.mini-ide-checker h2{font-size:20px}.mini-ide-checker>p{font-size:14px}.mini-ide-code{min-height:190px;resize:vertical}.mini-ide-feedback{margin-top:10px;width:100%;min-width:0}.mini-ide-feedback[aria-hidden="true"]{display:none}.mini-ide-feedback.good,.mini-ide-feedback.bad{display:flex}.mini-ide-checker .ide-diagnostic{margin-top:12px}
+@media(max-width:900px){.mini-ide-task-grid{grid-template-columns:1fr}.mini-ide-task-wide{grid-column:auto}.mini-ide-download-row{align-items:stretch;flex-direction:column}.mini-ide-download-actions{justify-content:flex-start}.mini-ide-title-row{flex-wrap:wrap}.mini-ide-title-row .task-status{margin-left:0}.mini-ide-page{padding:16px}}
+@media(max-width:600px){.mini-ide-title-row h1{font-size:30px}.mini-ide-download-actions{flex-direction:column;align-items:stretch}.mini-ide-download-actions .small-button,.mini-download-button{width:100%}.mini-ide-page{padding:13px;border-radius:14px}.mini-ide-task-card{padding:12px}.mini-ide-code{min-height:240px}}
+
+</style>
+</head>
+<body>
+
+<section class="start-screen" id="startScreen" aria-labelledby="startTitle">
+  <div class="start-card">
+    <div class="start-brand" aria-hidden="true">CSS</div>
+    <div class="start-copy">
+      <h1 id="startTitle">Особенности языка разметки. Вёрстка и стилизация простого HTML-документа</h1>
+      <div class="start-subtitle">Основы CSS: подключение и базовые стили</div>
+    </div>
+    <form class="student-form" id="studentForm" novalidate>
+      <label><span>Личный код</span><input id="studentCode" type="text" maxlength="40" autocomplete="off" required></label>
+      <button class="start-button" type="submit">Начать</button>
+      <p class="start-error" id="startError" aria-live="polite"></p>
+      <p class="start-note">Основная часть — 80 баллов: 15 оцениваемых шагов делят эти баллы поровну. После «Показать решение» шаг приносит половину своих баллов. Ошибочные попытки и подсказки баллы не снижают. Итоговое мини-задание — ещё 20 баллов: 10 проверок по 2 балла. Частично выполненная работа тоже приносит баллы, но для оценки 5 нужны все 10 проверок.</p>
+    </form>
+  </div>
+</section>
+<div class="app app-hidden" id="app">
+  <header class="topbar">
+    <div class="brand"><div class="brand-mark">CSS</div><div class="brand-copy"><b>CSS с нуля</b></div></div>
+    <div class="top-spacer"></div>
+    <span class="student-chip" id="studentChip"></span>
+    <span class="chip core" id="modeChip">CORE</span>
+    <button class="icon-btn" id="allStepsBtn">Все шаги</button>
+    <button class="icon-btn" id="reportBtn">Отчёт</button>
+    <button class="icon-btn" id="toggleTheoryBtn">Скрыть теорию</button>
+  </header>
+  <div class="progress-row"><div class="progress-label" id="progressLabel">Основная часть</div><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div><div class="progress-count" id="progressCount"></div></div>
+  <main class="main" id="main"></main>
+  <footer class="footer"><div class="footer-center nav-group"><button class="nav-button secondary" id="prevBtn">← Назад</button><button class="nav-button primary" id="nextBtn">Далее →</button></div></footer>
+</div>
+<div class="hint-box" id="hintBox"><button class="hint-close" id="hintClose">×</button><b id="hintTitle"></b><p id="hintText"></p></div>
+<div class="drawer" id="drawer"><div class="drawer-backdrop" id="drawerBackdrop"></div><div class="drawer-panel"><div class="drawer-head"><div><h2>Маршрут пары</h2><span class="drawer-sub">15 оцениваемых шагов · итоговое мини-задание</span></div><div class="top-spacer"></div><button class="icon-btn" id="drawerClose" aria-label="Закрыть">×</button></div><div class="drawer-list" id="drawerList"></div><div class="drawer-reset"><button class="btn danger-outline" id="fullResetBtn" type="button">Сбросить весь прогресс</button><span>Начать интерактив заново с чистого состояния</span></div></div></div>
+<div class="modal" id="imageModal"><button id="imageClose">Закрыть</button><img id="imageModalImg" alt="Увеличенная визуализация"></div>
+<div class="assignment-modal" id="assignmentModal" role="dialog" aria-modal="true" aria-labelledby="assignmentTitle">
+  <div class="assignment-card">
+    <div class="assignment-head"><div><h2 id="assignmentTitle">Задание · POLAR SIGNAL</h2><p>Итоговое мини-задание на 20 баллов</p></div><div class="right"><button class="icon-btn" id="assignmentClose" type="button" aria-label="Закрыть">×</button></div></div>
+    <div class="assignment-body" id="assignmentBody"></div>
+  </div>
+</div>
+<div class="report-modal" id="reportModal" role="dialog" aria-modal="true" aria-label="Отчёт по интерактиву CSS">
+  <div class="report-card"><div class="report-head"><div><h2>Отчёт: Основы CSS</h2><p id="reportSubtitle">Подключение и базовые стили</p></div><div class="right"><button class="icon-btn" id="printReportBtn">Печать / PDF</button><button class="icon-btn" id="reportClose">×</button></div></div><div id="reportBody"></div></div>
+</div>
+<section class="print-report" id="printReport" aria-hidden="true"></section>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const STORAGE='dup04_css_intro_v18_polar';
+const CORE_COUNT=15;
+const visual=n=>`assets/visuals/v${String(n).padStart(2,'0')}.webp`;
+const esc=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const P=(...ps)=>ps.map(x=>`<p>${x}</p>`).join('');
+function htmlDoc(body,linked=true){return `<!DOCTYPE html>\n<html lang="ru">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>CSS-практика</title>${linked?'\n  <link rel="stylesheet" href="styles.css">':''}\n</head>\n<body>\n${body}\n</body>\n</html>`}
+const H={
+  link:htmlDoc(`  <h1>Мой сайт</h1>
+  <p>CSS уже написан, но пока не подключён.</p>`,false),
+  rule:htmlDoc(`  <h1>Привет, мир!</h1>
+  <p>CSS может изменить внешний вид этого текста.</p>`),
+  paragraphs:htmlDoc(`  <h1>Небольшая заметка</h1>
+  <p>Сегодня отличная погода для прогулки.</p>
+  <p>Я люблю изучать веб-разработку.</p>
+  <p>Знания помогают создавать интересные проекты.</p>`),
+  dark:htmlDoc(`  <h1>Ночная страница</h1>
+  <p>Два свойства могут полностью изменить настроение.</p>`),
+  font:htmlDoc(`  <h1>Арктика ближе, чем кажется</h1>
+  <p>Шрифт влияет на то, как воспринимается текст.</p>`),
+  size:htmlDoc(`  <h1>Добро пожаловать!</h1>
+  <p>Здесь вы найдёте полезные материалы и простые примеры для изучения веб-разработки.</p>`),
+  weight:htmlDoc(`  <h1>Маршрут на Север</h1>
+  <p><strong>Главное на сегодня:</strong> проверьте прогноз и время выезда.</p>
+  <p>Насыщенность помогает управлять визуальным акцентом.</p>`),
+  style:htmlDoc(`  <h1>Короткая заметка</h1>
+  <p><em>Путешествие начинается здесь.</em></p>
+  <p>Иногда CSS может не только добавить акцент, но и убрать его визуально.</p>`),
+  line:htmlDoc(`  <h1>Северный маршрут</h1>
+  <p>Северный маршрут подойдёт тем, кто любит спокойные поездки, красивые виды и хорошо продуманный план путешествия. По пути будут остановки у озёр, прогулки по тундре и несколько часов на отдых. Поэтому описание маршрута лучше читать с комфортным расстоянием между строками.</p>`),
+  decoration:htmlDoc(`  <nav>
+    <a href="#">Главная</a>
+    <a href="#">Маршруты</a>
+  </nav>
+  <p>Это навигационные ссылки.</p>`),
+  transform:htmlDoc(`  <h1>Небольшой бренд</h1>
+  <button>Смотреть маршруты</button>`),
+  class:htmlDoc(`  <h1>Набор на курс</h1>
+  <p>Наш курс подходит новичкам.</p>
+  <p class="accent">Осталось 7 мест.</p>
+  <p>Запишитесь прямо сейчас!</p>`),
+  choice:htmlDoc(`  <h1>Новости экспедиции</h1>
+  <p>Первый абзац обычного текста.</p>
+  <h2 class="accent">Северное сияние сегодня!</h2>
+  <p>Второй абзац обычного текста.</p>`),
+  debug:htmlDoc(`  <h1 class="title">Привет, мир!</h1>
+  <p>Исправьте ошибки в CSS и верните заголовку задуманное оформление.</p>`),
+  multi:htmlDoc(`  <h1>Путешествия</h1>
+  <h2 class="hero-title">Полярный тур</h2>
+  <p>Три свойства — один класс.</p>`),
+  midnight:htmlDoc(`  <header>
+    <p class="eyebrow">Норильск · 69°21′N · ночной эфир</p>
+  </header>
+
+  <main>
+    <h1 class="station-title">Polar Signal</h1>
+    <p class="tagline">Музыка для тех, кто не спит после полуночи.</p>
+    <p class="frequency">107.8 FM</p>
+
+    <section>
+      <p><span class="live">Live</span> <span class="eyebrow">Сейчас в эфире</span></p>
+      <h2 class="track-title">Molchat Doma — Sudno</h2>
+      <p class="meta">23:42 · −18°C · снег</p>
+    </section>
+
+    <section>
+      <p class="eyebrow">Дальше</p>
+      <p><strong class="time">00:00</strong> Northern Lights</p>
+      <p><strong class="time">01:30</strong> After Midnight</p>
+      <p><strong class="time">03:00</strong> Empty City</p>
+    </section>
+
+    <section>
+      <p class="eyebrow">Сообщение станции</p>
+      <p class="quote">«Север звучит громче ночью.»</p>
+    </section>
+  </main>
+
+  <footer>
+    <a class="station-link" href="#">polar-signal.radio</a>
+  </footer>`)
+};
+const S={
+  s2:`h1 {
+  color: #3b82f6;
+  font-size: 32px;
+}`,
+  s3:`h1 {
+  color: #3b82f6;
+}
+
+p {
+  /* Задайте цвет текста */
+}`,
+  s3sol:`h1 {
+  color: #3b82f6;
+}
+
+p {
+  color: #475569;
+}`,
+  s4:`/* Задайте общий цвет всем абзацам */`,
+  s4sol:`p {
+  color: #0f766e;
+}`,
+  s5:`body {
+  /* Задайте цвет фона и цвет текста */
+}`,
+  s5sol:`body {
+  background-color: #172033;
+  color: #f8fafc;
+}`,
+  s6:`body {
+  /* Задайте семейство шрифта */
+}`,
+  s6sol:`body {
+  font-family: Georgia, serif;
+}`,
+  s7:`h1 {
+  /* Размер заголовка */
+}
+
+p {
+  /* Размер обычного текста */
+}`,
+  s7sol:`h1 {
+  font-size: 52px;
+}
+
+p {
+  font-size: 20px;
+}`,
+  weight:`strong {
+  /* Сделайте визуальную насыщенность обычной */
+}`,
+  weightsol:`strong {
+  font-weight: 400;
+}`,
+  style:`em {
+  /* Верните обычное начертание */
+}`,
+  stylesol:`em {
+  font-style: normal;
+}`,
+  line:`p {
+  /* Задайте межстрочный интервал */
+}`,
+  linesol:`p {
+  line-height: 1.7;
+}`,
+  decoration:`a {
+  /* Уберите подчёркивание у ссылок меню */
+}`,
+  decorationsol:`a {
+  text-decoration: none;
+}`,
+  transform:`button {
+  /* Отобразите текст заглавными буквами */
+}`,
+  transformsol:`button {
+  text-transform: uppercase;
+}`,
+  cls:`/* Измените только элемент с классом accent */`,
+  clssol:`.accent {
+  color: #d946ef;
+}`,
+  choice:`/* Все абзацы — #334155. Только .accent — #ea580c. */`,
+  choicesol:`p {
+  color: #334155;
+}
+
+.accent {
+  color: #ea580c;
+}`,
+  debug:`title {
+  color #16a34a;
+  font-size: 36px
+  font-style: italic;
+}`,
+  debugsol:`.title {
+  color: #16a34a;
+  font-size: 36px;
+  font-style: italic;
+}`,
+  multi:`.hero-title {
+  /* Задайте цвет, размер и шрифт */
+}`,
+  multisol:`.hero-title {
+  color: #0f766e;
+  font-size: 40px;
+  font-family: Verdana, sans-serif;
+}`,
+  mini:`/* Оформите POLAR SIGNAL только изученными свойствами. HTML менять не нужно. */`
+};
+function filePair(html,css){return {html,css}}
+const steps=[
+ {kind:'cover',section:'intro',title:'Основы CSS: подключение и базовые стили'},
+ {kind:'overview',section:'intro',title:'Как пройдёт эта пара'},
+ {kind:'editor',section:'core',n:1,title:'Как подключить CSS',visual:visual(2),starter:filePair(H.link,S.s2),solution:filePair(htmlDoc(`  <h1>Мой сайт</h1>
+  <p>CSS уже написан и теперь подключён.</p>`,true),S.s2),defaultFile:'html',
+  theory:P('CSS обычно хранят в отдельном файле, например <code>styles.css</code>. Сам по себе этот файл к странице не подключится: HTML должен сообщить браузеру, какой файл стилей использовать.','Для этого внутри <code>&lt;head&gt;</code> добавляют <code>&lt;link rel="stylesheet" href="styles.css"&gt;</code>. Значение <code>href</code> указывает путь к CSS-файлу.'),
+  task:P('Подключите файл <code>styles.css</code> к странице. Во вкладке <code>index.html</code> добавьте внутри <code>&lt;head&gt;</code> тег <code>&lt;link rel="stylesheet" href="styles.css"&gt;</code>.'),hints:['Нужен тег <code>link</code> в секции <code>head</code>.','Добавьте: <code>&lt;link rel="stylesheet" href="styles.css"&gt;</code>.'],validate:()=>[linkCheck()]},
+ {kind:'editor',section:'core',n:2,title:'Как читается CSS-правило',visual:visual(3),starter:filePair(H.rule,S.s3),solution:filePair(H.rule,S.s3sol),defaultFile:'css',
+  theory:P('CSS-правило отвечает на три вопроса. <strong>Селектор</strong> говорит, кого выбрать. <strong>Свойство</strong> — что изменить. <strong>Значение</strong> — каким это должно стать.','Например, <code>h1 { color: #3b82f6; }</code>: <code>h1</code> выбирает заголовок, <code>color</code> меняет цвет текста, а <code>#3b82f6</code> задаёт конкретный цвет.','Между свойством и значением ставится двоеточие, после значения — точка с запятой.'),
+  task:P('Задайте абзацу <code>p</code> цвет текста <code>#475569</code>. В готовом правиле <code>p</code> добавьте свойство <code>color</code> с этим значением.'),hints:['Селектор уже указан: <code>p</code>. Нужно дописать одно объявление внутри фигурных скобок.','Используйте <code>color: #475569;</code>.'],validate:()=>[declCheck('p','color','#475569','Абзац получил нужный цвет.','В правиле p пока нет color: #475569;')]},
+ {kind:'editor',section:'core',n:3,title:'Селектор тега',visual:visual(4),starter:filePair(H.paragraphs,S.s4),solution:filePair(H.paragraphs,S.s4sol),defaultFile:'css',
+  theory:P('Если селектором указать имя тега, правило применяется ко <strong>всем элементам этого типа</strong>. Например, <code>p { ... }</code> выберет все абзацы <code>&lt;p&gt;</code> на странице.','Так удобно задавать общие стили: один раз написать правило и сразу изменить несколько одинаковых элементов.'),
+  task:P('Задайте всем трём абзацам <code>p</code> цвет текста <code>#0f766e</code>. Напишите одно правило с селектором тега <code>p</code> и свойством <code>color</code>.'),hints:['Все нужные элементы имеют один и тот же тег.','Используйте <code>p { color: #0f766e; }</code>.'],validate:()=>[declCheck('p','color','#0f766e','Один селектор изменил все абзацы.','Нужно правило p { color: #0f766e; }')]},
+ {kind:'editor',section:'core',n:4,title:'Цвет текста и цвет фона',visual:visual(5),starter:filePair(H.dark,S.s5),solution:filePair(H.dark,S.s5sol),defaultFile:'css',
+  theory:P('<code>color</code> меняет цвет текста. <code>background-color</code> меняет цвет фона элемента. Если задать оба свойства для <code>body</code>, можно сразу изменить общий вид всей страницы.','Сегодня используем готовые HEX-значения цветов. Пока важнее запомнить, какое свойство отвечает за текст, а какое — за фон.'),
+  task:P('Для <code>body</code> задайте цвет фона <code>#172033</code> с помощью <code>background-color</code> и цвет текста <code>#f8fafc</code> с помощью <code>color</code>.'),hints:['В одном правиле body нужны два разных свойства.','Фон — <code>background-color</code>, текст — <code>color</code>.'],validate:()=>[declCheck('body','background-color','#172033','Фон стал тёмным.','У body нет background-color: #172033;'),declCheck('body','color','#f8fafc','Текст стал светлым.','У body нет color: #f8fafc;')]},
+ {kind:'editor',section:'core',n:5,title:'Шрифт страницы',visual:visual(6),starter:filePair(H.font,S.s6),solution:filePair(H.font,S.s6sol),defaultFile:'css',
+  theory:P('<code>font-family</code> задаёт семейство шрифта. Обычно указывают несколько вариантов: браузер берёт первый доступный.','Запись <code>Arial, sans-serif</code> означает: сначала использовать Arial, а если его нет — любой подходящий шрифт без засечек.'),
+  task:P('Для всей страницы задайте семейство шрифта <code>Georgia, serif</code>. В правиле <code>body</code> добавьте <code>font-family: Georgia, serif;</code>.'),hints:['Шрифт задаём общему контейнеру страницы — body.','Нужное свойство: <code>font-family</code>.'],validate:()=>[familyCheck('body','georgia','serif','Georgia, serif')]},
+ {kind:'editor',section:'core',n:6,title:'Размер текста',visual:visual(7),starter:filePair(H.size,S.s7),solution:filePair(H.size,S.s7sol),defaultFile:'css',
+  theory:P('<code>font-size</code> управляет размером текста. Размер помогает выстроить визуальную иерархию: заголовок должен быть заметнее обычного текста.','На первой паре используем пиксели, чтобы сосредоточиться на самом принципе. Другие единицы измерения разберём позже.'),
+  task:P('Задайте заголовку <code>h1</code> размер шрифта <strong>52 пикселя</strong> с помощью <code>font-size</code>. Абзацу <code>p</code> задайте размер шрифта <strong>20 пикселей</strong>.'),hints:['Нужно два правила: для h1 и для p.','Используйте <code>font-size: 52px;</code> и <code>font-size: 20px;</code>.'],validate:()=>[declCheck('h1','font-size','52px','Заголовок имеет размер 52px.','У h1 должен быть font-size: 52px;'),declCheck('p','font-size','20px','Абзац имеет размер 20px.','У p должен быть font-size: 20px;')]},
+ {kind:'editor',section:'core',n:7,title:'Насыщенность шрифта',visual:visual(8),starter:filePair(H.weight,S.weight),solution:filePair(H.weight,S.weightsol),defaultFile:'css',
+  theory:P('<code>font-weight</code> управляет насыщенностью шрифта — насколько тонким или жирным выглядит текст. Часто <code>400</code> соответствует обычному начертанию, а <code>700</code> — жирному.','Насыщенность можно не только усиливать, но и ослаблять. Например, текст внутри <code>&lt;strong&gt;</code> браузер обычно показывает жирным, а CSS может визуально вернуть ему обычную насыщенность. Смысл HTML-элемента при этом не меняется.'),
+  task:P('Фраза «Главное на сегодня:» находится внутри <code>&lt;strong&gt;</code> и поэтому изначально выглядит жирной. Сделайте её визуально обычной: для селектора <code>strong</code> задайте насыщенность <strong>400</strong>.'),hints:['Нужное свойство называется <code>font-weight</code>.','Для strong задайте <code>font-weight: 400;</code>.'],validate:()=>[declCheck('strong','font-weight','400','Жирное по умолчанию выделение стало визуально обычным.','У strong нужен font-weight: 400;')]},
+ {kind:'editor',section:'core',n:8,title:'Наклон текста',visual:visual(9),starter:filePair(H.style,S.style),solution:filePair(H.style,S.stylesol),defaultFile:'css',
+  theory:P('<code>font-style</code> меняет начертание текста. Значение <code>italic</code> отображает текст курсивом, а <code>normal</code> возвращает обычное начертание.','CSS может как добавить визуальный акцент, так и убрать его. Смысловое выделение в HTML при этом остаётся: например, <code>&lt;em&gt;</code> продолжает обозначать смысловой акцент, даже если внешне текст сделан обычным.'),
+  task:P('Фраза «Путешествие начинается здесь.» уже находится внутри <code>&lt;em&gt;</code> и поэтому отображается курсивом. Верните ей обычное начертание: для селектора <code>em</code> задайте <code>font-style: normal;</code>.'),hints:['Свойство отвечает за наклон текста.','Для em задайте <code>font-style: normal;</code>.'],validate:()=>[declCheck('em','font-style','normal','Текст отображается обычным начертанием.','У em нужен font-style: normal;')]},
+ {kind:'editor',section:'core',n:9,title:'Интервал между строками',visual:visual(10),starter:filePair(H.line,S.line),solution:filePair(H.line,S.linesol),defaultFile:'css',
+  theory:P('<code>line-height</code> задаёт высоту строки и тем самым расстояние между соседними строками текста. Сам размер букв при этом не меняется.','Значение <code>1.5</code> без единицы означает примерно полторы высоты текущего шрифта. Для длинных абзацев такой интервал обычно читается легче, чем слишком плотные строки.'),
+  task:P('Задайте абзацу <code>p</code> межстрочный интервал <strong>1.7</strong>. Добавьте в правило <code>p</code> свойство <code>line-height: 1.7;</code>.'),hints:['Нужно изменить расстояние между строками, а не размер текста.','Используйте <code>line-height: 1.7;</code>.'],validate:()=>[declCheck('p','line-height','1.7','Межстрочный интервал установлен.','У p нужен line-height: 1.7;')]},
+ {kind:'editor',section:'core',n:10,title:'Оформление текста',visual:visual(11),starter:filePair(H.decoration,S.decoration),solution:filePair(H.decoration,S.decorationsol),defaultFile:'css',
+  theory:P('<code>text-decoration</code> управляет линией у текста. Например, <code>underline</code> подчёркивает текст, <code>line-through</code> зачёркивает, а <code>none</code> убирает линию.','Ссылки браузер обычно подчёркивает сам. В навигации подчёркивание иногда убирают, но важно не терять понятность: пользователь всё равно должен видеть, что перед ним ссылка.'),
+  task:P('Уберите подчёркивание у ссылок меню. Для селектора <code>a</code> задайте <code>text-decoration: none;</code>.'),hints:['Сейчас нужно изменить линию под текстом ссылки.','Используйте <code>text-decoration: none;</code>.'],validate:()=>[declCheck('a','text-decoration','none','Подчёркивание у ссылок убрано.','У a нужен text-decoration: none;')]},
+ {kind:'editor',section:'core',n:11,title:'Регистр текста',visual:visual(12),starter:filePair(H.transform,S.transform),solution:filePair(H.transform,S.transformsol),defaultFile:'css',
+  theory:P('<code>text-transform</code> меняет отображение регистра букв, не переписывая сам текст в HTML. <code>uppercase</code> показывает все буквы заглавными, <code>lowercase</code> — строчными, <code>capitalize</code> начинает слова с заглавной буквы.','Это удобно для коротких элементов интерфейса — например, кнопок, подписей или логотипа. Исходный текст в HTML при этом остаётся прежним.'),
+  task:P('Сделайте текст кнопки отображаемым заглавными буквами. Для селектора <code>button</code> задайте <code>text-transform: uppercase;</code>.'),hints:['Нужно изменить только вид регистра букв.','Используйте <code>text-transform: uppercase;</code>.'],validate:()=>[declCheck('button','text-transform','uppercase','Текст кнопки отображается заглавными буквами.','У button нужен text-transform: uppercase;')]},
+ {kind:'editor',section:'core',n:12,title:'Класс помогает выбрать нужный элемент',visual:visual(13),starter:filePair(H.class,S.cls),solution:filePair(H.class,S.clssol),defaultFile:'css',
+  theory:P('Селектор тега подходит, когда нужно изменить все элементы одного типа. Но часто нужен только один или несколько особых элементов. Для этого в HTML элементу можно дать <strong>класс</strong>: <code>class="accent"</code>.','В CSS класс выбирается через точку: <code>.accent</code>. В HTML точка не нужна — там остаётся запись <code>class="accent"</code>.'),
+  task:P('Задайте только строке «Осталось 7 мест.» цвет текста <code>#d946ef</code>. У неё уже есть класс <code>accent</code>, поэтому напишите правило для селектора <code>.accent</code> и свойства <code>color</code>.'),hints:['Не используйте p: тогда изменятся все абзацы.','Селектор класса начинается с точки: <code>.accent</code>.'],validate:()=>[declCheck('.accent','color','#d946ef','Изменился только элемент с классом accent.','Нужно правило .accent { color: #d946ef; }')]},
+ {kind:'editor',section:'core',n:13,title:'Один класс — несколько свойств',visual:visual(16),starter:filePair(H.multi,S.multi),solution:filePair(H.multi,S.multisol),defaultFile:'css',
+  theory:P('На шаге 5 вы уже записывали несколько свойств внутри одного правила <code>body</code>. С классом работает точно так же: один селектор выбирает нужный элемент, а внутри фигурных скобок можно перечислить все нужные свойства.','Теперь применим знакомый принцип к классу: <code>.hero-title</code> одновременно задаст заголовку цвет, размер и семейство шрифта.'),
+  task:P('Для класса <code>.hero-title</code> задайте сразу три свойства: цвет текста <code>#0f766e</code>, размер шрифта <strong>40 пикселей</strong> и семейство шрифта <code>Verdana, sans-serif</code>.'),hints:['Все три объявления должны находиться внутри одного правила .hero-title.','Нужны <code>color</code>, <code>font-size</code> и <code>font-family</code>.'],validate:()=>[declCheck('.hero-title','color','#0f766e','Цвет задан.','Нужен color: #0f766e;'),declCheck('.hero-title','font-size','40px','Размер задан.','Нужен font-size: 40px;'),familyCheck('.hero-title','verdana','sans-serif','Verdana, sans-serif')]},
+ {kind:'editor',section:'core',n:14,title:'Тег или класс?',visual:visual(14),starter:filePair(H.choice,S.choice),solution:filePair(H.choice,S.choicesol),defaultFile:'css',
+  theory:P('Теперь есть два базовых способа выбора. Селектор тега нужен, когда правило должно примениться ко <strong>всем элементам такого типа</strong>. Класс нужен, когда мы специально пометили отдельные элементы своим именем.','На реальной странице они постоянно работают вместе: селекторы тегов задают общую основу, а классы оформляют особые элементы.'),
+  task:P('Задайте всем абзацам <code>p</code> цвет текста <code>#334155</code>. Отдельно задайте элементу с классом <code>accent</code> цвет текста <code>#ea580c</code>. Для этого нужны два правила: <code>p</code> и <code>.accent</code>.'),hints:['Одно правило использует имя тега, другое — имя класса.','Используйте <code>p</code> и <code>.accent</code>.'],validate:()=>[declCheck('p','color','#334155','Общий цвет абзацев задан.','Для p нужен color: #334155;'),declCheck('.accent','color','#ea580c','Особый элемент получил отдельный цвет.','Для .accent нужен color: #ea580c;')]},
+ {kind:'editor',section:'core',n:15,title:'Почему CSS не сработал',visual:visual(15),starter:filePair(H.debug,S.debug),solution:filePair(H.debug,S.debugsol),defaultFile:'css',
+  theory:P('Когда CSS «не работает», причина часто небольшая. Проверяйте по порядку: <strong>подключён ли файл → правильный ли селектор → правильно ли записаны свойства</strong>.','В этом примере правило собрано из уже знакомых частей, но в записи допущены ошибки. Не переписывайте всё с нуля: найдите и исправьте их.'),
+  task:P('CSS для заголовка написан с ошибками. Исправьте код так, чтобы задуманное оформление заработало. Значения свойств менять не нужно.'),hints:['Проверьте отдельно селектор и запись каждого объявления.','Вспомните форму: <code>.class { property: value; }</code>.'],validate:()=>[declCheck('.title','color','#16a34a','Цвет задан правильно.','Проверьте селектор и запись свойства color.'),declCheck('.title','font-size','36px','Размер текста задан правильно.','Проверьте селектор и запись font-size.'),declCheck('.title','font-style','italic','Курсив задан правильно.','Проверьте селектор и запись font-style.')]},
+ {kind:'editor',section:'mini',title:'Итоговое мини-задание · POLAR SIGNAL',visual:visual(17),starter:filePair(H.midnight,S.mini),solution:null,defaultFile:'css',allowSolution:false,
+  theory:P('Перед вами почти неоформленный экран ночной радиостанции. HTML уже готов — менять его не нужно. Ваша задача превратить страницу в цельный интерфейс только с помощью свойств CSS, которые мы изучили сегодня.','Здесь важна не сложная компоновка, а <strong>визуальная иерархия</strong>: название станции должно быть главным, служебные подписи — спокойнее, а частота, статус и время — работать как акценты. Визуализация справа показывает реальный результат, который можно получить этими свойствами.'),
+  task:P('Перед вами почти неоформленный экран ночной радиостанции. HTML уже готов — менять его не нужно. Ваша задача превратить страницу в цельный интерфейс только с помощью свойств CSS, которые мы изучили сегодня. Классы в HTML уже расставлены: по описанию найдите нужный элемент и самостоятельно выберите селектор.','Сначала оформите всю страницу: задайте цвет фона <code>#07111f</code>, основной цвет текста <code>#e8f1ff</code>, семейство шрифта <code>Arial, sans-serif</code>, размер текста <code>18px</code> и межстрочный интервал <code>1.5</code>.','Главный заголовок «Polar Signal» оформите цветом <code>#f8fafc</code>, размером <code>64px</code>, насыщенностью <code>700</code>, межстрочным интервалом <code>1</code> и переведите текст в верхний регистр. Одинаково оформите четыре короткие служебные подписи: «Норильск · 69°21′N · ночной эфир», «Сейчас в эфире», «Дальше» и «Сообщение станции». Для них нужны цвет <code>#7dd3fc</code>, размер <code>14px</code>, насыщенность <code>700</code> и верхний регистр.','Строку «107.8 FM» оформите цветом <code>#d8ff3e</code>, размером <code>36px</code> и насыщенностью <code>700</code>. Слово «Live» рядом с текущим треком должно иметь цвет текста <code>#07111f</code>, цвет фона <code>#d8ff3e</code>, размер <code>14px</code>, насыщенность <code>700</code> и верхний регистр.','Фразу «Музыка для тех, кто не спит после полуночи.» оформите цветом <code>#a8b3c7</code>, размером <code>18px</code> и курсивом. Название текущего трека «Molchat Doma — Sudno» — цветом <code>#ff7ab6</code>, размером <code>32px</code>, насыщенностью <code>700</code> и межстрочным интервалом <code>1.2</code>. Строку «23:42 · −18°C · снег» оформите цветом <code>#93a4b8</code> и размером <code>16px</code>.','В расписании одинаково оформите время «00:00», «01:30» и «03:00»: цвет <code>#7dd3fc</code>, размер <code>20px</code>, насыщенность <code>700</code>. Цитате «Север звучит громче ночью.» задайте цвет <code>#f8fafc</code>, размер <code>28px</code>, курсивное начертание и межстрочный интервал <code>1.4</code>. Ссылку «polar-signal.radio» оформите цветом <code>#7dd3fc</code>, насыщенностью <code>700</code> и уберите подчёркивание.','За задание можно получить <strong>20 баллов</strong>: десять независимых проверок по 2 балла. Частично выполненная работа тоже приносит баллы, но для оценки 5 необходимо пройти все десять проверок.'),hints:[],validate:()=>miniChecks()},
+ {kind:'summary',section:'summary',title:'Что уже умеем',visual:visual(18)}
+];
+
+const freshState=()=>({current:0,student:null,code:{},activeFile:{},editorViews:{},done:{},coreScore:{},usedSolution:{},hint:{},miniDone:false,miniScore:0,miniChecks:[],miniIdeCode:'',theoryCollapsed:false});
+let state=freshState();
+try{const raw=localStorage.getItem(STORAGE);if(raw)state={...freshState(),...JSON.parse(raw)}}catch(e){}
+function save(){try{localStorage.setItem(STORAGE,JSON.stringify(state))}catch(e){}}
+function keyOf(s){return s.section==='core'?`core-${s.n}`:s.section==='mini'?'mini':s.section==='extra'?`extra-${s.n}`:`${s.section}-${steps.indexOf(s)}`}
+steps.filter(s=>s.section==='core').forEach(s=>{const k=keyOf(s);if(state.usedSolution?.[k]&&state.coreScore?.[k]==null){state.done[k]=true;state.coreScore[k]=0.5}});save();
+function cloneFiles(x){return {html:x.html,css:x.css}}
+function getFiles(s){const k=keyOf(s);if(!state.code[k])state.code[k]=cloneFiles(s.starter||filePair('',''));return state.code[k]}
+function studentCode(){return state.student?.code||'Код не указан'}
+function showStart(){const ss=$('#startScreen'),app=$('#app');ss.classList.remove('hidden');app.classList.add('app-hidden');if(state.student?.code)$('#studentCode').value=state.student.code}
+function enterApp(){ $('#startScreen').classList.add('hidden');$('#app').classList.remove('app-hidden');$('#studentChip').textContent=`Код: ${studentCode()}`;render() }
+$('#studentForm').addEventListener('submit',e=>{e.preventDefault();const code=$('#studentCode').value.trim();if(!code){$('#startError').textContent='Поле не заполнено.';return}state.student={code};$('#startError').textContent='';save();enterApp()});
+function currentStep(){return steps[state.current]}
+function sectionMeta(sec){return {intro:['Введение','Введение'],core:['Основная часть','CORE'],extra:['Закрепление','Закрепление'],mini:['Итоговое мини-задание','20 баллов'],summary:['Итог','Итог']}[sec]||['','']}
+function updateChrome(){const s=currentStep(),meta=sectionMeta(s.section);$('#app').classList.toggle('mini-scroll',s.section==='mini');$('#app').classList.toggle('mini-workspace',s.section==='mini');$('#progressLabel').textContent=meta[0];$('#modeChip').textContent=meta[1];$('#modeChip').className='chip '+(s.section==='extra'?'home':'core');const group=steps.filter(x=>x.section===s.section),idx=group.indexOf(s),pct=group.length?((idx+1)/group.length*100):0;$('#progressFill').style.width=`${pct}%`;$('#progressCount').textContent=`${idx+1} / ${group.length}`;$('#prevBtn').disabled=state.current===0;$('#nextBtn').disabled=state.current===steps.length-1;$('#toggleTheoryBtn').style.display=s.kind==='editor'&&s.section!=='mini'?'':'none';$('#toggleTheoryBtn').textContent=state.theoryCollapsed?'Открыть теорию':'Скрыть теорию';$('#app').classList.toggle('theory-collapsed',!!state.theoryCollapsed&&s.kind==='editor');$('#nextBtn').textContent='Далее →'}
+function render(){updateChrome();const s=currentStep();if(s.kind==='cover')renderCover();else if(s.kind==='overview')renderOverview();else if(s.kind==='editor'){if(s.section==='mini')renderMiniEditor(s);else renderEditor(s);}else renderSummary(s);renderDrawer()}
+function renderCover(){
+ $('#main').innerHTML=`<section class="cover"><div class="cover-copy"><h1>Страница начинает выглядеть как интерфейс</h1><p>Сегодня не нужно пытаться «выучить CSS целиком». Сначала освоим базовый цикл: <strong>выбрать элемент → задать свойство → увидеть результат</strong>.</p><div class="cover-steps"><div class="cover-stat"><b>${CORE_COUNT}</b><span>оцениваемых шагов</span></div><div class="cover-stat"><b>80 + 20</b><span>баллов за основу и мини-задание</span></div><div class="cover-stat"><b>2 файла</b><span>index.html + styles.css</span></div></div><div class="flow-line"><span class="flow-node">HTML</span><span class="flow-arrow">→</span><span class="flow-node">CSS</span><span class="flow-arrow">→</span><span class="flow-node">мини-браузер</span></div></div><div class="cover-demo image-demo"><img src="${visual(1)}" alt="HTML и CSS: одна разметка, разный внешний вид"></div></section>`
+}
+function renderOverview(){
+ $('#main').innerHTML=`<section class="overview-wrap"><div class="overview-card"><h1>Как пройдёт эта пара</h1><p>Каждую новую идею сразу проверяем на практике: меняем код и тут же смотрим результат в мини-браузере. В конце основной части соберём несколько изученных свойств в одном классе, а затем перейдём к самостоятельному итоговому мини-заданию.</p><div class="overview-route"><div class="route-row"><div class="route-num">1</div><div><b>Подключение CSS и устройство правила</b><span>Зачем нужен CSS, как связать index.html и styles.css, что такое селектор, свойство и значение.</span></div></div><div class="route-row"><div class="route-num">2</div><div><b>Базовое оформление</b><span>Цвет текста, цвет фона, семейство и размер шрифта.</span></div></div><div class="route-row"><div class="route-num">3</div><div><b>Оформление текста</b><span>Насыщенность и наклон шрифта, межстрочный интервал, оформление и регистр текста.</span></div></div><div class="route-row"><div class="route-num">4</div><div><b>Как выбрать нужный элемент</b><span>Селектор тега и класс: когда нужен общий стиль, а когда — точечное оформление. Затем соберём несколько свойств в одном классе.</span></div></div><div class="route-row"><div class="route-num">5</div><div><b>Выбор и диагностика</b><span>Закрепим выбор между тегом и классом и разберём, что проверить, если CSS не сработал.</span></div></div></div></div><div class="overview-card"><div class="overview-mini">оценивание</div><h1 style="font-size:28px">100 баллов без скрытых штрафов</h1><div class="score-explainer"><div class="score-box"><b>80</b><span>${CORE_COUNT} оцениваемых шагов. Самостоятельно — ${fmt(80/CORE_COUNT)}, после показа решения — ${fmt(40/CORE_COUNT)}.</span></div><div class="score-box"><b>20</b><span>Итоговое мини-задание: 10 независимых проверок по 2 балла. Для оценки 5 нужны все 10.</span></div><div class="score-box"><b>без штрафов</b><span>Ошибочные попытки и подсказки не уменьшают баллы.</span></div></div><div class="callout" style="margin-top:16px">Можно спокойно экспериментировать: если код не сработал, исправьте его и проверьте ещё раз.</div></div></section>`
+}
+
+function taskStatusMarkup(s){const k=keyOf(s);if(s.section==='core'&&state.coreScore[k]!=null)return `<span class="task-status ${state.coreScore[k]===1?'self':'solution'}">${state.coreScore[k]===1?`самостоятельно · ${fmt(80/CORE_COUNT)}`:`с решением · ${fmt(40/CORE_COUNT)}`}</span>`;if(s.section==='mini'){if(state.miniDone)return `<span class="task-status self">выполнено · 20</span>`;if(Number(state.miniScore||0)>0)return `<span class="task-status pending">${fmt(state.miniScore)} / 20</span>`;}if(state.done[k])return `<span class="task-status self">выполнено</span>`;return `<span class="task-status pending">ещё не выполнено</span>`}
+function miniDiagnosticMarkup(checks=state.miniChecks||[]){const rows=checks.length?checks:(currentStep()?.section==='mini'?miniChecks():[]);if(!rows.length)return '<div class="ide-diagnostic" id="miniDiagnostic"></div>';return `<div class="ide-diagnostic" id="miniDiagnostic">${rows.map((x,i)=>`<div class="ide-check-row ${x.ok?'ok':'bad'}"><span class="ide-check-icon">${x.ok?'✓':'✕'}</span><span>${i+1}. ${esc(x.ok?x.msg:(x.bad||x.msg))}</span></div>`).join('')}</div>`}
+function taskActionsMarkup(s){if(s.section==='mini')return `<div class="feedback-row"><div class="feedback-action"><button class="small-button check-button" data-action="check">Проверить работу</button></div><div class="inline-feedback" id="inlineFeedback" aria-hidden="true"></div></div>${miniDiagnosticMarkup()}`;const n=state.hint[keyOf(s)]||0;const allowSolution=s.allowSolution!==false&&!!s.solution;let hintText='Показать подсказку';let cls='';if(n===1)hintText='Показать ещё подсказку';if(n>=2&&allowSolution){hintText='Показать решение · половина баллов';cls='solution-ready'}else if(n>=2&&!allowSolution)hintText='Подсказки закончились';if(state.usedSolution[keyOf(s)]){hintText='Решение показано';cls='solution-used'}return `<div class="feedback-row"><div class="feedback-action"><button class="small-button check-button" data-action="check">Проверить</button></div><div class="inline-feedback" id="inlineFeedback" aria-hidden="true"></div></div><div class="help-row"><button class="small-button ${cls}" data-action="hint" ${n>=2&&!allowSolution?'disabled':''}>${hintText}</button><div class="help-box" id="inlineHelp"></div></div>`}
+function renderEditor(s){const files=getFiles(s),k=keyOf(s),active=state.activeFile[k]||s.defaultFile||'css';state.activeFile[k]=active;
+ $('#main').innerHTML=`<section class="panel theory-panel"><div class="panel-head"><div><div class="step-kicker">${s.section==='core'?`Основная часть · шаг ${s.n} из ${CORE_COUNT}`:s.section==='mini'?'Итоговое мини-задание':'Закрепление перед итоговым заданием'}</div><h1 class="step-title">${esc(s.title)}</h1></div></div><div class="theory-scroll"><div class="theory-copy">${s.theory}</div><div class="visual-card"><img id="zoomVisual" src="${s.visual}" alt="Визуализация: ${esc(s.title)}" title="Нажмите, чтобы открыть крупнее" role="button" tabindex="0"></div></div></section><section class="panel practice-panel"><div class="task-card"><div class="task-top"><span class="task-tag ${s.section==='mini'?'mini':s.section==='extra'?'extra':''}">${s.section==='mini'?'20 баллов':s.section==='extra'?'Закрепление':'Мини-задача'}</span>${taskStatusMarkup(s)}</div><div class="task-copy">${s.task}</div>${taskActionsMarkup(s)}</div><div class="practice-work"><div class="editor-card"><div class="subhead"><div class="file-tabs"><button class="file-tab ${active==='html'?'active':''}" data-file="html">index.html</button><button class="file-tab ${active==='css'?'active':''}" data-file="css">styles.css</button></div><span class="editor-file-label" id="editorFileLabel">${active==='html'?'HTML':'CSS'}</span><div class="right"><span class="editor-help">Tab — отступ · Ctrl/Cmd+Enter — проверить</span><span class="editor-position" id="editorPosition">Стр 1, стлб 1</span><button class="small-btn" id="resetCode">Сбросить код</button></div></div><div class="editor-wrap"><div class="editor-active-line" id="editorActiveLine"></div><div class="editor-lines" id="editorLines"></div><pre class="editor-highlight" id="editorHighlight" aria-hidden="true"></pre><textarea class="editor-input" id="editor" spellcheck="false" aria-label="Редактор кода"></textarea></div></div><div class="preview-card"><div class="subhead"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><b>Мини-браузер</b><div class="right"><span>css.local</span></div></div><div class="preview-body"><div class="browser-wrap"><div class="browser-bar"><span class="browser-dots">● ● ●</span><span class="address">https://css.local/</span></div><iframe class="preview-frame" id="preview" sandbox=""></iframe><div class="preview-note">CSS применяется только если в index.html корректно подключён styles.css.</div></div></div></div></div></section>`;
+ bindEditor(s,active);$('#zoomVisual').onclick=()=>openImage(s.visual);$('#zoomVisual').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openImage(s.visual)}};$$('[data-action="check"]').forEach(b=>b.onclick=()=>runCheck(s));$$('[data-action="hint"]').forEach(b=>b.onclick=()=>showHint(s));$$('.file-tab').forEach(b=>b.onclick=()=>switchFile(s,b.dataset.file));
+}
+function renderMiniEditor(s){
+ const passed=(state.miniChecks||[]).filter(x=>x.ok).length;
+ $('#main').innerHTML=`<section class="mini-ide-page">
+   <div class="mini-ide-assignment">
+     <div class="mini-ide-kicker">Самостоятельная работа в IDE · 20 баллов</div>
+     <div class="mini-ide-title-row"><div><h1>POLAR SIGNAL</h1><p>Оформите готовую страницу ночной радиостанции. HTML уже подготовлен — менять его не нужно. Работайте только в <code>styles.css</code>. Классы в HTML уже расставлены: по описанию найдите нужный элемент и самостоятельно выберите селектор.</p></div>${taskStatusMarkup(s)}</div>
+
+     <div class="mini-ide-task-grid">
+       <article class="mini-ide-task-card"><h2>Вся страница</h2><p>Задайте странице цвет фона <code>#07111f</code>, основной цвет текста <code>#e8f1ff</code>, семейство шрифта <code>Arial, sans-serif</code>, размер текста <code>18px</code> и межстрочный интервал <code>1.5</code>.</p></article>
+       <article class="mini-ide-task-card"><h2>Название и короткие подписи</h2><p>Главный заголовок «Polar Signal» оформите цветом <code>#f8fafc</code>, размером <code>64px</code>, насыщенностью <code>700</code>, межстрочным интервалом <code>1</code> и переведите в верхний регистр. Одинаково оформите подписи «Норильск · 69°21′N · ночной эфир», «Сейчас в эфире», «Дальше» и «Сообщение станции»: цвет <code>#7dd3fc</code>, размер <code>14px</code>, насыщенность <code>700</code>, верхний регистр.</p></article>
+       <article class="mini-ide-task-card"><h2>«107.8 FM» и «Live»</h2><p>Строку «107.8 FM» оформите цветом <code>#d8ff3e</code>, размером <code>36px</code> и насыщенностью <code>700</code>. Слово «Live» рядом с текущим треком должно иметь цвет текста <code>#07111f</code>, цвет фона <code>#d8ff3e</code>, размер <code>14px</code>, насыщенность <code>700</code> и верхний регистр.</p></article>
+       <article class="mini-ide-task-card"><h2>Описание и текущий трек</h2><p>Фразу «Музыка для тех, кто не спит после полуночи.» оформите цветом <code>#a8b3c7</code>, размером <code>18px</code> и курсивом. Название «Molchat Doma — Sudno» — цветом <code>#ff7ab6</code>, размером <code>32px</code>, насыщенностью <code>700</code> и межстрочным интервалом <code>1.2</code>. Строку «23:42 · −18°C · снег» — цветом <code>#93a4b8</code> и размером <code>16px</code>.</p></article>
+       <article class="mini-ide-task-card mini-ide-task-wide"><h2>Расписание, цитата и ссылка</h2><p>В расписании одинаково оформите время «00:00», «01:30» и «03:00»: цвет <code>#7dd3fc</code>, размер <code>20px</code>, насыщенность <code>700</code>. Цитате «Север звучит громче ночью.» задайте цвет <code>#f8fafc</code>, размер <code>28px</code>, курсив и межстрочный интервал <code>1.4</code>. Ссылку «polar-signal.radio» оформите цветом <code>#7dd3fc</code>, насыщенностью <code>700</code> и уберите подчёркивание.</p></article>
+     </div>
+
+     <p class="mini-ide-score-note">За задание можно получить <strong>20 баллов</strong>: десять независимых проверок по 2 балла. Частично выполненная работа тоже приносит баллы, но для оценки 5 необходимо пройти все десять проверок.</p>
+
+     <div class="mini-ide-download-row">
+       <div><strong>Работайте в своём файле</strong><span>Скачайте заготовку, откройте папку в IDE и редактируйте только <code>styles.css</code>. После заметных изменений открывайте <code>index.html</code> в браузере и смотрите результат.</span></div>
+       <div class="mini-ide-download-actions"><button class="small-button assignment-button" id="openMiniReference" type="button">Эталон результата</button><a class="small-button check-button mini-download-button" href="assets/POLAR_SIGNAL_START.zip" download>Скачать стартовый архив</a></div>
+     </div>
+   </div>
+
+   <section class="ide-checker mini-ide-checker">
+     <h2>Проверка работы из IDE</h2>
+     <p>Когда стили готовы, скопируйте сюда <strong>весь CSS</strong> из своего <code>styles.css</code>. Тренажёр проверит десять требований независимо друг от друга. Если какой-то пункт не прошёл, вернитесь в IDE, исправьте файл и проверьте его ещё раз.</p>
+     <textarea class="ide-code mini-ide-code" id="miniIdeCode" spellcheck="false" placeholder="Вставьте сюда код из styles.css…" aria-label="CSS из IDE"></textarea>
+     <div class="ide-actions">
+       <button class="small-button check-button" id="miniCheckButton" type="button">Проверить CSS из IDE</button>
+       <button class="small-button" id="miniOpenReport" type="button">Открыть отчёт</button>
+       <span class="ide-score-pill" id="miniIdeScore">IDE: ${passed} / 10</span>
+     </div>
+     <div class="inline-feedback mini-ide-feedback" id="inlineFeedback" aria-hidden="true"></div>
+     ${miniDiagnosticMarkup()}
+   </section>
+ </section>`;
+ const code=$('#miniIdeCode');
+ code.value=state.miniIdeCode||'';
+ code.addEventListener('input',()=>{state.miniIdeCode=code.value;save()});
+ $('#miniCheckButton').onclick=()=>{state.miniIdeCode=code.value;save();runCheck(s)};
+ $('#miniOpenReport').onclick=openReport;
+ $('#openMiniReference').onclick=()=>openImage(s.visual);
+}
+
+function miniSyncLayer(ed,hi,ln,type){if(!ed||!hi||!ln)return;hi.innerHTML=type==='css'?highlightCSS(ed.value):highlightHTML(ed.value);ln.textContent=Array.from({length:Math.max(1,ed.value.split('\n').length)},(_,i)=>i+1).join('\n');hi.scrollTop=ed.scrollTop;hi.scrollLeft=ed.scrollLeft;ln.scrollTop=ed.scrollTop}
+function miniUpdateCssCursor(ed){const before=ed.value.slice(0,ed.selectionStart),parts=before.split('\n'),line=parts.length,col=parts.at(-1).length+1,pos=$('#miniCssPosition');if(pos)pos.textContent=`Стр ${line}, стлб ${col}`;const active=$('#miniCssActiveLine');if(active){const lh=parseFloat(getComputedStyle(ed).lineHeight)||21.28,pad=parseFloat(getComputedStyle(ed).paddingTop)||14;active.style.top=`${pad+(line-1)*lh-ed.scrollTop}px`}}
+function bindMiniEditors(s){const files=getFiles(s),htmlEd=$('#miniHtmlEditor'),cssEd=$('#miniCssEditor'),htmlHi=$('#miniHtmlHighlight'),cssHi=$('#miniCssHighlight'),htmlLn=$('#miniHtmlLines'),cssLn=$('#miniCssLines');htmlEd.value=files.html||'';cssEd.value=files.css||'';miniSyncLayer(htmlEd,htmlHi,htmlLn,'html');miniSyncLayer(cssEd,cssHi,cssLn,'css');const htmlView=state.editorViews[keyOf(s)]?.html;if(htmlView){requestAnimationFrame(()=>{htmlEd.scrollTop=htmlView.scrollTop||0;htmlEd.scrollLeft=htmlView.scrollLeft||0;miniSyncLayer(htmlEd,htmlHi,htmlLn,'html')})}const cssView=state.editorViews[keyOf(s)]?.css;if(cssView){requestAnimationFrame(()=>{cssEd.selectionStart=cssView.start||0;cssEd.selectionEnd=cssView.end||cssView.start||0;cssEd.scrollTop=cssView.scrollTop||0;cssEd.scrollLeft=cssView.scrollLeft||0;miniSyncLayer(cssEd,cssHi,cssLn,'css');miniUpdateCssCursor(cssEd)})}else miniUpdateCssCursor(cssEd);htmlEd.addEventListener('scroll',()=>{miniSyncLayer(htmlEd,htmlHi,htmlLn,'html');state.editorViews[keyOf(s)]??={};state.editorViews[keyOf(s)].html={scrollTop:htmlEd.scrollTop,scrollLeft:htmlEd.scrollLeft};save()});cssEd.addEventListener('input',()=>{files.css=cssEd.value;rememberEditorView(s,'css',cssEd);save();miniSyncLayer(cssEd,cssHi,cssLn,'css');miniUpdateCssCursor(cssEd);renderPreviewDebounced(s)});cssEd.addEventListener('scroll',()=>{miniSyncLayer(cssEd,cssHi,cssLn,'css');rememberEditorView(s,'css',cssEd);miniUpdateCssCursor(cssEd)});cssEd.addEventListener('keydown',e=>handleEditorKeydown(e,s,'css'));['click','keyup','select'].forEach(ev=>cssEd.addEventListener(ev,()=>{rememberEditorView(s,'css',cssEd);miniUpdateCssCursor(cssEd)}));renderPreview(s)}
+function openAssignment(s){$('#assignmentBody').innerHTML=s.task;$('#assignmentModal').classList.add('show')}
+function closeAssignment(){$('#assignmentModal').classList.remove('show')}
+
+function switchFile(s,file){saveCurrentEditor(s);state.activeFile[keyOf(s)]=file;save();renderEditor(s)}
+function bindEditor(s,file){const files=getFiles(s),ed=$('#editor');ed.value=files[file]||'';restoreEditorView(s,file,ed);syncEditor(file);renderPreview(s);ed.addEventListener('input',()=>{files[file]=ed.value;rememberEditorView(s,file,ed);save();syncEditor(file);renderPreviewDebounced(s)});ed.addEventListener('scroll',()=>{syncEditorScroll(ed);rememberEditorView(s,file,ed)});ed.addEventListener('keydown',e=>handleEditorKeydown(e,s,file));['click','keyup','select'].forEach(ev=>ed.addEventListener(ev,()=>{rememberEditorView(s,file,ed);updateEditorCursor(ed)}));ed.addEventListener('focus',()=>updateEditorCursor(ed));$('#resetCode').onclick=()=>{if(confirm('Вернуть код этого шага к исходной заготовке? Баллы, подсказки и факт показа решения сохранятся.')){state.code[keyOf(s)]=cloneFiles(s.starter);state.editorViews[keyOf(s)]={};state.activeFile[keyOf(s)]=s.defaultFile||'css';save();render()}}}
+function saveCurrentEditor(s){if(s?.section==='mini'){const ed=$('#miniCssEditor');if(!ed)return;getFiles(s).css=ed.value;rememberEditorView(s,'css',ed);save();return}const ed=$('#editor');if(!ed)return;const k=keyOf(s),file=state.activeFile[k]||s.defaultFile||'css';getFiles(s)[file]=ed.value;rememberEditorView(s,file,ed);save()}
+function rememberEditorView(s,file,ed){const k=keyOf(s);state.editorViews[k]??={};state.editorViews[k][file]={start:ed.selectionStart,end:ed.selectionEnd,scrollTop:ed.scrollTop,scrollLeft:ed.scrollLeft}}
+function restoreEditorView(s,file,ed){const v=state.editorViews[keyOf(s)]?.[file];if(!v)return;requestAnimationFrame(()=>{ed.selectionStart=v.start||0;ed.selectionEnd=v.end||v.start||0;ed.scrollTop=v.scrollTop||0;ed.scrollLeft=v.scrollLeft||0;syncEditorScroll(ed);updateEditorCursor(ed)})}
+function handleEditorKeydown(e,s,file){if(e.key==='Tab'){e.preventDefault();const ed=e.target,start=ed.selectionStart,end=ed.selectionEnd;ed.setRangeText('  ',start,end,'end');ed.dispatchEvent(new Event('input',{bubbles:true}))}if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runCheck(s)}}
+function highlightHTML(src){let out='',pos=0;const re=/<!--[\s\S]*?-->|<\/?[A-Za-z][^>]*>/g;let m;while((m=re.exec(src))){out+=esc(src.slice(pos,m.index));const t=m[0];if(t.startsWith('<!--'))out+=`<span class="tok-comment">${esc(t)}</span>`;else out+=highlightTag(t);pos=m.index+t.length}out+=esc(src.slice(pos));return out+'\n'}
+function highlightTag(t){let x=esc(t);x=x.replace(/^(&lt;\/?)([A-Za-z][\w-]*)/,(_,a,b)=>`${a}<span class="tok-name">${b}</span>`);x=x.replace(/\s([A-Za-z_:][-\w:.]*)(=)(&quot;[^&]*?&quot;|&#39;[^&]*?&#39;)/g,(_,a,eq,v)=>` <span class="tok-attr">${a}</span>${eq}<span class="tok-str">${v}</span>`);return `<span class="tok-tag">${x}</span>`}
+function highlightCSS(src){const lines=src.split('\n');return lines.map(line=>{let e=esc(line);if(/^\s*\/\*/.test(line))return `<span class="tok-comment">${e}</span>`;if(line.includes('{')){const i=e.indexOf('{');return `<span class="tok-selector">${e.slice(0,i).trimEnd()}</span> <span class="tok-brace">{</span>${e.slice(i+1)}`;}if(line.includes('}'))return e.replace('}',`<span class="tok-brace">}</span>`);const m=line.match(/^(\s*)([-\w]+)(\s*:\s*)(.*)$/);if(m)return `${esc(m[1])}<span class="tok-prop">${esc(m[2])}</span>${esc(m[3])}<span class="tok-value">${esc(m[4])}</span>`;return e}).join('\n')+'\n'}
+function syncEditor(file){const ed=$('#editor'),hi=$('#editorHighlight'),ln=$('#editorLines');if(!ed||!hi||!ln)return;hi.innerHTML=file==='css'?highlightCSS(ed.value):highlightHTML(ed.value);ln.textContent=Array.from({length:Math.max(1,ed.value.split('\n').length)},(_,i)=>i+1).join('\n');syncEditorScroll(ed);updateEditorCursor(ed)}
+function syncEditorScroll(ed){const hi=$('#editorHighlight'),ln=$('#editorLines');if(hi){hi.scrollTop=ed.scrollTop;hi.scrollLeft=ed.scrollLeft}if(ln)ln.scrollTop=ed.scrollTop;updateEditorCursor(ed)}
+function updateEditorCursor(ed){const before=ed.value.slice(0,ed.selectionStart),parts=before.split('\n'),line=parts.length,col=parts.at(-1).length+1,pos=$('#editorPosition');if(pos)pos.textContent=`Стр ${line}, стлб ${col}`;const active=$('#editorActiveLine');if(active){const fs=parseFloat(getComputedStyle(ed).fontSize)||14,lh=parseFloat(getComputedStyle(ed).lineHeight)||21.28,pad=parseFloat(getComputedStyle(ed).paddingTop)||14;active.style.top=`${pad+(line-1)*lh-ed.scrollTop}px`}}
+let previewTimer;function renderPreviewDebounced(s){clearTimeout(previewTimer);previewTimer=setTimeout(()=>renderPreview(s),130)}
+function linkedStyles(html){try{const d=new DOMParser().parseFromString(html,'text/html');return [...d.querySelectorAll('link[rel~="stylesheet"]')].some(l=>(l.getAttribute('href')||'').replace(/^\.\//,'')==='styles.css')}catch(e){return false}}
+function previewDoc(files){let html=files.html||'';const css=files.css||'';if(linkedStyles(html)){const styleTag=`<style>${css.replace(/<\/style/gi,'<\\/style')}</style>`;if(/<\/head>/i.test(html))html=html.replace(/<\/head>/i,styleTag+'\n</head>');else html=styleTag+html}return html}
+function renderPreview(s){const fr=$('#preview');if(fr)fr.srcdoc=previewDoc(getFiles(s))}
+function parseCSS(css){const clean=String(css||'').replace(/\/\*[\s\S]*?\*\//g,'');const map={};const re=/([^{}]+)\{([^{}]*)\}/g;let m;while((m=re.exec(clean))){const selector=m[1].trim();const props={};m[2].split(';').forEach(part=>{const i=part.indexOf(':');if(i<0)return;const k=part.slice(0,i).trim().toLowerCase(),v=part.slice(i+1).trim().replace(/\s+/g,' ');if(k)props[k]=v});map[selector]=props}return map}
+function rule(selector){return parseCSS(getFiles(currentStep()).css)[selector]||{}}
+function norm(v){return String(v||'').trim().toLowerCase().replace(/\s+/g,' ')}
+function res(ok,msg,bad){return {ok:!!ok,msg,bad}}
+function declCheck(selector,prop,value,msg,bad){const got=rule(selector)[prop];return res(norm(got)===norm(value),msg,bad)}
+function familyCheck(selector,primary='arial',fallback='sans-serif',label='Arial, sans-serif'){const got=norm(rule(selector)['font-family']);return res(got.includes(primary)&&got.includes(fallback),`Шрифт задан как ${label}.`,`У ${selector} нужен font-family: ${label};`)}
+function linkCheck(){return res(linkedStyles(getFiles(currentStep()).html),'styles.css подключён к HTML.','В index.html пока нет корректного <link rel="stylesheet" href="styles.css"> внутри head.')}
+function miniChecks(){
+ const rules=parseCSS(state.miniIdeCode||'');
+ const body=rules['body']||{},title=rules['.station-title']||{},eyebrow=rules['.eyebrow']||{},frequency=rules['.frequency']||{},live=rules['.live']||{},track=rules['.track-title']||{},meta=rules['.meta']||{},time=rules['.time']||{},quote=rules['.quote']||{},link=rules['.station-link']||{},tagline=rules['.tagline']||{};
+ const eq=(obj,prop,value)=>norm(obj[prop])===norm(value);
+ const fam=norm(body['font-family']);
+ return [
+  res(eq(body,'background-color','#07111f')&&eq(body,'color','#e8f1ff')&&fam.includes('arial')&&fam.includes('sans-serif'),'Фон, основной цвет текста и шрифт всей страницы настроены верно.','Проверьте оформление всей страницы: цвет фона, основной цвет текста и семейство шрифта.'),
+  res(eq(body,'font-size','18px')&&eq(body,'line-height','1.5'),'Размер текста и межстрочный интервал всей страницы настроены верно.','Проверьте размер текста и межстрочный интервал всей страницы.'),
+  res(eq(title,'color','#f8fafc')&&eq(title,'font-size','64px')&&eq(title,'font-weight','700')&&eq(title,'line-height','1')&&eq(title,'text-transform','uppercase'),'Главный заголовок «Polar Signal» оформлен верно.','Проверьте главный заголовок «Polar Signal»: цвет, размер текста, насыщенность, межстрочный интервал и верхний регистр.'),
+  res(eq(eyebrow,'color','#7dd3fc')&&eq(eyebrow,'font-size','14px')&&eq(eyebrow,'font-weight','700')&&eq(eyebrow,'text-transform','uppercase'),'Короткие подписи «Норильск…», «Сейчас в эфире», «Дальше» и «Сообщение станции» оформлены верно.','Проверьте четыре короткие подписи: «Норильск · 69°21′N · ночной эфир», «Сейчас в эфире», «Дальше» и «Сообщение станции».'),
+  res(eq(frequency,'color','#d8ff3e')&&eq(frequency,'font-size','36px')&&eq(frequency,'font-weight','700'),'Строка «107.8 FM» оформлена верно.','Проверьте строку «107.8 FM»: цвет, размер текста и насыщенность.'),
+  res(eq(live,'color','#07111f')&&eq(live,'background-color','#d8ff3e')&&eq(live,'font-size','14px')&&eq(live,'font-weight','700')&&eq(live,'text-transform','uppercase'),'Слово «Live» оформлено верно.','Проверьте слово «Live»: цвет текста, цвет фона, размер текста, насыщенность и верхний регистр.'),
+  res(eq(track,'color','#ff7ab6')&&eq(track,'font-size','32px')&&eq(track,'font-weight','700')&&eq(track,'line-height','1.2')&&eq(tagline,'color','#a8b3c7')&&eq(tagline,'font-size','18px')&&eq(tagline,'font-style','italic'),'Описание станции и название текущего трека оформлены верно.','Проверьте фразу «Музыка для тех, кто не спит после полуночи.» и название «Molchat Doma — Sudno».'),
+  res(eq(meta,'color','#93a4b8')&&eq(meta,'font-size','16px')&&eq(time,'color','#7dd3fc')&&eq(time,'font-size','20px')&&eq(time,'font-weight','700'),'Строка «23:42 · −18°C · снег» и время в расписании оформлены верно.','Проверьте строку «23:42 · −18°C · снег» и время «00:00», «01:30», «03:00» в расписании.'),
+  res(eq(quote,'color','#f8fafc')&&eq(quote,'font-size','28px')&&eq(quote,'font-style','italic')&&eq(quote,'line-height','1.4'),'Цитата «Север звучит громче ночью.» оформлена верно.','Проверьте цитату «Север звучит громче ночью.»: цвет, размер текста, курсив и межстрочный интервал.'),
+  res(eq(link,'color','#7dd3fc')&&eq(link,'font-weight','700')&&eq(link,'text-decoration','none'),'Ссылка «polar-signal.radio» оформлена верно.','Проверьте ссылку «polar-signal.radio»: цвет текста, насыщенность и отсутствие подчёркивания.')
+ ]
+}
+
+function setFeedback(kind,html){const box=$('#inlineFeedback');if(!box)return;box.className=`inline-feedback ${kind}`;box.setAttribute('aria-hidden','false');box.innerHTML=html}
+function runCheck(s=currentStep()){saveCurrentEditor(s);const checks=s.validate?s.validate():[];const bad=checks.filter(x=>!x.ok),k=keyOf(s);
+ if(s.section==='mini'){
+  const passed=checks.length-bad.length;
+  state.miniChecks=checks;
+  state.miniScore=passed*2;
+  state.miniDone=bad.length===0;
+  if(state.miniDone){state.done[k]=true}else{delete state.done[k]}
+  const box=$('#miniDiagnostic');if(box)box.outerHTML=miniDiagnosticMarkup(checks);
+  const ideScore=$('#miniIdeScore');if(ideScore)ideScore.textContent=`IDE: ${passed} / ${checks.length}`;
+  save();renderDrawer();
+  const status=$('.task-status');if(status){if(state.miniDone){status.className='task-status self';status.textContent='выполнено · 20'}else if(state.miniScore>0){status.className='task-status pending';status.textContent=`${fmt(state.miniScore)} / 20`}else{status.className='task-status pending';status.textContent='ещё не выполнено'}}
+  if(bad.length){setFeedback('bad',`Выполнено ${passed} из ${checks.length} проверок — ${fmt(state.miniScore)} / 20 баллов. Исправьте отмеченные пункты и проверьте работу ещё раз.`);return}
+  setFeedback('good','Все 10 проверок пройдены. Итоговое мини-задание выполнено — 20 баллов.');return
+ }
+ if(bad.length){setFeedback('bad',bad[0].bad||'Пока не всё готово.');return}
+ state.done[k]=true;let message='Готово.';
+ if(s.section==='core'){const earned=state.usedSolution[k]?0.5:1;state.coreScore[k]=Math.max(Number(state.coreScore[k]||0),earned);message=state.coreScore[k]===1?`Готово. Шаг выполнен самостоятельно — ${fmt(80/CORE_COUNT)} баллов.`:`Готово. Этот шаг зачтён через решение — ${fmt(40/CORE_COUNT)} балла.`}
+ save();const status=$('.task-status');if(status){if(s.section==='core'){status.className=`task-status ${state.coreScore[k]===1?'self':'solution'}`;status.textContent=state.coreScore[k]===1?`самостоятельно · ${fmt(80/CORE_COUNT)}`:`с решением · ${fmt(40/CORE_COUNT)}`}else{status.className='task-status self';status.textContent='выполнено'}}setFeedback('good',message);renderDrawer()}
+function showInlineHelp(title,text){const box=$('#inlineHelp');if(!box)return;box.classList.add('show');box.innerHTML=`<strong>${title}</strong><span>${text}</span>`}
+function archiveHtmlAsComments(src){return String(src).split('\n').map(line=>`<!-- ${line.replace(/--/g,'—')} -->`).join('\n')}
+function archiveCssAsComments(src){return String(src).split('\n').map(line=>`/* ${line.replace(/\/\*/g,'/ *').replace(/\*\//g,'* /')} */`).join('\n')}
+function showHint(s){const k=keyOf(s),n=state.hint[k]||0,allowSolution=s.allowSolution!==false&&!!s.solution;
+ if(n===0){state.hint[k]=1;showInlineHelp('Подсказка 1',s.hints?.[0]||'Перечитайте условие.')}
+ else if(n===1){state.hint[k]=2;showInlineHelp('Подсказка 2',s.hints?.[1]||'Сравните код с теорией шага.')}
+ else if(allowSolution&&!state.usedSolution[k]){
+  saveCurrentEditor(s);const old=cloneFiles(getFiles(s)),sol=cloneFiles(s.solution),alreadySelf=state.coreScore[k]===1;
+  sol.html+=`\n\n<!-- Ваш вариант до показа решения: -->\n${archiveHtmlAsComments(old.html)}`;
+  sol.css+=`\n\n/* Ваш вариант до показа решения: */\n${archiveCssAsComments(old.css)}`;
+  state.code[k]=sol;state.usedSolution[k]=true;state.hint[k]=3;state.activeFile[k]=s.defaultFile||'css';
+  if(s.section==='core'&&!alreadySelf){state.done[k]=true;state.coreScore[k]=Math.max(Number(state.coreScore[k]||0),0.5)}
+ }
+ save();renderEditor(s);renderDrawer();const newN=state.hint[k]||0;
+ if(newN===1)showInlineHelp('Подсказка 1',s.hints?.[0]||'Перечитайте условие.');
+ if(newN===2)showInlineHelp('Подсказка 2',s.hints?.[1]||'Сравните код с теорией шага.');
+ if(newN===3){const kept=state.coreScore[k]===1;showInlineHelp('Решение подставлено',kept?'Эталон находится сверху, ваш вариант сохранён ниже в комментарии. Шаг уже был выполнен самостоятельно, поэтому результат не изменился.':`Эталон находится сверху, ваш вариант сохранён ниже в комментарии. Шаг уже засчитан через готовое решение — ${fmt(40/CORE_COUNT)} балла.`);setFeedback('good',kept?'Решение показано. Самостоятельный результат сохранён.':`Шаг сразу засчитан через готовое решение — ${fmt(40/CORE_COUNT)} балла.`)}
+}
+function openImage(src){$('#imageModalImg').src=src;$('#imageModal').classList.add('show')}
+
+function renderSummary(s){$('#main').innerHTML=`<section class="summary-screen"><img id="summaryVisual" src="${s.visual}" alt="Итог первой пары CSS"></section>`;$('#summaryVisual').onclick=()=>openImage(s.visual)}
+function coreUnits(){return Object.values(state.coreScore).reduce((a,v)=>a+Number(v||0),0)}
+function gradeData(){const units=coreUnits(),corePoints=units*(80/CORE_COUNT),mini=Number(state.miniScore||0),total=Math.round((corePoints+mini)*100)/100;let grade=total>=85?5:total>=65?4:total>=50?3:2;if(grade===5&&!state.miniDone)grade=4;return {units,corePoints,mini,total,grade}}
+function hintsUsed(){return Object.values(state.hint).filter(x=>Number(x)>0).length}
+function reportHtml(){const g=gradeData(),checks=state.miniChecks||[];return `<div class="report-grid"><div class="report-stat"><b>${fmt(g.corePoints)} / 80</b><span>основная часть</span></div><div class="report-stat"><b>${g.mini} / 20</b><span>итоговое мини-задание</span></div><div class="report-stat"><b>${fmt(g.total)} / 100</b><span>всего баллов</span></div><div class="report-stat"><b>${g.grade}</b><span>итоговая оценка</span></div></div><div class="grade-card"><div class="grade-number">${g.grade}</div><div class="grade-copy"><b>Текущая итоговая оценка</b><p>Основная часть даёт до 80 баллов, итоговое мини-задание — до 20 баллов (10 проверок по 2 балла).</p></div></div><section class="report-section"><h3>Личный код: ${esc(studentCode())}</h3></section><section class="report-section"><h3>Проверка итогового мини-задания</h3><div class="report-list">${checks.length?checks.map((x,i)=>`<div class="report-row"><span>${x.ok?'✓':'✕'}</span><span>${i+1}. ${esc(x.ok?x.msg:(x.bad||x.msg))}</span><span class="score">${x.ok?'2':'—'}</span></div>`).join(''):'<div class="report-note">Итоговое мини-задание ещё не проверялось. Откройте его, выполните CSS и нажмите «Проверить работу».</div>'}</div></section><section class="report-section"><div class="report-note"><strong>Как считается оценка.</strong> 0–49 → 2; 50–64 → 3; 65–84 → 4; 85–100 → 5. Для оценки 5 итоговое мини-задание должно быть выполнено полностью.</div></section>`}
+function fmt(n){const x=Number(n);if(Number.isInteger(x))return String(x);return x.toFixed(2).replace('.',',').replace(/0+$/,'').replace(/,$/,'')}
+function openReport(){if(!state.student?.code){showStart();return}$('#reportSubtitle').textContent=`Личный код: ${studentCode()}`;$('#reportBody').innerHTML=reportHtml();$('#printReport').innerHTML=`<h1>Основы CSS — отчёт</h1><p>Личный код: ${esc(studentCode())}</p>${reportHtml()}`;$('#reportModal').classList.add('show')}
+function closeReport(){$('#reportModal').classList.remove('show')}
+function renderDrawer(){let html='';const groups=[['Введение','intro'],[`Основная часть · ${CORE_COUNT} шагов`,'core'],['Итоговое мини-задание · 20 баллов','mini'],['Итог','summary']];for(const [label,sec] of groups){html+=`<div class="section-label">${label}</div>`;steps.forEach((s,i)=>{if(s.section!==sec)return;const k=keyOf(s),done=!!state.done[k]||(s.section==='mini'&&state.miniDone);let status='';let cls='';if(s.section==='core'&&state.coreScore[k]!=null){status=state.coreScore[k]===1?`самостоятельно · ${fmt(80/CORE_COUNT)}`:`с решением · ${fmt(40/CORE_COUNT)}`;cls=state.coreScore[k]===1?'solved-self':'solved-solution'}else if(s.section==='mini')status=state.miniDone?'выполнено · 20':(Number(state.miniScore||0)>0?`${fmt(state.miniScore)} / 20`:'обязательно для 5');else if(done)status='выполнено';const num=s.section==='core'?String(s.n).padStart(2,'0'):s.section==='mini'?'★':'•';html+=`<button class="step-link ${i===state.current?'active':''} ${done?'done':''} ${cls}" data-step="${i}"><span class="step-num">${num}</span><span class="step-name">${esc(s.title)}</span><span class="step-state">${status}</span></button>`})}$('#drawerList').innerHTML=html;$$('.step-link').forEach(b=>b.onclick=()=>{closeDrawer();go(+b.dataset.step)})}
+function closeDrawer(){$('#drawer').classList.remove('show')}
+function go(i){const s=currentStep();if(s?.kind==='editor')saveCurrentEditor(s);state.current=Math.max(0,Math.min(steps.length-1,i));save();$('#hintBox').classList.remove('show');render()}
+$('#prevBtn').onclick=()=>go(state.current-1);$('#nextBtn').onclick=()=>go(state.current+1);$('#allStepsBtn').onclick=()=>$('#drawer').classList.add('show');$('#drawerBackdrop').onclick=closeDrawer;$('#drawerClose').onclick=closeDrawer;$('#fullResetBtn').onclick=()=>{if(confirm('Сбросить весь прогресс и начать интерактив заново?')){localStorage.removeItem(STORAGE);location.reload()}};$('#imageClose').onclick=()=>$('#imageModal').classList.remove('show');$('#imageModal').onclick=e=>{if(e.target===$('#imageModal'))$('#imageModal').classList.remove('show')};$('#assignmentClose').onclick=closeAssignment;$('#assignmentModal').onclick=e=>{if(e.target===$('#assignmentModal'))closeAssignment()};$('#toggleTheoryBtn').onclick=()=>{state.theoryCollapsed=!state.theoryCollapsed;save();render()};$('#reportBtn').onclick=openReport;$('#reportClose').onclick=closeReport;$('#reportModal').onclick=e=>{if(e.target===$('#reportModal'))closeReport()};$('#printReportBtn').onclick=()=>{window.print()};$('#hintClose').onclick=()=>$('#hintBox').classList.remove('show');
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('#imageModal').classList.remove('show');closeDrawer();closeReport();closeAssignment()}if((e.ctrlKey||e.metaKey)&&e.key==='Enter'&&currentStep().kind==='editor'&&!['TEXTAREA','INPUT'].includes(document.activeElement?.tagName)){e.preventDefault();runCheck(currentStep())}});
+
+// Запускаем приложение после объявления всех функций и переменных.
+if(state.student?.code)enterApp();else showStart();
+</script>
+</body>
+</html>
