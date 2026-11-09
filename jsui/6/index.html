@@ -2053,7 +2053,12 @@ const PREVIEW_HARNESS=String.raw`
     return result(true,'Всё содержимое модального окна готово.');
    }
    if(!overlay||!modal)return result(false,'Не найдены элементы модального окна в HTML.');
-   if(n===6){const s=getComputedStyle(overlay),r=overlay.getBoundingClientRect();const covers=r.top<=0&&r.left<=0&&r.bottom>=innerHeight&&r.right>=innerWidth;return result(s.position==='fixed'&&covers&&!transparent(s.backgroundColor),'Проверьте position: fixed, inset: 0 и полупрозрачный background: затемнение должно покрывать всю видимую страницу.');}
+   if(n===6){
+    const s=getComputedStyle(overlay),r=overlay.getBoundingClientRect();
+    const viewport=document.documentElement,tolerance=1;
+    const covers=r.top<=tolerance&&r.left<=tolerance&&r.bottom>=viewport.clientHeight-tolerance&&r.right>=viewport.clientWidth-tolerance;
+    return result(s.position==='fixed'&&covers&&!transparent(s.backgroundColor),'Проверьте position: fixed, inset: 0 и полупрозрачный background: затемнение должно покрывать всю видимую страницу.');
+   }
    if(n===7){const s=getComputedStyle(overlay);return result(s.display==='flex'&&s.justifyContent==='center'&&s.alignItems==='center','Для центрирования нужны display: flex и оба свойства выравнивания со значением center.');}
    if(n===8){const s=getComputedStyle(modal);return result(!transparent(s.backgroundColor)&&parseFloat(s.borderTopLeftRadius)>0&&s.maxHeight!=='none'&&['auto','scroll'].includes(s.overflowY),'Укажите для .modal светлый фон, скругление, max-height и overflow: auto.');}
    if(n===9){const top=cs('.modal-top'),btn=cs('.close-icon');return result(!!top&&top.display==='flex'&&top.justifyContent==='space-between'&&parseFloat(btn?.width)>=38&&parseFloat(btn?.height)>=38&&!transparent(btn?.backgroundColor),'Проверьте Flexbox у .modal-top и размеры с фоном у .close-icon.');}
