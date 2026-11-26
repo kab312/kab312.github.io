@@ -8848,7 +8848,7 @@ function frameBridge(config) {
   const identities = new WeakMap();
   const clickTargets = new WeakSet();
   const submits = [];
-  const stats = { created: 0, appended: 0, removed: 0, toggled: 0, formListeners: 0 };
+  const stats = { created: 0, appended: 0, removed: 0, toggled: 0, formListeners: 0, inputFocusRequests: 0 };
   let sequence = 0;
   const send = (type, data) => parent.postMessage({ __notesLesson: true, token: config.token, type, data }, "*");
   const pause = () => new Promise(resolve => setTimeout(resolve, 18));
@@ -8876,6 +8876,13 @@ function frameBridge(config) {
     submits.push({ prevented: event.defaultPrevented });
     if (!event.defaultPrevented) event.preventDefault();
   });
+  if (config.test) {
+    // Проверяем вызов focus(), не перехватывая фокус у редактора.
+    // В скрытом окне браузер может запретить фокус без действия пользователя.
+    HTMLElement.prototype.focus = function () {
+      if (this === document.querySelector(".note-input")) stats.inputFocusRequests++;
+    };
+  }
   const originalCreate = Document.prototype.createElement;
   Document.prototype.createElement = function (name, ...options) {
     if (String(name).toLowerCase() === "div") stats.created++;
@@ -9102,7 +9109,10 @@ function testCases(id) {
       if (n >= 9 && allText(b) !== "Кино|Концерт") return false;
       if (n >= 10 && !b.cards.every(card=>card.styled && card.tag === "DIV")) return false;
       if (n >= 11 && b.input !== "") return false;
-      if (n >= 12 && !b.focused) return false;
+      if (n >= 12 && !(
+        a.stats.inputFocusRequests > shot(r,"initial").stats.inputFocusRequests &&
+        b.stats.inputFocusRequests > a.stats.inputFocusRequests
+      )) return false;
       return true;
     },
     why: n < 3 ? "После функции подключите submit к noteForm. Имя addNote передайте без скобок. Отправка должна работать и кнопкой, и клавишей Enter." : n === 3 || n === 24 ? "В начале addNote(event) вызовите event.preventDefault(). Обработчик submit подключается к noteForm, а не к кнопке." : n === 8 ? "Внутри addNote создайте новый div в note и разместите его через board.append(note). Каждая отправка должна создавать отдельную карточку." : n === 9 ? "До board.append(note) запишите text в note.textContent." : n === 10 ? "Добавьте класс note именно созданной карточке: note.classList.add(\"note\")." : n === 11 ? "Очищайте noteInput.value после board.append(note)." : n === 12 ? "После очистки поля вызовите noteInput.focus(), чтобы сразу вводить следующую идею." : "Проверьте отправку формы, чтение текста и создание отдельных карточек. Каждый новый вызов addNote должен использовать новый текст и новый элемент."
